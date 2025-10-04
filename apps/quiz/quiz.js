@@ -144,14 +144,3 @@ function validate(rep) {
     document.getElementById("answers").innerHTML = "";
   }
 }
-
-if (current < questions.length) {
-  loadQuestion();
-} else {
-  const message = score === questions.length
-    ? "🌟 Parfait ! Tu as tout réussi !"
-    : `🎉 Quiz terminé ! Tu as eu ${score} bonnes réponses sur ${questions.length}.`;
-
-  document.getElementById("question").textContent = message;
-  document.getElementById("answers").innerHTML = "";
-}
