@@ -8,6 +8,11 @@ const apps = [
     name: "Conjugaison",
     path: "apps/conjugaison/index.html",
     icon: "📖"
+  },
+  {
+    name: "Quiz général",
+    path: "apps/quiz/index.html",
+    icon: "🧠"
   }
 ];
 
