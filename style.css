@@ -2,6 +2,8 @@
   --font-main: 'Segoe UI', 'Comic Sans MS', sans-serif;
   --color-bg: #1e1e2f;
   --color-primary: #3b82f6;
+  --color-primary-hover: #2563eb;
+  --color-primary-active: #1d4ed8;
   --color-secondary: #2c2c3c;
   --color-accent: #fbbf24;
   --color-success: #10b981;
@@ -26,38 +28,52 @@ h1 {
 }
 
 .app-link {
-  display: block;
-  margin: 1rem auto;
-  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 1.2rem auto;
+  padding: 1.2rem;
   width: 80%;
   max-width: 400px;
   background: var(--color-primary);
   color: var(--color-btn-text);
   text-decoration: none;
   border-radius: 8px;
-  font-size: 1.2rem;
-  transition: background 0.3s;
+  font-size: 1.4rem;
+  transition: background 0.3s, transform 0.1s;
 }
 
 .app-link:hover {
-  background: #2563eb;
+  background: var(--color-primary-hover);
+}
+
+.app-link:active {
+  transform: scale(0.98);
+  background: var(--color-primary-active);
 }
 
 button {
   background: var(--color-accent);
   border: none;
   border-radius: 8px;
-  padding: 0.5em 1.5em;
+  padding: 1rem 1.5rem;
   cursor: pointer;
   color: #1c1c1c;
   font-weight: bold;
-  font-size: 1rem;
-  margin: 0.5em;
+  font-size: 1.2rem;
+  margin: 0.8rem;
+  transition: background 0.3s, transform 0.1s;
 }
 
 button:hover {
   background: #f59e0b;
   color: white;
+}
+
+button:active {
+  transform: scale(0.98);
+  background: #d97706;
 }
 
 label, select, input {
@@ -107,13 +123,13 @@ select, input {
   background: #444;
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  margin: 0.3em;
-  padding: 0.5em 1em;
-  font-size: 1.1em;
+  margin: 0.5em;
+  padding: 0.8em 1.2em;
+  font-size: 1.2em;
   cursor: pointer;
   color: var(--color-text);
   font-weight: bold;
-  transition: background 0.2s;
+  transition: background 0.2s, transform 0.1s;
 }
 
 .table-btn:hover, .answer-btn:hover {
@@ -121,11 +137,17 @@ select, input {
   color: white;
 }
 
+.table-btn:active, .answer-btn:active {
+  transform: scale(0.97);
+  background: var(--color-primary-active);
+}
+
 .table-btn.selected {
   background: var(--color-accent);
   color: #1c1c1c;
   border: 2px solid var(--color-primary);
 }
+
 .back-link {
   display: inline-block;
   margin-bottom: 1rem;
