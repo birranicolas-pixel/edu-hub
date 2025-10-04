@@ -1,5 +1,7 @@
 let temps = null;
 let groupe = null;
+let bonnesReponses = 0;
+let mauvaisesReponses = 0;
 
 const terminaisons = {
   présent: {
@@ -20,6 +22,12 @@ const terminaisons = {
 };
 
 const pronoms = ["Je", "Tu", "Il/Elle", "Nous", "Vous", "Ils/Elles"];
+
+const radicauxIrreguliersFutur = {
+  venir: "viendr",
+  voir: "verr",
+  prendre: "prendr"
+};
 
 function setTemps(t) {
   temps = t;
@@ -65,10 +73,19 @@ function getVerbe(groupe) {
 }
 
 function getRadical(verbe, groupe) {
-  if (groupe === 1) return verbe.slice(0, -2);
-  if (groupe === 2) return verbe.slice(0, -2);
-  if (groupe === 3) return verbe.slice(0, -2); // simplifié
+  if (temps === "futur") {
+    if (groupe === 3 && radicauxIrreguliersFutur[verbe]) {
+      return radicauxIrreguliersFutur[verbe];
+    }
+    if (groupe === 1) return verbe; // ex: chanter → chanterai
+    if (groupe === 2) return verbe.slice(0, -2); // finir → finirai
+    if (groupe === 3) return verbe.slice(0, -2); // fallback
+  }
+
+  // Présent et imparfait
+  return verbe.slice(0, -2);
 }
+
 
 function generatePropositions(correct) {
   const faux = [correct + "x", correct.slice(0, -1), correct.replace(/.$/, "z")];
@@ -77,8 +94,17 @@ function generatePropositions(correct) {
 
 function validate(rep, correct) {
   if (rep === correct) {
+    bonnesReponses++;
     alert("✅ Bravo !");
   } else {
+    mauvaisesReponses++;
     alert(`❌ Mauvaise réponse. C'était : ${correct}`);
   }
+
+  // Mettre à jour l'affichage
+  document.getElementById("score").textContent = bonnesReponses;
+  document.getElementById("bad-count").textContent = mauvaisesReponses;
+
+  // Générer une nouvelle question
+  generateQuestion();
 }

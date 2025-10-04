@@ -24,3 +24,15 @@ button:hover {
 #questionZone {
   margin-top: 30px;
 }
+#scoreZone {
+  margin-top: 2rem;
+  font-size: 1.2rem;
+}
+
+#score {
+  color: var(--color-success);
+}
+
+#bad-count {
+  color: var(--color-error);
+}
