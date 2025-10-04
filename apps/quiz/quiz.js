@@ -92,6 +92,11 @@ let questions = [];
 
 function startQuiz() {
   const theme = document.getElementById("themeSelect").value;
+  if (!quizData[theme]) {
+    alert("Choisis un thème avant de commencer !");
+    return;
+  }
+
   questions = quizData[theme];
   current = 0;
   score = 0;
@@ -140,7 +145,13 @@ function validate(rep) {
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("score").textContent = "0";
-  document.getElementById("total").textContent = "0";
-});
+if (current < questions.length) {
+  loadQuestion();
+} else {
+  const message = score === questions.length
+    ? "🌟 Parfait ! Tu as tout réussi !"
+    : `🎉 Quiz terminé ! Tu as eu ${score} bonnes réponses sur ${questions.length}.`;
+
+  document.getElementById("question").textContent = message;
+  document.getElementById("answers").innerHTML = "";
+}
