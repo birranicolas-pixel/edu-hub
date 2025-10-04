@@ -220,7 +220,12 @@ select, input {
 }
 
 @keyframes fadeOut {
-  0% { opacity: 1; }
+  0% { opacity: 1; visibility: visible; }
   80% { opacity: 1; }
   100% { opacity: 0; visibility: hidden; }
 }
+
+.splash-screen {
+  animation: fadeOut 2.5s ease forwards;
+}
+
