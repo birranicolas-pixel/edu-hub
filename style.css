@@ -176,3 +176,28 @@ select, input {
   animation: fadeInUp 0.6s ease forwards;
   opacity: 0;
 }
+.mascotte-zone {
+  margin-bottom: 2rem;
+  animation: fadeIn 1s ease-out;
+}
+
+.mascotte {
+  width: 120px;
+  animation: bounce 2s infinite;
+}
+
+.mascotte-message {
+  font-size: 1.2rem;
+  color: var(--color-accent);
+  margin-top: 0.5rem;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

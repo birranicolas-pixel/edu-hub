@@ -24,3 +24,13 @@ function generateMenu() {
 
 window.onload = generateMenu;
 
+const messages = [
+  "Prêt à apprendre en t’amusant ?",
+  "On révise les conjugaisons aujourd’hui !",
+  "Tu vas devenir un champion des tables !",
+  "Bienvenue sur EduHub, petit génie !"
+];
+
+document.getElementById("mascotteMessage").textContent =
+  messages[Math.floor(Math.random() * messages.length)];
+
