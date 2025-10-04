@@ -16,6 +16,26 @@
       .catch(err => console.error('Erreur SW', err));
   }
 </script>
+<script>
+function parler(message) {
+  const voix = new SpeechSynthesisUtterance(message);
+  voix.lang = 'fr-FR';
+  voix.rate = 1;
+  speechSynthesis.speak(voix);
+}
+
+window.onload = () => {
+  const messages = [
+    "Salut, moi c’est Boubou ! Prêt pour une nouvelle aventure sur EduHub ?",
+    "On révise les conjugaisons aujourd’hui !",
+    "Tu vas devenir un champion des tables !",
+    "Bienvenue sur EduHub, petit génie !"
+  ];
+  const message = messages[Math.floor(Math.random() * messages.length)];
+  document.getElementById("mascotteMessage").textContent = message;
+  parler(message);
+};
+</script>
 <body>
   <div class="mascotte-zone">
   <img src="assets/mascotte.png" alt="Mascotte EduHub" class="mascotte">
