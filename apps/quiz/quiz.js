@@ -20,7 +20,11 @@ let current = 0;
 let score = 0;
 
 function loadQuestion() {
+  if (current >= questions.length) return;
+
   const q = questions[current];
+  if (!q) return;
+
   document.getElementById("question").textContent = q.question;
   const answersDiv = document.getElementById("answers");
   answersDiv.innerHTML = "";
@@ -32,6 +36,7 @@ function loadQuestion() {
     answersDiv.appendChild(btn);
   });
 }
+
 
 function validate(rep) {
   const correct = questions[current].answer;
