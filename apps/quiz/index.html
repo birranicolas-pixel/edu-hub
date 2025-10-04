@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -6,25 +5,29 @@
   <title>Quiz Générale</title>
   <link rel="stylesheet" href="../../style.css">
 </head>
-<script src="quiz.js"></script>
 <body>
   <p><a href="../../index.html" class="back-link">← Retour à l’accueil</a></p>
-<h1>Quiz de Culture Générale</h1>
-<h2>Choisis ton thème</h2>
-<select id="themeSelect">
-  <option value="geographie">🌍 Géographie</option>
-  <option value="animaux">🐾 Animaux</option>
-  <option value="arts">🎨 Arts</option>
-  <option value="sciences">🧪 Sciences</option>
-  <option value="mythes">🧙‍♂️ Mythes</option>
-</select>
-<button onclick="startQuiz()">Commencer le quiz</button>
-<div id="questionZone">
-  <p id="question">Chargement...</p>
-  <div id="answers"></div>
-</div>
-<div id="scoreZone">
-  <p>✅ Score : <span id="score">0</span> / <span id="total">0</span></p>
-</div>
+  <h1>Quiz de Culture Générale</h1>
+  <h2>Choisis ton thème</h2>
+  <select id="themeSelect">
+    <option value="geographie">🌍 Géographie</option>
+    <option value="animaux">🐾 Animaux</option>
+    <option value="arts">🎨 Arts</option>
+    <option value="sciences">🧪 Sciences</option>
+    <option value="mythes">🧙‍♂️ Mythes</option>
+    <option value="quotidien">🏠 Vie quotidienne</option>
+  </select>
+  <button id="startBtn" onclick="startQuiz()">Commencer le quiz</button>
+
+  <div id="questionZone" class="container">
+    <p id="question">Chargement...</p>
+    <div id="answers"></div>
+  </div>
+
+  <div id="scoreZone" class="container">
+    <p>✅ Score : <span id="score">0</span> / <span id="total">0</span></p>
+  </div>
+
+  <script src="quiz.js"></script>
 </body>
 </html>

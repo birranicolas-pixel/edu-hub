@@ -85,10 +85,7 @@ quotidien : [
     { question: "Quel jour commence la semaine ?", options: ["Lundi", "Dimanche", "Samedi"], answer: "Lundi" }
  ]
 };
- 
 
-let current = 0;
-let score = 0;
 let current = 0;
 let score = 0;
 let questions = [];
@@ -96,10 +93,12 @@ let questions = [];
 function startQuiz() {
   const theme = document.getElementById("themeSelect").value;
   questions = quizData[theme];
-  document.getElementById("total").textContent = questions.length;
   current = 0;
   score = 0;
+
   document.getElementById("score").textContent = score;
+  document.getElementById("total").textContent = questions.length;
+
   loadQuestion();
 }
 
@@ -121,7 +120,6 @@ function loadQuestion() {
   });
 }
 
-
 function validate(rep) {
   const correct = questions[current].answer;
   if (rep === correct) {
@@ -131,8 +129,8 @@ function validate(rep) {
     alert(`❌ Mauvaise réponse. C'était : ${correct}`);
   }
 
-  document.getElementById("score").textContent = score;
   current++;
+  document.getElementById("score").textContent = score;
 
   if (current < questions.length) {
     loadQuestion();
@@ -142,4 +140,7 @@ function validate(rep) {
   }
 }
 
-document.addEventListener("DOMContentLoaded", loadQuestion);
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("score").textContent = "0";
+  document.getElementById("total").textContent = "0";
+});
