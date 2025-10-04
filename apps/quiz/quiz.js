@@ -53,4 +53,4 @@ function validate(rep) {
   }
 }
 
-window.onload = loadQuestion;
+document.addEventListener("DOMContentLoaded", loadQuestion);
