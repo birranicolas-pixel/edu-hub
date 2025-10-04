@@ -10,6 +10,15 @@
 <body>
   <p><a href="../../index.html" class="back-link">← Retour à l’accueil</a></p>
 <h1>Quiz de Culture Générale</h1>
+<h2>Choisis ton thème</h2>
+<select id="themeSelect">
+  <option value="geographie">🌍 Géographie</option>
+  <option value="animaux">🐾 Animaux</option>
+  <option value="arts">🎨 Arts</option>
+  <option value="sciences">🧪 Sciences</option>
+  <option value="mythes">🧙‍♂️ Mythes</option>
+</select>
+<button onclick="startQuiz()">Commencer le quiz</button>
 <div id="questionZone">
   <p id="question">Chargement...</p>
   <div id="answers"></div>
