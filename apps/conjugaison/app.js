@@ -51,7 +51,7 @@ function generateQuestion() {
   document.getElementById("question").textContent = `${pronom} (${verbe}) au ${temps}`;
   document.getElementById("reponses").innerHTML = "";
 
-  const bonneReponse = base + terminaison;
+  const bonneReponse = fusionRadicalTerminaison(base, terminaison);
   const propositions = generatePropositions(bonneReponse);
 
   propositions.forEach(rep => {
@@ -60,6 +60,14 @@ function generateQuestion() {
     btn.onclick = () => validate(rep, bonneReponse);
     document.getElementById("reponses").appendChild(btn);
   });
+}
+
+function fusionRadicalTerminaison(radical, terminaison) {
+  // Si le radical se termine par la même lettre que le début de la terminaison, éviter la répétition
+  if (radical.slice(-1) === terminaison.charAt(0)) {
+    return radical + terminaison.slice(1);
+  }
+  return radical + terminaison;
 }
 
 function getVerbe(groupe) {
