@@ -1,3 +1,4 @@
+/* === Variables === */
 :root {
   --font-main: 'Segoe UI', 'Comic Sans MS', sans-serif;
   --color-bg: #1e1e2f;
@@ -13,6 +14,7 @@
   --color-border: #444;
 }
 
+/* === Base === */
 body {
   font-family: var(--font-main);
   background: var(--color-bg);
@@ -27,6 +29,11 @@ h1 {
   margin-bottom: 2rem;
 }
 
+.hidden {
+  display: none;
+}
+
+/* === Liens === */
 .app-link {
   display: flex;
   align-items: center;
@@ -42,6 +49,8 @@ h1 {
   border-radius: 8px;
   font-size: 1.4rem;
   transition: background 0.3s, transform 0.1s;
+  animation: fadeInUp 0.6s ease forwards;
+  opacity: 0;
 }
 
 .app-link:hover {
@@ -51,101 +60,6 @@ h1 {
 .app-link:active {
   transform: scale(0.98);
   background: var(--color-primary-active);
-}
-
-button {
-  background: var(--color-accent);
-  border: none;
-  border-radius: 8px;
-  padding: 1rem 1.5rem;
-  cursor: pointer;
-  color: #1c1c1c;
-  font-weight: bold;
-  font-size: 1.2rem;
-  margin: 0.8rem;
-  transition: background 0.3s, transform 0.1s;
-}
-
-button:hover {
-  background: #f59e0b;
-  color: white;
-}
-
-button:active {
-  transform: scale(0.98);
-  background: #d97706;
-}
-
-label, select, input {
-  font-size: 1.1rem;
-  margin: 0.5em 0;
-  color: var(--color-text);
-}
-
-select, input {
-  background: #333;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  padding: 0.4em;
-  color: var(--color-text);
-}
-
-.container {
-  background: var(--color-secondary);
-  border-radius: 20px;
-  padding: 2em;
-  box-shadow: 0 0 10px #000;
-  max-width: 500px;
-  margin: auto;
-}
-
-#score {
-  margin-top: 2em;
-  font-size: 1.2rem;
-  color: var(--color-success);
-}
-
-#bad-count {
-  color: var(--color-error);
-}
-
-#feedback {
-  margin-top: 1em;
-  font-size: 1.1rem;
-  color: var(--color-error);
-}
-
-.hidden {
-  display: none;
-}
-
-.table-btn, .answer-btn {
-  background: #444;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  margin: 0.5em;
-  padding: 0.8em 1.2em;
-  font-size: 1.2em;
-  cursor: pointer;
-  color: var(--color-text);
-  font-weight: bold;
-  transition: background 0.2s, transform 0.1s;
-}
-
-.table-btn:hover, .answer-btn:hover {
-  background: var(--color-primary);
-  color: white;
-}
-
-.table-btn:active, .answer-btn:active {
-  transform: scale(0.97);
-  background: var(--color-primary-active);
-}
-
-.table-btn.selected {
-  background: var(--color-accent);
-  color: #1c1c1c;
-  border: 2px solid var(--color-primary);
 }
 
 .back-link {
@@ -161,21 +75,127 @@ select, input {
   text-decoration: underline;
   color: #60a5fa;
 }
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+
+/* === Formulaires === */
+label, select, input {
+  font-size: 1.1rem;
+  margin: 0.5em 0;
+  color: var(--color-text);
 }
 
-.app-link {
-  animation: fadeInUp 0.6s ease forwards;
-  opacity: 0;
+select, input {
+  background: #333;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 0.4em;
 }
+
+/* === Boutons === */
+button,
+.table-btn,
+.answer-btn {
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s, transform 0.1s;
+}
+
+button {
+  background: var(--color-accent);
+  border: none;
+  padding: 1rem 1.5rem;
+  color: #1c1c1c;
+  font-size: 1.2rem;
+  margin: 0.8rem;
+}
+
+button:hover {
+  background: #f59e0b;
+  color: white;
+}
+
+button:active {
+  transform: scale(0.98);
+  background: #d97706;
+}
+
+.table-btn,
+.answer-btn {
+  background: #444;
+  border: 1px solid var(--color-border);
+  margin: 0.5em;
+  padding: 0.8em 1.2em;
+  font-size: 1.2em;
+  color: var(--color-text);
+}
+
+.table-btn:hover,
+.answer-btn:hover {
+  background: var(--color-primary);
+  color: white;
+}
+
+.table-btn:active,
+.answer-btn:active {
+  transform: scale(0.97);
+  background: var(--color-primary-active);
+}
+
+.table-btn.selected {
+  background: var(--color-accent);
+  color: #1c1c1c;
+  border: 2px solid var(--color-primary);
+}
+
+/* === Zones de contenu === */
+.container {
+  background: var(--color-secondary);
+  border-radius: 20px;
+  padding: 2em;
+  box-shadow: 0 0 10px #000;
+  max-width: 500px;
+  margin: auto;
+}
+
+#questionZone {
+  margin-top: 2rem;
+  font-size: 1.2rem;
+}
+
+#answers button {
+  margin: 0.5rem;
+  padding: 0.8rem 1.2rem;
+  font-size: 1rem;
+  background: var(--color-secondary);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+#answers button:hover {
+  background: var(--color-primary);
+  color: white;
+}
+
+#scoreZone {
+  margin-top: 2rem;
+  font-size: 1.2rem;
+}
+
+#score {
+  color: var(--color-success);
+}
+
+#bad-count {
+  color: var(--color-error);
+}
+
+#feedback {
+  margin-top: 1em;
+  font-size: 1.1rem;
+  color: var(--color-error);
+}
+
+/* === Mascotte & Splash === */
 .mascotte-zone {
   margin-bottom: 2rem;
   animation: fadeIn 1s ease-out;
@@ -192,15 +212,6 @@ select, input {
   margin-top: 0.5rem;
 }
 
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
 .splash-screen {
   position: fixed;
   top: 0; left: 0;
@@ -219,34 +230,24 @@ select, input {
   animation: bounce 2s infinite;
 }
 
+/* === Animations === */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 @keyframes fadeOut {
   0% { opacity: 1; visibility: visible; }
   80% { opacity: 1; }
   100% { opacity: 0; visibility: hidden; }
 }
-
-.splash-screen {
-  animation: fadeOut 2.5s ease forwards;
-}
-
-#questionZone {
-  margin-top: 2rem;
-  font-size: 1.2rem;
-}
-
-#answers button {
-  margin: 0.5rem;
-  padding: 0.8rem 1.2rem;
-  font-size: 1rem;
-  border-radius: 8px;
-  background: var(--color-secondary);
-  color: var(--color-text);
-  border: 1px solid var(--color-border);
-  cursor: pointer;
-}
-
-#answers button:hover {
-  background: var(--color-primary);
-  color: white;
-}
-
