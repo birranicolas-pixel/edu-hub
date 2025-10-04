@@ -4,6 +4,11 @@ const apps = [
     path: "apps/multiplication/index.html",
     icon: "📚"
   }
+    {
+    name: "Conjugaison",
+    path: "apps/conjugaison/index.html",
+    icon: "📚"
+  }
 ];
 
 function generateMenu() {

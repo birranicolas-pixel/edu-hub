@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conjugaison CE2</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>📝 Conjugaison CE2</h1>
+
+  <div class="selectors">
+    <div class="temps">
+      <h2>Choisis un temps :</h2>
+      <button onclick="setTemps('présent')">Présent</button>
+      <button onclick="setTemps('futur')">Futur</button>
+      <button onclick="setTemps('imparfait')">Imparfait</button>
+    </div>
+
+    <div class="groupes">
+      <h2>Choisis un groupe :</h2>
+      <button onclick="setGroupe(1)">1er groupe</button>
+      <button onclick="setGroupe(2)">2e groupe</button>
+      <button onclick="setGroupe(3)">3e groupe</button>
+    </div>
+  </div>
+
+  <div id="questionZone">
+    <h2 id="question">Clique sur un temps et un groupe</h2>
+    <div id="reponses"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
