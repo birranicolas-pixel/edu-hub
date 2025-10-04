@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calcul mental</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Calcul mental</h1>
+
+  <div id="settings">
+    <label for="operation">Type d'opération :</label>
+    <select id="operation">
+      <option value="addition">Addition</option>
+      <option value="soustraction">Soustraction</option>
+      <option value="multiplication">Multiplication</option>
+    </select>
+
+    <label for="difficulty">Difficulté :</label>
+    <select id="difficulty">
+      <option value="easy">Facile (1–10)</option>
+      <option value="medium">Moyen (1–20)</option>
+      <option value="hard">Difficile (1–50)</option>
+    </select>
+
+    <button onclick="startQuiz()">Commencer</button>
+  </div>
+
+  <div id="quiz"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>

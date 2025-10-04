@@ -1,0 +1,141 @@
+:root {
+  --font-main: 'Segoe UI', 'Comic Sans MS', sans-serif;
+  --color-bg: #1e1e2f;
+  --color-primary: #3b82f6;
+  --color-secondary: #2c2c3c;
+  --color-accent: #fbbf24;
+  --color-success: #10b981;
+  --color-error: #ef4444;
+  --color-text: #f3f4f6;
+  --color-btn-text: #ffffff;
+  --color-border: #444;
+}
+
+body {
+  font-family: var(--font-main);
+  background: var(--color-bg);
+  color: var(--color-text);
+  text-align: center;
+  padding: 2rem;
+  margin: 0;
+}
+
+h1 {
+  color: var(--color-text);
+  margin-bottom: 2rem;
+}
+
+.app-link {
+  display: block;
+  margin: 1rem auto;
+  padding: 1rem;
+  width: 80%;
+  max-width: 400px;
+  background: var(--color-primary);
+  color: var(--color-btn-text);
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  transition: background 0.3s;
+}
+
+.app-link:hover {
+  background: #2563eb;
+}
+
+button {
+  background: var(--color-accent);
+  border: none;
+  border-radius: 8px;
+  padding: 0.5em 1.5em;
+  cursor: pointer;
+  color: #1c1c1c;
+  font-weight: bold;
+  font-size: 1rem;
+  margin: 0.5em;
+}
+
+button:hover {
+  background: #f59e0b;
+  color: white;
+}
+
+label, select, input {
+  font-size: 1.1rem;
+  margin: 0.5em 0;
+  color: var(--color-text);
+}
+
+select, input {
+  background: #333;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 0.4em;
+  color: var(--color-text);
+}
+
+.container {
+  background: var(--color-secondary);
+  border-radius: 20px;
+  padding: 2em;
+  box-shadow: 0 0 10px #000;
+  max-width: 500px;
+  margin: auto;
+}
+
+#score {
+  margin-top: 2em;
+  font-size: 1.2rem;
+  color: var(--color-success);
+}
+
+#bad-count {
+  color: var(--color-error);
+}
+
+#feedback {
+  margin-top: 1em;
+  font-size: 1.1rem;
+  color: var(--color-error);
+}
+
+.hidden {
+  display: none;
+}
+
+.table-btn, .answer-btn {
+  background: #444;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  margin: 0.3em;
+  padding: 0.5em 1em;
+  font-size: 1.1em;
+  cursor: pointer;
+  color: var(--color-text);
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+.table-btn:hover, .answer-btn:hover {
+  background: var(--color-primary);
+  color: white;
+}
+
+.table-btn.selected {
+  background: var(--color-accent);
+  color: #1c1c1c;
+  border: 2px solid var(--color-primary);
+}
+.back-link {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: var(--color-primary);
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+  color: #60a5fa;
+}
