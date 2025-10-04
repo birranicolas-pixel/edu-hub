@@ -36,7 +36,17 @@ function lancerVoix() {
   parler(message);
 }
 </script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const splash = document.getElementById("splash");
 
+  setTimeout(() => {
+    splash.style.opacity = "0";
+    splash.style.pointerEvents = "none";
+    splash.style.transition = "opacity 0.5s ease";
+  }, 2500);
+});
+</script>
 <body>
   <div id="splash" class="splash-screen">
   <img src="assets/mascotte.png" alt="Boubou" class="splash-mascotte">
