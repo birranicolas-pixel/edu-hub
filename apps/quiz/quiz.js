@@ -73,7 +73,7 @@ const quizData = {
     { question: "Qui souffle sur les maisons des petits cochons ?", options: ["Le loup", "Le renard", "Le dragon"], answer: "Le loup" },
     { question: "Quel héros vole avec une cape rouge ?", options: ["Superman", "Batman", "Spiderman"], answer: "Superman" }
   ],
-  
+
 quotidien : [
     { question: "Quel objet sert à couper du papier ?", options: ["Ciseaux", "Stylo", "Règle"], answer: "Ciseaux" },
     { question: "Quel appareil sert à garder les aliments au frais ?", options: ["Four", "Réfrigérateur", "Grille-pain"], answer: "Réfrigérateur" },
@@ -96,6 +96,7 @@ let questions = [];
 function startQuiz() {
   const theme = document.getElementById("themeSelect").value;
   questions = quizData[theme];
+  document.getElementById("total").textContent = questions.length;
   current = 0;
   score = 0;
   document.getElementById("score").textContent = score;
