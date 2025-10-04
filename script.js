@@ -3,11 +3,11 @@ const apps = [
     name: "Tables de multiplication",
     path: "apps/multiplication/index.html",
     icon: "📚"
-  }
-    {
+  },
+  {
     name: "Conjugaison",
     path: "apps/conjugaison/index.html",
-    icon: "📚"
+    icon: "📖"
   }
 ];
 
@@ -23,3 +23,4 @@ function generateMenu() {
 }
 
 window.onload = generateMenu;
+
