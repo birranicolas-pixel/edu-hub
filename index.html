@@ -24,7 +24,7 @@ function parler(message) {
   speechSynthesis.speak(voix);
 }
 
-window.onload = () => {
+function lancerVoix() {
   const messages = [
     "Salut, moi c’est Boubou ! Prêt pour une nouvelle aventure sur EduHub ?",
     "On révise les conjugaisons aujourd’hui !",
@@ -34,8 +34,9 @@ window.onload = () => {
   const message = messages[Math.floor(Math.random() * messages.length)];
   document.getElementById("mascotteMessage").textContent = message;
   parler(message);
-};
+}
 </script>
+
 <body>
   <div id="splash" class="splash-screen">
   <img src="assets/mascotte.png" alt="Boubou" class="splash-mascotte">
