@@ -1,5 +1,3 @@
-console.log("Firebase disponible ?", typeof firebase !== "undefined");
-
 // Liste des applications éducatives
 const apps = [
   {
