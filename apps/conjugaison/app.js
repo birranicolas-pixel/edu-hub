@@ -189,3 +189,7 @@ document.getElementById("saveSessionBtn").addEventListener("click", () => {
     alert("⚠️ Aucun score à enregistrer.");
   }
 });
+
+console.log("Temps:", temps, "Groupe:", groupe);
+console.log("Verbe sélectionné:", verbe);
+console.log("Bonne réponse:", bonneReponse);
