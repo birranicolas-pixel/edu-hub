@@ -42,7 +42,7 @@ const messages = [
 document.getElementById("mascotteMessage").textContent =
   messages[Math.floor(Math.random() * messages.length)];
 
-// Initialisation Firebase (doit être identique à index.html)
+// Initialisation Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyCabQZ5O5mPkcAd2_W8dF6qiwA-s7QntRo",
   authDomain: "edu-hud.firebaseapp.com",
@@ -54,6 +54,7 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+firebase.analytics();
 const auth = firebase.auth();
 
 // Connexion
