@@ -21,11 +21,11 @@ auth.onAuthStateChanged(function(user) {
 
     document.getElementById("logoutBtn").addEventListener("click", function() {
       auth.signOut().then(() => {
-        window.location.href = "/index.html";
+        window.location.href = "../../index.html";
       });
     });
   } else {
-    window.location.href = "/index.html";
+    window.location.href = "../../index.html";
   }
 });
 
