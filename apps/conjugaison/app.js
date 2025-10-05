@@ -78,14 +78,22 @@ function generateQuestion() {
     bonneReponse = fusionRadicalTerminaison(radical, terminaison);
   }
 
+  // Debug console
+  console.log("Temps:", temps, "Groupe:", groupe);
+  console.log("Verbe sélectionné:", verbe);
+  console.log("Bonne réponse:", bonneReponse);
+
+  // Affichage de la question
   document.getElementById("question").textContent = `${pronom} (${verbe}) au ${temps}`;
   document.getElementById("reponses").innerHTML = "";
   document.getElementById("feedback").textContent = "";
 
+  // Génération des propositions
   const propositions = generatePropositions(bonneReponse);
   propositions.forEach(rep => {
     const btn = document.createElement("button");
     btn.textContent = rep;
+    btn.className = "answer-btn";
     btn.onclick = () => validate(rep, bonneReponse);
     document.getElementById("reponses").appendChild(btn);
   });
@@ -124,19 +132,29 @@ function getRadical(verbe, groupe) {
 
 // Génère des propositions de réponse
 function generatePropositions(correct) {
-  const faux = [
-    correct + "x",
-    correct.slice(0, -1),
-    correct.replace(/.$/, "z")
-  ];
-  return [correct, ...faux].sort(() => Math.random() - 0.5);
+  const variations = new Set();
+  variations.add(correct);
+
+  if (correct.length > 2) {
+    variations.add(correct + "x");
+    variations.add(correct.slice(0, -1));
+    variations.add(correct.replace(/.$/, "z"));
+  }
+
+  if (variations.size < 4) {
+    variations.add(correct.toUpperCase());
+    variations.add([...correct].reverse().join(""));
+  }
+
+  const shuffled = Array.from(variations).sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, 4);
 }
 
 // Validation de la réponse et enregistrement
 function validate(rep, correct) {
   const feedback = document.getElementById("feedback");
-
   const isCorrect = rep === correct;
+
   if (isCorrect) {
     bonnesReponses++;
     feedback.textContent = "✅ Bravo !";
@@ -189,7 +207,3 @@ document.getElementById("saveSessionBtn").addEventListener("click", () => {
     alert("⚠️ Aucun score à enregistrer.");
   }
 });
-
-console.log("Temps:", temps, "Groupe:", groupe);
-console.log("Verbe sélectionné:", verbe);
-console.log("Bonne réponse:", bonneReponse);
