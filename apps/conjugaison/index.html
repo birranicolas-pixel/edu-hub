@@ -1,31 +1,33 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Conjugaison CE2</title>
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="../../style.css" />
 
-  <!-- Firebase compat scripts -->
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore-compat.js"></script>
 
   <script>
+    // Configuration Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyCabQZ5O5mPkcAd2_W8dF6qiwA-s7QntRo",
       authDomain: "edu-hud.firebaseapp.com",
       projectId: "edu-hud",
-      storageBucket: "edu-hud.appspot.com", // ✅ corrigé ici
+      storageBucket: "edu-hud.appspot.com",
       messagingSenderId: "647416475215",
       appId: "1:647416475215:web:df8d67a5d6a7d516c5843a"
     };
 
+    // Initialisation Firebase
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    // Redirige si non connecté
-    auth.onAuthStateChanged(function(user) {
+    // Redirection si l'utilisateur n'est pas connecté
+    auth.onAuthStateChanged(user => {
       if (!user) {
         window.location.href = "/index.html";
       }
@@ -34,39 +36,50 @@
 </head>
 
 <body>
+  <!-- Lien retour -->
   <p><a href="../../index.html" class="back-link">← Retour à l’accueil</a></p>
+
+  <!-- Titre principal -->
   <h1>📝 Conjugaison CE2</h1>
 
+  <!-- Sélection du temps et du groupe -->
   <div class="selectors">
     <div class="temps">
       <h2>Choisis un temps :</h2>
-      <button onclick="setTemps('présent')">Présent</button>
-      <button onclick="setTemps('futur')">Futur</button>
-      <button onclick="setTemps('imparfait')">Imparfait</button>
+      <div class="button-group">
+        <button onclick="setTemps('présent')">Présent</button>
+        <button onclick="setTemps('futur')">Futur</button>
+        <button onclick="setTemps('imparfait')">Imparfait</button>
+      </div>
     </div>
 
     <div class="groupes">
       <h2>Choisis un groupe :</h2>
-      <button onclick="setGroupe(1)">1er groupe</button>
-      <button onclick="setGroupe(2)">2e groupe</button>
-      <button onclick="setGroupe(3)">3e groupe</button>
+      <div class="button-group">
+        <button onclick="setGroupe(1)">1er groupe</button>
+        <button onclick="setGroupe(2)">2e groupe</button>
+        <button onclick="setGroupe(3)">3e groupe</button>
+      </div>
     </div>
   </div>
 
+  <!-- Zone de question et réponses -->
   <div id="questionZone">
     <h2 id="question">Clique sur un temps et un groupe</h2>
     <div id="reponses"></div>
     <p id="feedback" class="feedback-message"></p>
   </div>
 
+  <!-- Score utilisateur -->
   <div id="scoreZone">
     <p>✅ Bonnes réponses : <span id="score">0</span></p>
     <p>❌ Mauvaises réponses : <span id="bad-count">0</span></p>
   </div>
 
+  <!-- Bouton d'enregistrement -->
   <button id="saveSessionBtn">📤 Enregistrer mes scores</button>
 
-  <!-- ✅ Charge le script après le HTML -->
+  <!-- Script principal chargé en dernier -->
   <script src="app.js"></script>
 </body>
 </html>
