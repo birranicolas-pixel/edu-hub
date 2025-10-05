@@ -119,10 +119,12 @@ function terminerQuiz() {
     table: tableChoisie,
     totalBonnes: bonneReponse,
     totalMauvaises: mauvaiseReponse,
-    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    application: "multiplication" // ✅ champ ajouté ici
   }).then(() => {
     console.log("Résultat final enregistré !");
   }).catch(error => {
     console.error("Erreur lors de l'enregistrement du score final :", error);
   });
 }
+
