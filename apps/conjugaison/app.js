@@ -61,6 +61,11 @@ function generateQuestion() {
   if (!temps || !groupe) return;
 
   const verbe = getVerbe(groupe);
+  if (!verbe || typeof verbe !== "string") {
+    document.getElementById("question").textContent = "⚠️ Verbe non défini.";
+    return;
+  }
+
   const index = Math.floor(Math.random() * pronoms.length);
   const pronom = pronoms[index];
   let bonneReponse;
@@ -102,6 +107,7 @@ function getVerbe(groupe) {
     3: ["prendre", "venir", "voir"]
   };
   const liste = verbes[groupe];
+  if (!liste || liste.length === 0) return "verbe inconnu";
   return liste[Math.floor(Math.random() * liste.length)];
 }
 
