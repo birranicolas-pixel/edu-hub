@@ -120,3 +120,20 @@ tableButtonsDiv.querySelectorAll('.table-btn').forEach(btn => {
 });
 
 updateScoreDisplay();
+
+auth.onAuthStateChanged(function(user) {
+  if (user) {
+    document.getElementById("userBar").style.display = "flex";
+    const nom = user.displayName || user.email;
+    document.getElementById("userInfo").textContent = `Connecté : ${nom}`;
+  } else {
+    document.getElementById("userBar").style.display = "none";
+    window.location.href = "/index.html"; // redirection si non connecté
+  }
+});
+
+document.getElementById("logoutBtn").addEventListener("click", function() {
+  auth.signOut().then(() => {
+    window.location.href = "/index.html"; // ou page de login
+  });
+});
