@@ -116,3 +116,13 @@ function generatePropositions(correct) {
 
 function validate(rep, correct) {
   const feedback
+
+  db.collection("result").add({
+  uid: user.uid,
+  email: user.email,
+  username: user.displayName || user.email,
+  application: "conjugaison", // 👈 très important
+  totalBonnes: bonnesReponses,
+  totalMauvaises: mauvaisesReponses,
+  timestamp: firebase.firestore.FieldValue.serverTimestamp()
+});
