@@ -15,6 +15,9 @@ let currentA = 0;
 let currentB = 0;
 let selectedTableBtn = null;
 
+// 🔥 Initialisation Firestore
+const db = firebase.firestore();
+
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -75,26 +78,28 @@ function showScore() {
   quizDiv.classList.add('hidden');
   updateScoreDisplay();
 
-  const user = auth.currentUser;
+  const user = firebase.auth().currentUser;
   if (user) {
     const resultData = {
       userId: user.uid,
+      email: user.email,
       app: "multiplication",
       table: table,
       correct: score,
       incorrect: badScore,
+      total: total,
       timestamp: firebase.firestore.Timestamp.now()
     };
 
     db.collection("results").add(resultData)
       .then(() => {
-        console.log("Résultat enregistré dans Firestore !");
+        console.log("✅ Résultat enregistré dans Firestore !");
       })
       .catch(error => {
-        console.error("Erreur lors de l'enregistrement :", error);
+        console.error("❌ Erreur lors de l'enregistrement :", error);
       });
   } else {
-    console.warn("Utilisateur non connecté, résultat non enregistré.");
+    console.warn("⚠️ Utilisateur non connecté, résultat non enregistré.");
   }
 }
 
