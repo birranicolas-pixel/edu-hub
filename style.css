@@ -1,4 +1,4 @@
-/* === Variables === */
+/* === Variables globales === */
 :root {
   --font-main: 'Segoe UI', 'Comic Sans MS', sans-serif;
   --color-bg: #1e1e2f;
@@ -14,7 +14,7 @@
   --color-border: #444;
 }
 
-/* === Base === */
+/* === Base générale === */
 body {
   font-family: var(--font-main);
   background: var(--color-bg);
@@ -25,7 +25,6 @@ body {
 }
 
 h1 {
-  color: var(--color-text);
   margin-bottom: 2rem;
 }
 
@@ -90,7 +89,7 @@ select, input {
   padding: 0.4em;
 }
 
-/* === Boutons === */
+/* === Boutons généraux === */
 button,
 .table-btn,
 .answer-btn {
@@ -119,6 +118,7 @@ button:active {
   background: #d97706;
 }
 
+/* === Boutons spécifiques (tableau, réponses) === */
 .table-btn,
 .answer-btn {
   background: #444;
@@ -189,13 +189,80 @@ button:active {
   color: var(--color-error);
 }
 
-#feedback {
+#feedback,
+.feedback-message {
   margin-top: 1em;
   font-size: 1.1rem;
+  font-weight: bold;
   color: var(--color-error);
 }
 
-/* === Mascotte & Splash === */
+/* === Sélecteurs de temps et groupes === */
+.selectors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.selectors .temps,
+.selectors .groupes {
+  flex: 1 1 300px;
+  background-color: var(--color-secondary);
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+.selectors h2 {
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  color: var(--color-accent);
+}
+
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+/* === Tableau de classement === */
+.styled-leaderboard {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  background-color: var(--color-secondary);
+  color: var(--color-text);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+  border: 1px solid var(--color-border);
+}
+
+.styled-leaderboard th,
+.styled-leaderboard td {
+  padding: 8px 12px;
+  text-align: center;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.styled-leaderboard thead {
+  background-color: var(--color-primary);
+  color: var(--color-btn-text);
+}
+
+.styled-leaderboard tbody tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.styled-leaderboard tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* === Mascotte & écran de chargement === */
 .mascotte-zone {
   margin-bottom: 2rem;
   animation: fadeIn 1s ease-out;
@@ -261,92 +328,5 @@ button:active {
   align-items: center;
   gap: 10px;
   font-size: 0.9rem;
-  background-color: var(--color-secondary); /* fond sombre cohérent */
-  color: var(--color-text); /* texte clair */
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid var(--color-border);
-  box-shadow: 0 0 8px rgba(59, 130, 246, 0.4); /* reflet bleu */
-  z-index: 1000;
-}
-
-.user-bar .user-icon {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background-color: white;
-  object-fit: cover;
-}
-
-.user-bar button {
-  background-color: var(--color-primary);
-  color: var(--color-btn-text);
-  border: none;
-  padding: 6px 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-
-.user-bar button:hover {
-  background-color: var(--color-primary-hover);
-}
-
-.user-bar button:active {
-  background-color: var(--color-primary-active);
-}
-
-/* Responsive */
-@media (max-width: 600px) {
-  .user-bar {
-    top: auto;
-    bottom: 10px;
-    right: 10px;
-    flex-direction: column;
-    align-items: flex-end;
-  }
-
-  .user-bar button {
-    width: 100%;
-  }
-}
-/* === Tableau de classement homogénéisé === */
-.styled-leaderboard {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 1rem;
-  font-size: 0.9rem;
   background-color: var(--color-secondary);
   color: var(--color-text);
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 0 8px rgba(59, 130, 246, 0.4); /* reflet bleu */
-  border: 1px solid var(--color-border);
-}
-
-.styled-leaderboard th,
-.styled-leaderboard td {
-  padding: 8px 12px;
-  text-align: center;
-  border-bottom: 1px solid var(--color-border);
-}
-
-.styled-leaderboard thead {
-  background-color: var(--color-primary);
-  color: var(--color-btn-text);
-}
-
-.styled-leaderboard tbody tr:nth-child(even) {
-  background-color: rgba(255, 255, 255, 0.05); /* léger contraste */
-}
-
-.styled-leaderboard tbody tr:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-/* === réponse conjugaison === */
-.feedback-message {
-  font-weight: bold;
-  margin-top: 10px;
-}
-
