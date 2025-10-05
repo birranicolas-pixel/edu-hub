@@ -48,6 +48,7 @@ const firebaseConfig = {
   appId: "TON_APP_ID"
 };
 
+// Initialisation avec compat
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
