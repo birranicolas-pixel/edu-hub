@@ -15,13 +15,16 @@ let currentA = 0;
 let currentB = 0;
 let selectedTableBtn = null;
 
-// 🔥 Initialisation Firestore
+// 🔥 Initialisation Firebase
+const auth = firebase.auth();
 const db = firebase.firestore();
 
+// 🔢 Génère un entier aléatoire
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+// 🧮 Nouvelle question
 function newQuestion() {
   currentA = table;
   currentB = getRandomInt(1, 10);
@@ -33,6 +36,7 @@ function newQuestion() {
     results.push(currentA * i);
   }
 
+  // Mélange les réponses
   for (let i = results.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [results[i], results[j]] = [results[j], results[i]];
@@ -48,6 +52,7 @@ function newQuestion() {
   });
 }
 
+// ✅ Valide la réponse
 function validateAnswer(selectedResult) {
   total++;
   if (selectedResult === currentA * currentB) {
@@ -69,16 +74,18 @@ function validateAnswer(selectedResult) {
   }, 1000);
 }
 
+// 🔄 Met à jour l'affichage du score
 function updateScoreDisplay() {
   goodCountSpan.textContent = score;
   badCountSpan.textContent = `Mauvaises réponses : ${badScore}`;
 }
 
+// 📝 Enregistre le score dans Firestore
 function showScore() {
   quizDiv.classList.add('hidden');
   updateScoreDisplay();
 
-  const user = firebase.auth().currentUser;
+  const user = auth.currentUser;
   if (user) {
     const resultData = {
       userId: user.uid,
@@ -91,18 +98,28 @@ function showScore() {
       timestamp: firebase.firestore.Timestamp.now()
     };
 
+    console.log("📤 Envoi des données :", resultData);
+
     db.collection("results").add(resultData)
       .then(() => {
         console.log("✅ Résultat enregistré dans Firestore !");
+        feedbackP.textContent = "Session terminée ! Ton score a été enregistré.";
+        feedbackP.style.color = "#2563eb";
       })
       .catch(error => {
         console.error("❌ Erreur lors de l'enregistrement :", error);
       });
+
+    // Réinitialisation
+    score = 0;
+    badScore = 0;
+    total = 0;
   } else {
     console.warn("⚠️ Utilisateur non connecté, résultat non enregistré.");
   }
 }
 
+// 🎯 Sélection de la table
 tableButtonsDiv.querySelectorAll('.table-btn').forEach(btn => {
   btn.addEventListener('click', function() {
     if (selectedTableBtn) selectedTableBtn.classList.remove('selected');
@@ -121,6 +138,7 @@ tableButtonsDiv.querySelectorAll('.table-btn').forEach(btn => {
 
 updateScoreDisplay();
 
+// 👤 Affichage de l'utilisateur connecté
 auth.onAuthStateChanged(function(user) {
   if (user) {
     document.getElementById("userBar").style.display = "flex";
@@ -128,12 +146,13 @@ auth.onAuthStateChanged(function(user) {
     document.getElementById("userInfo").textContent = `Connecté : ${nom}`;
   } else {
     document.getElementById("userBar").style.display = "none";
-    window.location.href = "/index.html"; // redirection si non connecté
+    window.location.href = "/index.html";
   }
 });
 
+// 🔓 Déconnexion
 document.getElementById("logoutBtn").addEventListener("click", function() {
   auth.signOut().then(() => {
-    window.location.href = "/index.html"; // ou page de login
+    window.location.href = "/index.html";
   });
 });
