@@ -16,10 +16,10 @@ const apps = [
   }
 ];
 
-// Génère le menu uniquement si l'utilisateur est connecté
+// Génère le menu après connexion
 function generateMenu() {
   const container = document.getElementById("app-links");
-  container.innerHTML = ""; // Nettoie le menu précédent
+  container.innerHTML = "";
   apps.forEach(app => {
     const link = document.createElement("a");
     link.href = app.path;
@@ -36,7 +36,6 @@ const messages = [
   "Tu vas devenir un champion des tables !",
   "Bienvenue sur EduHub, petit génie !"
 ];
-
 document.getElementById("mascotteMessage").textContent =
   messages[Math.floor(Math.random() * messages.length)];
 
@@ -51,7 +50,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
-// Formulaire de connexion
+// Connexion
 document.getElementById("loginForm").addEventListener("submit", function(e) {
   e.preventDefault();
   const email = document.getElementById("email").value;
@@ -59,19 +58,41 @@ document.getElementById("loginForm").addEventListener("submit", function(e) {
 
   auth.signInWithEmailAndPassword(email, password)
     .then((userCredential) => {
-      console.log("Connecté avec l’ID :", userCredential.user.uid);
+      console.log("Connecté :", userCredential.user.uid);
     })
     .catch((error) => {
       alert("Erreur : " + error.message);
     });
 });
 
-// Surveillance de l’état de connexion
+// Inscription
+document.getElementById("signupBtn").addEventListener("click", function() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  auth.createUserWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      console.log("Compte créé :", userCredential.user.uid);
+      alert("Compte créé avec succès !");
+    })
+    .catch((error) => {
+      alert("Erreur lors de l’inscription : " + error.message);
+    });
+});
+
+// Déconnexion
+document.getElementById("logoutBtn").addEventListener("click", function() {
+  auth.signOut().then(() => {
+    console.log("Déconnecté");
+  });
+});
+
+// État de connexion
 auth.onAuthStateChanged(function(user) {
   if (user) {
     document.getElementById("authSection").style.display = "none";
     document.getElementById("appSection").style.display = "block";
-    generateMenu(); // Génère le menu une fois connecté
+    generateMenu();
   } else {
     document.getElementById("authSection").style.display = "block";
     document.getElementById("appSection").style.display = "none";
