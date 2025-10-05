@@ -33,6 +33,8 @@ auth.onAuthStateChanged(function(user) {
 let bonneReponse = 0;
 let mauvaiseReponse = 0;
 let tableChoisie = null;
+let questionCount = 0;
+const maxQuestions = 10;
 
 const tableButtons = document.querySelectorAll(".table-btn");
 const quizContainer = document.getElementById("quiz");
@@ -45,6 +47,9 @@ const badCountEl = document.getElementById("bad-count");
 tableButtons.forEach(button => {
   button.addEventListener("click", () => {
     tableChoisie = parseInt(button.dataset.table);
+    bonneReponse = 0;
+    mauvaiseReponse = 0;
+    questionCount = 0;
     lancerQuestion();
     quizContainer.classList.remove("hidden");
     feedbackEl.textContent = "";
@@ -91,14 +96,19 @@ function verifierReponse(reponse, bonne) {
 
   goodCountEl.textContent = bonneReponse;
   badCountEl.textContent = `Mauvaises réponses : ${mauvaiseReponse}`;
+  questionCount++;
 
-  setTimeout(() => {
-    lancerQuestion();
-    feedbackEl.textContent = "";
-  }, 1500);
+  if (questionCount >= maxQuestions) {
+    terminerQuiz(user);
+  } else {
+    setTimeout(() => {
+      lancerQuestion();
+      feedbackEl.textContent = "";
+    }, 1500);
+  }
 }
 
-// 🗂️ Enregistrement dans Firestore
+// 🗂️ Enregistrement dans Firestore (par question)
 function enregistrerResultat(user, table, estBonne) {
   if (!user) return;
 
@@ -111,5 +121,25 @@ function enregistrerResultat(user, table, estBonne) {
     timestamp: firebase.firestore.FieldValue.serverTimestamp()
   }).catch(error => {
     console.error("Erreur lors de l'enregistrement du résultat :", error);
+  });
+}
+
+// 🏁 Fin du quiz et enregistrement global
+function terminerQuiz(user) {
+  questionEl.textContent = "🎉 Quiz terminé !";
+  answersEl.innerHTML = "";
+  feedbackEl.textContent = `Score final : ${bonneReponse} bonnes réponses, ${mauvaiseReponse} mauvaises.`;
+
+  db.collection("result").add({
+    uid: user.uid,
+    email: user.email,
+    table: tableChoisie,
+    totalBonnes: bonneReponse,
+    totalMauvaises: mauvaiseReponse,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(() => {
+    console.log("Résultat final enregistré !");
+  }).catch(error => {
+    console.error("Erreur lors de l'enregistrement du score final :", error);
   });
 }
