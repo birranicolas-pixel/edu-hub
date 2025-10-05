@@ -115,11 +115,13 @@ function fetchAggregatedLeaderboard() {
         aggregated[key] = {
           application: app,
           username: user,
-          totalBonnes: 0
+          totalBonnes: 0,
+          totalMauvaises: 0
         };
       }
 
       aggregated[key].totalBonnes += entry.totalBonnes || 0;
+      aggregated[key].totalMauvaises += entry.totalMauvaises || 0;
     });
 
     const leaderboard = Object.values(aggregated).sort((a, b) => b.totalBonnes - a.totalBonnes);
@@ -136,13 +138,19 @@ function displayLeaderboard(data) {
 
   tbody.innerHTML = "";
   data.forEach((entry, index) => {
+    const total = entry.totalBonnes + entry.totalMauvaises;
+    const pourcentage = total > 0 ? Math.round((entry.totalBonnes / total) * 100) : 0;
+
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${index + 1}</td>
       <td>${entry.username}</td>
       <td>${entry.application}</td>
       <td>${entry.totalBonnes}</td>
+      <td>${entry.totalMauvaises}</td>
+      <td>${pourcentage}%</td>
     `;
     tbody.appendChild(row);
   });
 }
+
