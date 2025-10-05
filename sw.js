@@ -1,10 +1,10 @@
 const CACHE_NAME = 'eduhub-cache-v1';
 const urlsToCache = [
-  '/', // racine
-  '/index.html',
-  '/style.css',
-  '/script.js',
-  '/assets/mascotte.png'
+  '/edu-hub/',
+  '/edu-hub/index.html',
+  '/edu-hub/style.css',
+  '/edu-hub/script.js',
+  '/edu-hub/assets/mascotte.png'
 ];
 
 // Installation du Service Worker
