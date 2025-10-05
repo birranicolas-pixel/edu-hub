@@ -100,34 +100,26 @@
   </div>
 
   <!-- Tableau des classement multiplication -->
-<table class="leaderboard-table styled-leaderboard" id="leaderboardTable" style="display:none;">
-<thead>
-  <tr>
-    <th>Rang</th>
-    <th>Nom</th>
-    <th>Application</th>
-    <th>Bonnes réponses</th>
-    <th>Mauvaises réponses</th>
-    <th>Pourcentage de réussite</th>
-  </tr>
-  <tr>
-  <td>1</td>
-  <td>Test</td>
-  <td>Multiplication</td>
-  <td>10</td>
-  <td>2</td>
-  <td>83%</td>
-</tr>
+<div class="leaderboard-wrapper" style="display:none;">
+  <div class="leaderboard-header">
+    <h2>🏆 Tableau des scores</h2>
+    <button id="refreshLeaderboardBtn" class="refresh-btn">🔄 Rafraîchir le tableau</button>
+  </div>
 
-</thead>
-  <tbody id="leaderboard-body">
-     <tr class="refresh-row">
-    <td colspan="6">
-      <button id="refreshLeaderboardBtn" class="refresh-btn">🔄 Rafraîchir le tableau</button>
-    </td>
-  </tr>
-  </tbody>
-</table>
+  <table class="leaderboard-table styled-leaderboard" id="leaderboardTable">
+    <thead>
+      <tr>
+        <th>Rang</th>
+        <th>Nom</th>
+        <th>Application</th>
+        <th>Bonnes réponses</th>
+        <th>Mauvaises réponses</th>
+        <th>Pourcentage de réussite</th>
+      </tr>
+    </thead>
+    <tbody id="leaderboard-body"></tbody>
+  </table>
+</div>
   <!-- Script principal -->
 <script src="script.js?v=3"></script>
 
