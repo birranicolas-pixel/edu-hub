@@ -40,12 +40,12 @@ const messages = [
 document.getElementById("mascotteMessage").textContent =
   messages[Math.floor(Math.random() * messages.length)];
 
-// Initialisation Firebase
+// 🔥 Initialisation Firebase (version compat)
 const firebaseConfig = {
   apiKey: "AIzaSyCabQZ5O5mPkcAd2_W8dF6qiwA-s7QntRo",
   authDomain: "edu-hud.firebaseapp.com",
   projectId: "edu-hud",
-  storageBucket: "edu-hud.firebasestorage.app",
+  storageBucket: "edu-hud.appspot.com",
   messagingSenderId: "647416475215",
   appId: "1:647416475215:web:df8d67a5d6a7d516c5843a",
   measurementId: "G-R6WBTZ23JE"
@@ -71,22 +71,6 @@ document.getElementById("loginForm").addEventListener("submit", function(e) {
     });
 });
 
-// Inscription
-// document.getElementById("signupBtn").addEventListener("click", function() {
-//   const email = document.getElementById("email").value;
-//   const password = document.getElementById("password").value;
-
-//   auth.createUserWithEmailAndPassword(email, password)
-//     .then((userCredential) => {
-//       console.log("Compte créé :", userCredential.user.uid);
-//       alert("Compte créé avec succès !");
-//     })
-//     .catch((error) => {
-//       alert("Erreur lors de l’inscription : " + error.message);
-//     });
-// });
-
-
 // Déconnexion
 document.getElementById("logoutBtn").addEventListener("click", function() {
   auth.signOut().then(() => {
@@ -105,6 +89,7 @@ auth.onAuthStateChanged(function(user) {
     document.getElementById("userInfo").textContent = `Connecté : ${nom}`;
 
     generateMenu();
+    fetchLeaderboard("multiplication"); // 👈 Appel du leaderboard ici
   } else {
     document.getElementById("authSection").style.display = "block";
     document.getElementById("appSection").style.display = "none";
@@ -112,27 +97,29 @@ auth.onAuthStateChanged(function(user) {
   }
 });
 
-// Récupération du classement pour multiplication
-import { getFirestore, collection, query, where, orderBy, getDocs } from "firebase/firestore";
+// 🏆 Récupération du classement
+function fetchLeaderboard(appName = "multiplication") {
+  db.collection("result")
+    .where("application", "==", appName)
+    .orderBy("totalBonnes", "desc")
+    .get()
+    .then(snapshot => {
+      const tbody = document.getElementById("leaderboard-body");
+      if (!tbody) return;
 
-const db = getFirestore();
-
-async function fetchLeaderboard(appName = "multiplication") {
-  const resultsRef = collection(db, "result");
-  const q = query(
-    resultsRef,
-    where("application", "==", appName),
-    orderBy("totalBonnes", "desc")
-  );
-
-  const snapshot = await getDocs(q);
-
-  const leaderboard = snapshot.docs.map((doc, index) => ({
-    rank: index + 1,
-    username: doc.data().username || doc.data().email,
-    score: doc.data().totalBonnes,
-    avatarUrl: doc.data().avatarUrl || null,
-  }));
-
-  return leaderboard;
+      tbody.innerHTML = "";
+      snapshot.docs.forEach((doc, index) => {
+        const data = doc.data();
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${data.username || data.email}</td>
+          <td>${data.totalBonnes}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    })
+    .catch(error => {
+      console.error("Erreur lors du chargement du leaderboard :", error);
+    });
 }
