@@ -83,7 +83,7 @@ auth.onAuthStateChanged(user => {
     document.getElementById("userInfo").textContent = `Connecté : ${nom}`;
 
     generateMenu();
-    fetchLeaderboard("multiplication");
+    fetchLeaderboard();
   } else {
     authSection.style.display = "block";
     appSection.style.display = "none";
@@ -93,20 +93,19 @@ auth.onAuthStateChanged(user => {
 });
 
 // 📊 Récupération des scores
-function fetchLeaderboard(appName) {
+function fetchLeaderboard() {
   db.collection("result").get().then(snapshot => {
     const rawData = snapshot.docs.map(doc => doc.data());
     const aggregated = {};
 
     rawData.forEach(entry => {
-      if (entry.application !== appName) return;
-
+      const app = entry.application || "inconnue";
       const user = entry.username || entry.email || "anonyme";
-      const key = `${appName}__${user}`;
+      const key = `${app}__${user}`;
 
       if (!aggregated[key]) {
         aggregated[key] = {
-          application: appName,
+          application: app,
           username: user,
           totalBonnes: 0,
           totalMauvaises: 0
@@ -123,6 +122,7 @@ function fetchLeaderboard(appName) {
     console.error("Erreur lors du chargement du leaderboard :", error);
   });
 }
+
 
 // 🖼️ Affichage du tableau
 function displayLeaderboard(data) {
