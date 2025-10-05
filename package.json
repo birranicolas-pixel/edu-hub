@@ -1,0 +1,23 @@
+{
+  "name": "edu-hub",
+  "version": "1.0.0",
+  "description": "Bienvenue sur **Edu-Hub**, un portail éducatif conçu pour les élèves du primaire et du collège. Ce projet regroupe plusieurs mini-applications ludiques pour renforcer les compétences en mathématiques, logique et calcul mental.",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/birranicolas-pixel/edu-hub.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/birranicolas-pixel/edu-hub/issues"
+  },
+  "homepage": "https://github.com/birranicolas-pixel/edu-hub#readme",
+  "dependencies": {
+    "firebase": "^12.3.0"
+  }
+}

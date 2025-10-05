@@ -54,6 +54,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 const auth = firebase.auth();
+const db = firebase.firestore();
 
 // Connexion
 document.getElementById("loginForm").addEventListener("submit", function(e) {
