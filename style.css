@@ -254,7 +254,7 @@ button:active {
 
 /* === Barre utilisateur === */
 .user-bar {
-  position: absolute;
+  position: fixed;
   top: 10px;
   right: 20px;
   display: flex;
@@ -262,10 +262,19 @@ button:active {
   gap: 10px;
   font-size: 0.9rem;
   background-color: #5d97f5;
-  color: white; /* ← Ajouté pour rendre le texte visible */
+  color: white;
   padding: 8px 12px;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  z-index: 1000;
+}
+
+.user-bar .user-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: white;
+  object-fit: cover;
 }
 
 .user-bar button {
@@ -279,4 +288,19 @@ button:active {
 
 .user-bar button:hover {
   background-color: #2563eb;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .user-bar {
+    top: auto;
+    bottom: 10px;
+    right: 10px;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .user-bar button {
+    width: 100%;
+  }
 }
