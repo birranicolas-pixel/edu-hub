@@ -154,3 +154,13 @@ function displayLeaderboard(data) {
   });
 }
 
+//Rafraichissement du classement par bouton
+document.getElementById("refreshLeaderboardBtn").addEventListener("click", () => {
+  if (typeof fetchLeaderboard === "function") {
+    fetchLeaderboard("multiplication"); // ou "conjugaison" selon l'app
+  } else {
+    console.error("fetchLeaderboard n'est pas disponible.");
+  }
+});
+
+
