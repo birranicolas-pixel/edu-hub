@@ -8,8 +8,6 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#3b82f6">
 
-
-
   <!-- Service Worker -->
   <script>
     if ('serviceWorker' in navigator) {
@@ -52,34 +50,30 @@
       parler(message);
     }
   </script>
+
+  <!-- Firebase compat scripts -->
+  <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-analytics-compat.js"></script>
+
+  <!-- Initialisation Firebase -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCabQZ5O5mPkcAd2_W8dF6qiwA-s7QntRo",
+      authDomain: "edu-hud.firebaseapp.com",
+      projectId: "edu-hud",
+      storageBucket: "edu-hud.firebasestorage.app",
+      messagingSenderId: "647416475215",
+      appId: "1:647416475215:web:df8d67a5d6a7d516c5843a",
+      measurementId: "G-R6WBTZ23JE"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+  </script>
 </head>
 
 <body>
-  <!-- Firebase -->
- 
-<!-- Firebase compat scripts -->
-<script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-analytics-compat.js"></script>
-
-<script>
-  // Configuration Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyCabQZ5O5mPkcAd2_W8dF6qiwA-s7QntRo",
-    authDomain: "edu-hud.firebaseapp.com",
-    projectId: "edu-hud",
-    storageBucket: "edu-hud.firebasestorage.app",
-    messagingSenderId: "647416475215",
-    appId: "1:647416475215:web:df8d67a5d6a7d516c5843a",
-    measurementId: "G-R6WBTZ23JE"
-  };
-
-  // Initialisation Firebase
-  firebase.initializeApp(firebaseConfig);
-  firebase.analytics();
-</script>
-
-
   <!-- Splash -->
   <div id="splash" class="splash-screen">
     <img src="assets/mascotte.png" alt="Boubou" class="splash-mascotte">
