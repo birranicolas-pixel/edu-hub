@@ -129,5 +129,14 @@
 
   <!-- Script principal -->
   <script src="script.js"></script>
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    if (typeof fetchLeaderboard === "function") {
+      fetchLeaderboard("multiplication");
+    } else {
+      console.error("fetchLeaderboard n'est pas encore disponible.");
+    }
+  });
+</script>
 </body>
 </html>
