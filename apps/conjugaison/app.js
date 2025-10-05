@@ -135,22 +135,33 @@ function getRadical(verbe, groupe) {
 // Génère des propositions de réponse
 function generatePropositions(correct) {
   const variations = new Set();
-  variations.add(correct);
+  const lowerCorrect = correct.toLowerCase();
 
+  // Ajoute la bonne réponse
+  variations.add(lowerCorrect);
+
+  // Génère des variantes
   if (correct.length > 2) {
-    variations.add(correct + "x");
-    variations.add(correct.slice(0, -1));
-    variations.add(correct.replace(/.$/, "z"));
+    variations.add((correct + "x").toLowerCase());
+    variations.add(correct.slice(0, -1).toLowerCase());
+    variations.add(correct.replace(/.$/, "z").toLowerCase());
   }
 
+  // Ajoute des variantes supplémentaires si besoin
   if (variations.size < 4) {
-    variations.add(correct.toUpperCase());
-    variations.add([...correct].reverse().join(""));
+    variations.add(correct.toUpperCase().toLowerCase());
+    variations.add([...correct].reverse().join("").toLowerCase());
   }
 
+  // Convertit en tableau et mélange
   const shuffled = Array.from(variations).sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, 4);
+
+  // Remet la bonne casse pour l'affichage
+  return shuffled.slice(0, 4).map(rep => {
+    return rep === lowerCorrect ? correct : rep;
+  });
 }
+
 
 // Validation de la réponse et enregistrement
 function validate(rep, correct) {
