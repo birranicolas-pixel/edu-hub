@@ -41,7 +41,6 @@ const conjugaisonsIrregulieresPresent = {
 };
 
 // Initialisation Firebase
-const auth = firebase.auth();
 const db = firebase.firestore();
 
 // Sélection du temps
