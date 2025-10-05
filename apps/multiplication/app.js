@@ -74,6 +74,28 @@ function updateScoreDisplay() {
 function showScore() {
   quizDiv.classList.add('hidden');
   updateScoreDisplay();
+
+  const user = auth.currentUser;
+  if (user) {
+    const resultData = {
+      userId: user.uid,
+      app: "multiplication",
+      table: table,
+      correct: score,
+      incorrect: badScore,
+      timestamp: firebase.firestore.Timestamp.now()
+    };
+
+    db.collection("results").add(resultData)
+      .then(() => {
+        console.log("Résultat enregistré dans Firestore !");
+      })
+      .catch(error => {
+        console.error("Erreur lors de l'enregistrement :", error);
+      });
+  } else {
+    console.warn("Utilisateur non connecté, résultat non enregistré.");
+  }
 }
 
 tableButtonsDiv.querySelectorAll('.table-btn').forEach(btn => {
