@@ -42,10 +42,13 @@ document.getElementById("mascotteMessage").textContent =
 
 // Firebase config
 const firebaseConfig = {
-  apiKey: "TA_CLE_API",
-  authDomain: "TON_PROJET.firebaseapp.com",
-  projectId: "TON_PROJET",
-  appId: "TON_APP_ID"
+  apiKey: "AIzaSyCabQZ5O5mPkcAd2_W8dF6qiwA-s7QntRo",
+  authDomain: "edu-hud.firebaseapp.com",
+  projectId: "edu-hud",
+  storageBucket: "edu-hud.firebasestorage.app",
+  messagingSenderId: "647416475215",
+  appId: "1:647416475215:web:df8d67a5d6a7d516c5843a",
+  measurementId: "G-R6WBTZ23JE"
 };
 
 // Initialisation avec compat
