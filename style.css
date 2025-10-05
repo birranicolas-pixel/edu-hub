@@ -310,19 +310,37 @@ button:active {
     width: 100%;
   }
 }
-/* === Tableau de classement ===*/
-.leaderboard-table {
+/* === Tableau de classement homogénéisé === */
+.styled-leaderboard {
   width: 100%;
   border-collapse: collapse;
   margin-top: 1rem;
+  font-size: 0.9rem;
+  background-color: var(--color-secondary);
+  color: var(--color-text);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.4); /* reflet bleu */
+  border: 1px solid var(--color-border);
 }
-.leaderboard-table th,
-.leaderboard-table td {
-  border: 1px solid #ccc;
-  padding: 0.5rem;
+
+.styled-leaderboard th,
+.styled-leaderboard td {
+  padding: 8px 12px;
   text-align: center;
+  border-bottom: 1px solid var(--color-border);
 }
-.leaderboard-table thead {
-  background-color: #f0f0f0;
+
+.styled-leaderboard thead {
+  background-color: var(--color-primary);
+  color: var(--color-btn-text);
+}
+
+.styled-leaderboard tbody tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.05); /* léger contraste */
+}
+
+.styled-leaderboard tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
