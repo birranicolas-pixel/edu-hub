@@ -71,13 +71,13 @@ auth.onAuthStateChanged(user => {
   const authSection = document.getElementById("authSection");
   const appSection = document.getElementById("appSection");
   const userBar = document.getElementById("userBar");
-  const leaderboardTable = document.getElementById("leaderboardTable");
+  const leaderboardWrapper = document.querySelector(".leaderboard-wrapper");
 
   if (user) {
     authSection.style.display = "none";
     appSection.style.display = "block";
     userBar.style.display = "flex";
-    leaderboardTable.style.display = "table";
+    leaderboardWrapper.style.display = "block";
 
     const nom = user.displayName || user.email;
     document.getElementById("userInfo").textContent = `Connecté : ${nom}`;
@@ -88,7 +88,7 @@ auth.onAuthStateChanged(user => {
     authSection.style.display = "block";
     appSection.style.display = "none";
     userBar.style.display = "none";
-    leaderboardTable.style.display = "none";
+    leaderboardWrapper.style.display = "none";
   }
 });
 
@@ -131,16 +131,6 @@ function displayLeaderboard(data) {
 
   tbody.innerHTML = "";
 
-  // Bouton de rafraîchissement intégré
-  const refreshRow = document.createElement("tr");
-  refreshRow.className = "refresh-row";
-  refreshRow.innerHTML = `
-    <td colspan="6">
-      <button id="refreshLeaderboardBtn" class="refresh-btn">🔄 Rafraîchir le tableau</button>
-    </td>
-  `;
-  tbody.appendChild(refreshRow);
-
   data.forEach((entry, index) => {
     const total = entry.totalBonnes + entry.totalMauvaises;
     const pourcentage = total > 0 ? Math.round((entry.totalBonnes / total) * 100) : 0;
@@ -156,9 +146,9 @@ function displayLeaderboard(data) {
     `;
     tbody.appendChild(row);
   });
-
-  // Activation du bouton après affichage
-  document.getElementById("refreshLeaderboardBtn").addEventListener("click", () => {
-    fetchLeaderboard("multiplication");
-  });
 }
+
+// 🔁 Bouton de rafraîchissement
+document.getElementById("refreshLeaderboardBtn").addEventListener("click", () => {
+  fetchLeaderboard("multiplication");
+});
