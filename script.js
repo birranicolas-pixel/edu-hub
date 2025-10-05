@@ -84,18 +84,21 @@ auth.onAuthStateChanged(function(user) {
     document.getElementById("authSection").style.display = "none";
     document.getElementById("appSection").style.display = "block";
     document.getElementById("userBar").style.display = "flex";
+    document.getElementById("leaderboardTable").style.display = "table"; // 👈 Affiche le tableau
 
     const nom = user.displayName || user.email;
     document.getElementById("userInfo").textContent = `Connecté : ${nom}`;
 
     generateMenu();
-    fetchAggregatedLeaderboard(); // 👈 Appel du leaderboard agrégé
+    fetchAggregatedLeaderboard();
   } else {
     document.getElementById("authSection").style.display = "block";
     document.getElementById("appSection").style.display = "none";
     document.getElementById("userBar").style.display = "none";
+    document.getElementById("leaderboardTable").style.display = "none"; // 👈 Cache le tableau
   }
 });
+
 
 // 🧮 Récupération et agrégation des scores
 function fetchAggregatedLeaderboard() {
