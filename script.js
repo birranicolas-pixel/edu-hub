@@ -73,19 +73,20 @@ document.getElementById("loginForm").addEventListener("submit", function(e) {
 });
 
 // Inscription
-document.getElementById("signupBtn").addEventListener("click", function() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+// document.getElementById("signupBtn").addEventListener("click", function() {
+//   const email = document.getElementById("email").value;
+//   const password = document.getElementById("password").value;
 
-  auth.createUserWithEmailAndPassword(email, password)
-    .then((userCredential) => {
-      console.log("Compte créé :", userCredential.user.uid);
-      alert("Compte créé avec succès !");
-    })
-    .catch((error) => {
-      alert("Erreur lors de l’inscription : " + error.message);
-    });
-});
+//   auth.createUserWithEmailAndPassword(email, password)
+//     .then((userCredential) => {
+//       console.log("Compte créé :", userCredential.user.uid);
+//       alert("Compte créé avec succès !");
+//     })
+//     .catch((error) => {
+//       alert("Erreur lors de l’inscription : " + error.message);
+//     });
+// });
+
 
 // Déconnexion
 document.getElementById("logoutBtn").addEventListener("click", function() {
