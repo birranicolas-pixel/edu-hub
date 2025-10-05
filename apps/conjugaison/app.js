@@ -46,12 +46,12 @@ function generateQuestion() {
   const index = Math.floor(Math.random() * pronoms.length);
   const pronom = pronoms[index];
   const terminaison = terminaisons[temps][groupe][index];
-  const base = getRadical(verbe, groupe);
+  const radical = getRadical(verbe, groupe);
 
   document.getElementById("question").textContent = `${pronom} (${verbe}) au ${temps}`;
   document.getElementById("reponses").innerHTML = "";
 
-  const bonneReponse = fusionRadicalTerminaison(base, terminaison);
+  const bonneReponse = fusionRadicalTerminaison(radical, terminaison);
   const propositions = generatePropositions(bonneReponse);
 
   propositions.forEach(rep => {
@@ -63,7 +63,7 @@ function generateQuestion() {
 }
 
 function fusionRadicalTerminaison(radical, terminaison) {
-  // Si le radical se termine par la même lettre que le début de la terminaison, éviter la répétition
+  // Évite les doublons comme "jouereront"
   if (radical.slice(-1) === terminaison.charAt(0)) {
     return radical + terminaison.slice(1);
   }
@@ -85,18 +85,19 @@ function getRadical(verbe, groupe) {
     if (groupe === 3 && radicauxIrreguliersFutur[verbe]) {
       return radicauxIrreguliersFutur[verbe];
     }
-    if (groupe === 1) return verbe; // ex: chanter → chanterai
-    if (groupe === 2) return verbe.slice(0, -2); // finir → finirai
-    if (groupe === 3) return verbe.slice(0, -2); // fallback
+    return verbe.slice(0, -2); // retire "er", "ir", "re"
   }
 
   // Présent et imparfait
   return verbe.slice(0, -2);
 }
 
-
 function generatePropositions(correct) {
-  const faux = [correct + "x", correct.slice(0, -1), correct.replace(/.$/, "z")];
+  const faux = [
+    correct + "x",
+    correct.slice(0, -1),
+    correct.replace(/.$/, "z")
+  ];
   return [correct, ...faux].sort(() => Math.random() - 0.5);
 }
 
@@ -109,10 +110,8 @@ function validate(rep, correct) {
     alert(`❌ Mauvaise réponse. C'était : ${correct}`);
   }
 
-  // Mettre à jour l'affichage
   document.getElementById("score").textContent = bonnesReponses;
   document.getElementById("bad-count").textContent = mauvaisesReponses;
 
-  // Générer une nouvelle question
   generateQuestion();
 }
