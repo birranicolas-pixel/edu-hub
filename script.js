@@ -98,9 +98,15 @@ auth.onAuthStateChanged(function(user) {
   if (user) {
     document.getElementById("authSection").style.display = "none";
     document.getElementById("appSection").style.display = "block";
+    document.getElementById("userBar").style.display = "flex";
+
+    const nom = user.displayName || user.email;
+    document.getElementById("userInfo").textContent = `Connecté : ${nom}`;
+
     generateMenu();
   } else {
     document.getElementById("authSection").style.display = "block";
     document.getElementById("appSection").style.display = "none";
+    document.getElementById("userBar").style.display = "none";
   }
 });
