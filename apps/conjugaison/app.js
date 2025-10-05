@@ -5,6 +5,8 @@ let bonnesReponses = 0;
 let mauvaisesReponses = 0;
 let validationEnCours = false;
 
+const sessionId = Date.now().toString();
+
 // Terminaisons régulières par temps et groupe
 const terminaisons = {
   présent: {
@@ -172,7 +174,7 @@ function validate(rep, correct) {
   document.getElementById("bad-count").textContent = mauvaisesReponses;
 
   const user = auth.currentUser;
-  if (user && (bonnesReponses + mauvaisesReponses > 0)) {
+  /* if (user && (bonnesReponses + mauvaisesReponses > 0)) {
     db.collection("result").add({
       uid: user.uid,
       email: user.email,
@@ -185,7 +187,7 @@ function validate(rep, correct) {
       console.error("Erreur Firestore :", error);
     });
   }
-
+*/
   setTimeout(() => {
     validationEnCours = false;
     generateQuestion();
@@ -203,6 +205,7 @@ document.getElementById("saveSessionBtn").addEventListener("click", () => {
       application: "conjugaison",
       totalBonnes: bonnesReponses,
       totalMauvaises: mauvaisesReponses,
+      sessionId: sessionId,
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     }).then(() => {
       alert("✅ Scores enregistrés !");
