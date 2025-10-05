@@ -27,6 +27,7 @@ function generateMenu() {
     link.className = "app-link";
     container.appendChild(link);
   });
+  console.log("Génération du menu…");
 }
 
 // Mascotte
