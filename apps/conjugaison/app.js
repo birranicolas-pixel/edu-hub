@@ -3,6 +3,7 @@ let temps = null;
 let groupe = null;
 let bonnesReponses = 0;
 let mauvaisesReponses = 0;
+let validationEnCours = false;
 
 // Terminaisons régulières par temps et groupe
 const terminaisons = {
@@ -151,6 +152,9 @@ function generatePropositions(correct) {
 
 // Validation de la réponse et enregistrement
 function validate(rep, correct) {
+  if (validationEnCours) return;
+  validationEnCours = true;
+
   const feedback = document.getElementById("feedback");
   const isCorrect = rep === correct;
 
@@ -182,7 +186,10 @@ function validate(rep, correct) {
     });
   }
 
-  setTimeout(() => generateQuestion(), 1000);
+  setTimeout(() => {
+    validationEnCours = false;
+    generateQuestion();
+  }, 1000);
 }
 
 // Bouton d'enregistrement manuel
