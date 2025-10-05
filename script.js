@@ -89,7 +89,7 @@ auth.onAuthStateChanged(function(user) {
     document.getElementById("userInfo").textContent = `Connecté : ${nom}`;
 
     generateMenu();
-    fetchLeaderboard("multiplication"); // 👈 Appel du leaderboard ici
+    fetchAggregatedLeaderboard(); // 👈 Appel du leaderboard agrégé
   } else {
     document.getElementById("authSection").style.display = "block";
     document.getElementById("appSection").style.display = "none";
@@ -97,29 +97,49 @@ auth.onAuthStateChanged(function(user) {
   }
 });
 
-// 🏆 Récupération du classement
-function fetchLeaderboard(appName = "multiplication") {
-  db.collection("result")
-    .where("application", "==", appName)
-    .orderBy("totalBonnes", "desc")
-    .get()
-    .then(snapshot => {
-      const tbody = document.getElementById("leaderboard-body");
-      if (!tbody) return;
+// 🧮 Récupération et agrégation des scores
+function fetchAggregatedLeaderboard() {
+  db.collection("result").get().then(snapshot => {
+    const rawData = snapshot.docs.map(doc => doc.data());
+    const aggregated = {};
 
-      tbody.innerHTML = "";
-      snapshot.docs.forEach((doc, index) => {
-        const data = doc.data();
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${index + 1}</td>
-          <td>${data.username || data.email}</td>
-          <td>${data.totalBonnes}</td>
-        `;
-        tbody.appendChild(row);
-      });
-    })
-    .catch(error => {
-      console.error("Erreur lors du chargement du leaderboard :", error);
+    rawData.forEach(entry => {
+      const app = entry.application || "inconnue";
+      const user = entry.username || entry.email || "anonyme";
+      const key = `${app}__${user}`;
+
+      if (!aggregated[key]) {
+        aggregated[key] = {
+          application: app,
+          username: user,
+          totalBonnes: 0
+        };
+      }
+
+      aggregated[key].totalBonnes += entry.totalBonnes || 0;
     });
+
+    const leaderboard = Object.values(aggregated).sort((a, b) => b.totalBonnes - a.totalBonnes);
+    displayLeaderboard(leaderboard);
+  }).catch(error => {
+    console.error("Erreur lors du chargement du leaderboard :", error);
+  });
+}
+
+// 🎨 Affichage du tableau
+function displayLeaderboard(data) {
+  const tbody = document.getElementById("leaderboard-body");
+  if (!tbody) return;
+
+  tbody.innerHTML = "";
+  data.forEach((entry, index) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${index + 1}</td>
+      <td>${entry.username}</td>
+      <td>${entry.application}</td>
+      <td>${entry.totalBonnes}</td>
+    `;
+    tbody.appendChild(row);
+  });
 }
