@@ -1,46 +1,4 @@
-// Liste des applications éducatives
-const apps = [
-  {
-    name: "Tables de multiplication",
-    path: "apps/multiplication/index.html",
-    icon: "📚"
-  },
-  {
-    name: "Conjugaison",
-    path: "apps/conjugaison/index.html",
-    icon: "📖"
-  },
-  {
-    name: "Quiz général",
-    path: "apps/quiz/index.html",
-    icon: "🧠"
-  }
-];
-
-// Génère le menu après connexion
-function generateMenu() {
-  const container = document.getElementById("app-links");
-  container.innerHTML = "";
-  apps.forEach(app => {
-    const link = document.createElement("a");
-    link.href = app.path;
-    link.textContent = `${app.icon} ${app.name}`;
-    link.className = "app-link";
-    container.appendChild(link);
-  });
-}
-
-// Message mascotte
-const messages = [
-  "Prêt à apprendre en t’amusant ?",
-  "On révise les conjugaisons aujourd’hui !",
-  "Tu vas devenir un champion des tables !",
-  "Bienvenue sur EduHub, petit génie !"
-];
-document.getElementById("mascotteMessage").textContent =
-  messages[Math.floor(Math.random() * messages.length)];
-
-// 🔥 Initialisation Firebase (version compat)
+// 🔥 Initialisation Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyCabQZ5O5mPkcAd2_W8dF6qiwA-s7QntRo",
   authDomain: "edu-hud.firebaseapp.com",
@@ -56,64 +14,99 @@ firebase.analytics();
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// Connexion
-document.getElementById("loginForm").addEventListener("submit", function(e) {
+// 📚 Liste des applications éducatives
+const apps = [
+  { name: "Tables de multiplication", path: "apps/multiplication/index.html", icon: "📚" },
+  { name: "Conjugaison", path: "apps/conjugaison/index.html", icon: "📖" },
+  { name: "Quiz général", path: "apps/quiz/index.html", icon: "🧠" }
+];
+
+// 🧠 Message mascotte
+const mascotteMessages = [
+  "Prêt à apprendre en t’amusant ?",
+  "On révise les conjugaisons aujourd’hui !",
+  "Tu vas devenir un champion des tables !",
+  "Bienvenue sur EduHub, petit génie !"
+];
+document.getElementById("mascotteMessage").textContent =
+  mascotteMessages[Math.floor(Math.random() * mascotteMessages.length)];
+
+// 🧩 Génère le menu des applications
+function generateMenu() {
+  const container = document.getElementById("app-links");
+  container.innerHTML = "";
+  apps.forEach(app => {
+    const link = document.createElement("a");
+    link.href = app.path;
+    link.textContent = `${app.icon} ${app.name}`;
+    link.className = "app-link";
+    container.appendChild(link);
+  });
+}
+
+// 🔐 Connexion utilisateur
+document.getElementById("loginForm").addEventListener("submit", e => {
   e.preventDefault();
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
   auth.signInWithEmailAndPassword(email, password)
-    .then((userCredential) => {
+    .then(userCredential => {
       console.log("Connecté :", userCredential.user.uid);
     })
-    .catch((error) => {
+    .catch(error => {
       alert("Erreur : " + error.message);
     });
 });
 
-// Déconnexion
-document.getElementById("logoutBtn").addEventListener("click", function() {
+// 🔓 Déconnexion utilisateur
+document.getElementById("logoutBtn").addEventListener("click", () => {
   auth.signOut().then(() => {
     console.log("Déconnecté");
   });
 });
 
-// Surveillance de l’état de connexion
-auth.onAuthStateChanged(function(user) {
+// 👤 Surveillance de l’état de connexion
+auth.onAuthStateChanged(user => {
+  const authSection = document.getElementById("authSection");
+  const appSection = document.getElementById("appSection");
+  const userBar = document.getElementById("userBar");
+  const leaderboardTable = document.getElementById("leaderboardTable");
+
   if (user) {
-    document.getElementById("authSection").style.display = "none";
-    document.getElementById("appSection").style.display = "block";
-    document.getElementById("userBar").style.display = "flex";
-    document.getElementById("leaderboardTable").style.display = "table"; // 👈 Affiche le tableau
+    authSection.style.display = "none";
+    appSection.style.display = "block";
+    userBar.style.display = "flex";
+    leaderboardTable.style.display = "table";
 
     const nom = user.displayName || user.email;
     document.getElementById("userInfo").textContent = `Connecté : ${nom}`;
 
     generateMenu();
-    fetchAggregatedLeaderboard();
+    fetchLeaderboard("multiplication");
   } else {
-    document.getElementById("authSection").style.display = "block";
-    document.getElementById("appSection").style.display = "none";
-    document.getElementById("userBar").style.display = "none";
-    document.getElementById("leaderboardTable").style.display = "none"; // 👈 Cache le tableau
+    authSection.style.display = "block";
+    appSection.style.display = "none";
+    userBar.style.display = "none";
+    leaderboardTable.style.display = "none";
   }
 });
 
-
-// 🧮 Récupération et agrégation des scores
-function fetchAggregatedLeaderboard() {
+// 📊 Récupération des scores
+function fetchLeaderboard(appName) {
   db.collection("result").get().then(snapshot => {
     const rawData = snapshot.docs.map(doc => doc.data());
     const aggregated = {};
 
     rawData.forEach(entry => {
-      const app = entry.application || "inconnue";
+      if (entry.application !== appName) return;
+
       const user = entry.username || entry.email || "anonyme";
-      const key = `${app}__${user}`;
+      const key = `${appName}__${user}`;
 
       if (!aggregated[key]) {
         aggregated[key] = {
-          application: app,
+          application: appName,
           username: user,
           totalBonnes: 0,
           totalMauvaises: 0
@@ -131,12 +124,23 @@ function fetchAggregatedLeaderboard() {
   });
 }
 
-// 🎨 Affichage du tableau
+// 🖼️ Affichage du tableau
 function displayLeaderboard(data) {
   const tbody = document.getElementById("leaderboard-body");
   if (!tbody) return;
 
   tbody.innerHTML = "";
+
+  // Bouton de rafraîchissement intégré
+  const refreshRow = document.createElement("tr");
+  refreshRow.className = "refresh-row";
+  refreshRow.innerHTML = `
+    <td colspan="6">
+      <button id="refreshLeaderboardBtn" class="refresh-btn">🔄 Rafraîchir le tableau</button>
+    </td>
+  `;
+  tbody.appendChild(refreshRow);
+
   data.forEach((entry, index) => {
     const total = entry.totalBonnes + entry.totalMauvaises;
     const pourcentage = total > 0 ? Math.round((entry.totalBonnes / total) * 100) : 0;
@@ -152,15 +156,9 @@ function displayLeaderboard(data) {
     `;
     tbody.appendChild(row);
   });
+
+  // Activation du bouton après affichage
+  document.getElementById("refreshLeaderboardBtn").addEventListener("click", () => {
+    fetchLeaderboard("multiplication");
+  });
 }
-
-//Rafraichissement du classement par bouton
-document.getElementById("refreshLeaderboardBtn").addEventListener("click", () => {
-  if (typeof fetchLeaderboard === "function") {
-    fetchLeaderboard("multiplication"); // ou "conjugaison" selon l'app
-  } else {
-    console.error("fetchLeaderboard n'est pas disponible.");
-  }
-});
-
-
