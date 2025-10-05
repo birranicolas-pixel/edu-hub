@@ -82,16 +82,12 @@ function lancerQuestion() {
 }
 
 function verifierReponse(reponse, bonne) {
-  const user = auth.currentUser;
-
   if (reponse === bonne) {
     bonneReponse++;
     feedbackEl.textContent = "✅ Bravo !";
-    enregistrerResultat(user, tableChoisie, true);
   } else {
     mauvaiseReponse++;
     feedbackEl.textContent = `❌ Mauvaise réponse. La bonne était ${bonne}.`;
-    enregistrerResultat(user, tableChoisie, false);
   }
 
   goodCountEl.textContent = bonneReponse;
@@ -99,7 +95,7 @@ function verifierReponse(reponse, bonne) {
   questionCount++;
 
   if (questionCount >= maxQuestions) {
-    terminerQuiz(user);
+    terminerQuiz();
   } else {
     setTimeout(() => {
       lancerQuestion();
@@ -108,27 +104,14 @@ function verifierReponse(reponse, bonne) {
   }
 }
 
-// 🗂️ Enregistrement dans Firestore (par question)
-function enregistrerResultat(user, table, estBonne) {
-  if (!user) return;
-
-  db.collection("result").add({
-    uid: user.uid,
-    email: user.email,
-    table: table,
-    bonneReponse: estBonne ? 1 : 0,
-    mauvaiseReponse: estBonne ? 0 : 1,
-    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-  }).catch(error => {
-    console.error("Erreur lors de l'enregistrement du résultat :", error);
-  });
-}
-
 // 🏁 Fin du quiz et enregistrement global
-function terminerQuiz(user) {
+function terminerQuiz() {
+  const user = auth.currentUser;
   questionEl.textContent = "🎉 Quiz terminé !";
   answersEl.innerHTML = "";
   feedbackEl.textContent = `Score final : ${bonneReponse} bonnes réponses, ${mauvaiseReponse} mauvaises.`;
+
+  if (!user) return;
 
   db.collection("result").add({
     uid: user.uid,
