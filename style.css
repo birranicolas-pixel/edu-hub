@@ -89,10 +89,11 @@ select, input {
   padding: 0.4em;
 }
 
-/* === Boutons généraux === */
+/* === Boutons === */
 button,
 .table-btn,
-.answer-btn {
+.answer-btn,
+.refresh-btn {
   border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
@@ -118,7 +119,6 @@ button:active {
   background: #d97706;
 }
 
-/* === Boutons spécifiques (tableau, réponses) === */
 .table-btn,
 .answer-btn {
   background: #444;
@@ -145,6 +145,20 @@ button:active {
   background: var(--color-accent);
   color: #1c1c1c;
   border: 2px solid var(--color-primary);
+}
+
+.refresh-btn {
+  background-color: var(--color-primary);
+  color: var(--color-btn-text);
+  border: none;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease;
+}
+
+.refresh-btn:hover {
+  background-color: var(--color-accent);
 }
 
 /* === Zones de contenu === */
@@ -260,6 +274,20 @@ button:active {
 
 .styled-leaderboard tbody tr:hover {
   background-color: rgba(255, 255, 255, 0.1);
+}
+
+.refresh-row td {
+  text-align: right;
+  padding: 12px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-bottom: none;
+}
+
+.leaderboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
 }
 
 /* === Mascotte & écran de chargement === */
