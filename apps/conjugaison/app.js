@@ -35,6 +35,10 @@ const conjugaisonsIrregulieresPresent = {
   prendre: ["prends", "prends", "prend", "prenons", "prenez", "prennent"]
 };
 
+// 🔥 Firebase
+const auth = firebase.auth();
+const db = firebase.firestore();
+
 function setTemps(t) {
   temps = t;
   generateQuestion();
@@ -63,7 +67,7 @@ function generateQuestion() {
 
   document.getElementById("question").textContent = `${pronom} (${verbe}) au ${temps}`;
   document.getElementById("reponses").innerHTML = "";
-  document.getElementById("feedback").textContent = ""; // Réinitialise le message
+  document.getElementById("feedback").textContent = "";
 
   const propositions = generatePropositions(bonneReponse);
   propositions.forEach(rep => {
@@ -111,20 +115,4 @@ function generatePropositions(correct) {
 }
 
 function validate(rep, correct) {
-  const feedback = document.getElementById("feedback");
-
-  if (rep === correct) {
-    bonnesReponses++;
-    feedback.textContent = "✅ Bravo !";
-    feedback.style.color = "green";
-  } else {
-    mauvaisesReponses++;
-    feedback.textContent = `❌ Mauvaise réponse. C'était : ${correct}`;
-    feedback.style.color = "red";
-  }
-
-  document.getElementById("score").textContent = bonnesReponses;
-  document.getElementById("bad-count").textContent = mauvaisesReponses;
-
-  setTimeout(() => generateQuestion(), 1000); // Petite pause avant la prochaine question
-}
+  const feedback
