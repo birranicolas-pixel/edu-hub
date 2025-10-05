@@ -5,6 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Conjugaison CE2</title>
   <link rel="stylesheet" href="../../style.css">
+
+  <!-- Firebase compat scripts -->
+<script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-auth-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCabQZ5O5mPkcAd2_W8dF6qiwA-s7QntRo",
+    authDomain: "edu-hud.firebaseapp.com",
+    projectId: "edu-hud",
+    storageBucket: "edu-hud.firebasestorage.app",
+    messagingSenderId: "647416475215",
+    appId: "1:647416475215:web:df8d67a5d6a7d516c5843a"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+
+  // Redirige si non connecté
+  auth.onAuthStateChanged(function(user) {
+    if (!user) {
+      window.location.href = "/index.html"; // ou la page de login
+    }
+  });
+</script>
+
 </head>
 <body>
   <p><a href="../../index.html" class="back-link">← Retour à l’accueil</a></p>
