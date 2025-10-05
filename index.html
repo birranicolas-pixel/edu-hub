@@ -3,79 +3,129 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Portail éducatif</title>
+  <title>EduHub - Portail éducatif</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#3b82f6">
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js"></script>
+
+  <!-- Service Worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('Service Worker enregistré'))
+        .catch(err => console.error('Erreur SW', err));
+    }
+  </script>
+
+  <!-- Splash Screen -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const splash = document.getElementById("splash");
+      setTimeout(() => {
+        splash.style.opacity = "0";
+        splash.style.pointerEvents = "none";
+        splash.style.transition = "opacity 0.5s ease";
+      }, 2500);
+    });
+  </script>
+
+  <!-- Voix mascotte -->
+  <script>
+    function parler(message) {
+      const voix = new SpeechSynthesisUtterance(message);
+      voix.lang = 'fr-FR';
+      voix.rate = 1;
+      speechSynthesis.speak(voix);
+    }
+
+    function lancerVoix() {
+      const messages = [
+        "Salut, moi c’est Boubou ! Prêt pour une nouvelle aventure sur EduHub ?",
+        "On révise les conjugaisons aujourd’hui !",
+        "Tu vas devenir un champion des tables !",
+        "Bienvenue sur EduHub, petit génie !"
+      ];
+      const message = messages[Math.floor(Math.random() * messages.length)];
+      document.getElementById("mascotteMessage").textContent = message;
+      parler(message);
+    }
+  </script>
 </head>
 
-//Service Worker pour PWA
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js')
-      .then(() => console.log('Service Worker enregistré'))
-      .catch(err => console.error('Erreur SW', err));
-  }
-</script>
-
-//Animation écran de chargement
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const splash = document.getElementById("splash");
-
-  setTimeout(() => {
-    splash.style.opacity = "0";
-    splash.style.pointerEvents = "none";
-    splash.style.transition = "opacity 0.5s ease";
-  }, 2500);
-});
-</script>
-
-<script>
-function parler(message) {
-  const voix = new SpeechSynthesisUtterance(message);
-  voix.lang = 'fr-FR';
-  voix.rate = 1;
-  speechSynthesis.speak(voix);
-}
-
-function lancerVoix() {
-  const messages = [
-    "Salut, moi c’est Boubou ! Prêt pour une nouvelle aventure sur EduHub ?",
-    "On révise les conjugaisons aujourd’hui !",
-    "Tu vas devenir un champion des tables !",
-    "Bienvenue sur EduHub, petit génie !"
-  ];
-  const message = messages[Math.floor(Math.random() * messages.length)];
-  document.getElementById("mascotteMessage").textContent = message;
-  parler(message);
-}
-</script>
-
-//Authentification Firebase
-<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js"></script>
-
 <body>
+  <!-- Splash -->
   <div id="splash" class="splash-screen">
-  <img src="assets/mascotte.png" alt="Boubou" class="splash-mascotte">
-  <h2>Bienvenue sur EduHub</h2>
- </div>
-  <div class="mascotte-zone">
-  <img src="assets/mascotte.png" alt="Boubou" class="mascotte" onclick="lancerVoix()">
-  <p class="mascotte-message" id="mascotteMessage"></p>
+    <img src="assets/mascotte.png" alt="Boubou" class="splash-mascotte">
+    <h2>Bienvenue sur EduHub</h2>
   </div>
-  <h1>Bienvenue sur ton portail éducatif</h1>
-  <div id="app-links"></div>
 
-//Formulaire de connexion
-  <form id="loginForm">
-  <input type="email" id="email" placeholder="Email" required />
-  <input type="password" id="password" placeholder="Mot de passe" required />
-  <button type="submit">Connexion</button>
-</form>
+  <!-- Mascotte -->
+  <div class="mascotte-zone">
+    <img src="assets/mascotte.png" alt="Boubou" class="mascotte" onclick="lancerVoix()">
+    <p class="mascotte-message" id="mascotteMessage"></p>
+  </div>
 
+  <!-- Section Connexion -->
+  <div id="authSection">
+    <h2>Connexion</h2>
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="password" placeholder="Mot de passe" required />
+      <button type="submit">Se connecter</button>
+    </form>
+  </div>
 
-  <script src="script.js"></script>
+  <!-- Section Application (masquée par défaut) -->
+  <div id="appSection" style="display:none;">
+    <h1>Bienvenue sur ton portail éducatif</h1>
+    <nav id="app-links">
+      <a href="#activite1">Activité 1</a>
+      <a href="#activite2">Activité 2</a>
+      <a href="#dashboard">Tableau de bord</a>
+    </nav>
+  </div>
+
+  <!-- Script principal -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "TA_CLE_API",
+      authDomain: "TON_PROJET.firebaseapp.com",
+      projectId: "TON_PROJET",
+      appId: "TON_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // Connexion
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      auth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          console.log("Connecté :", userCredential.user.uid);
+        })
+        .catch((error) => {
+          alert("Erreur : " + error.message);
+        });
+    });
+
+    // Surveillance de l’état de connexion
+    auth.onAuthStateChanged(function(user) {
+      if (user) {
+        document.getElementById("authSection").style.display = "none";
+        document.getElementById("appSection").style.display = "block";
+      } else {
+        document.getElementById("authSection").style.display = "block";
+        document.getElementById("appSection").style.display = "none";
+      }
+    });
+  </script>
 </body>
 </html>
