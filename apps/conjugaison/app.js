@@ -29,6 +29,12 @@ const radicauxIrreguliersFutur = {
   prendre: "prendr"
 };
 
+const conjugaisonsIrregulieresPresent = {
+  venir: ["viens", "viens", "vient", "venons", "venez", "viennent"],
+  voir: ["vois", "vois", "voit", "voyons", "voyez", "voient"],
+  prendre: ["prends", "prends", "prend", "prenons", "prenez", "prennent"]
+};
+
 function setTemps(t) {
   temps = t;
   generateQuestion();
@@ -45,15 +51,21 @@ function generateQuestion() {
   const verbe = getVerbe(groupe);
   const index = Math.floor(Math.random() * pronoms.length);
   const pronom = pronoms[index];
-  const terminaison = terminaisons[temps][groupe][index];
-  const radical = getRadical(verbe, groupe);
+  let bonneReponse;
+
+  if (temps === "présent" && groupe === 3 && conjugaisonsIrregulieresPresent[verbe]) {
+    bonneReponse = conjugaisonsIrregulieresPresent[verbe][index];
+  } else {
+    const terminaison = terminaisons[temps][groupe][index];
+    const radical = getRadical(verbe, groupe);
+    bonneReponse = fusionRadicalTerminaison(radical, terminaison);
+  }
 
   document.getElementById("question").textContent = `${pronom} (${verbe}) au ${temps}`;
   document.getElementById("reponses").innerHTML = "";
+  document.getElementById("feedback").textContent = ""; // Réinitialise le message
 
-  const bonneReponse = fusionRadicalTerminaison(radical, terminaison);
   const propositions = generatePropositions(bonneReponse);
-
   propositions.forEach(rep => {
     const btn = document.createElement("button");
     btn.textContent = rep;
@@ -63,7 +75,6 @@ function generateQuestion() {
 }
 
 function fusionRadicalTerminaison(radical, terminaison) {
-  // Évite les doublons comme "jouereront"
   if (radical.slice(-1) === terminaison.charAt(0)) {
     return radical + terminaison.slice(1);
   }
@@ -85,10 +96,8 @@ function getRadical(verbe, groupe) {
     if (groupe === 3 && radicauxIrreguliersFutur[verbe]) {
       return radicauxIrreguliersFutur[verbe];
     }
-    return verbe.slice(0, -2); // retire "er", "ir", "re"
+    return verbe.slice(0, -2);
   }
-
-  // Présent et imparfait
   return verbe.slice(0, -2);
 }
 
@@ -102,16 +111,20 @@ function generatePropositions(correct) {
 }
 
 function validate(rep, correct) {
+  const feedback = document.getElementById("feedback");
+
   if (rep === correct) {
     bonnesReponses++;
-    alert("✅ Bravo !");
+    feedback.textContent = "✅ Bravo !";
+    feedback.style.color = "green";
   } else {
     mauvaisesReponses++;
-    alert(`❌ Mauvaise réponse. C'était : ${correct}`);
+    feedback.textContent = `❌ Mauvaise réponse. C'était : ${correct}`;
+    feedback.style.color = "red";
   }
 
   document.getElementById("score").textContent = bonnesReponses;
   document.getElementById("bad-count").textContent = mauvaisesReponses;
 
-  generateQuestion();
+  setTimeout(() => generateQuestion(), 1000); // Petite pause avant la prochaine question
 }

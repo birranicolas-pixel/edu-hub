@@ -344,3 +344,9 @@ button:active {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
+/* === réponse conjugaison === */
+.feedback-message {
+  font-weight: bold;
+  margin-top: 10px;
+}
+
