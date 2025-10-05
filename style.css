@@ -412,3 +412,23 @@ button:active {
     width: 100%;
   }
 }
+
+/* === Tableau de classement - ajustements supplémentaires === */
+.styled-leaderboard th,
+.styled-leaderboard td {
+  display: table-cell;
+  white-space: nowrap;
+}
+
+/* ajustement petit écran */
+@media screen and (max-width: 600px) {
+  .styled-leaderboard {
+    display: block;
+    overflow-x: auto;
+    width: 100%;
+  }
+
+  .styled-leaderboard table {
+    min-width: 600px;
+  }
+}
