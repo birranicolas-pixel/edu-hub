@@ -1,3 +1,4 @@
+// Liste des applications éducatives
 const apps = [
   {
     name: "Tables de multiplication",
@@ -27,10 +28,9 @@ function generateMenu() {
     link.className = "app-link";
     container.appendChild(link);
   });
-  console.log("Génération du menu…");
 }
 
-// Mascotte
+// Message mascotte
 const messages = [
   "Prêt à apprendre en t’amusant ?",
   "On révise les conjugaisons aujourd’hui !",
@@ -40,8 +40,19 @@ const messages = [
 document.getElementById("mascotteMessage").textContent =
   messages[Math.floor(Math.random() * messages.length)];
 
-// Firebase config basculée dans body pour éviter les erreurs de chargement
+// Initialisation Firebase (doit être identique à index.html)
+const firebaseConfig = {
+  apiKey: "AIzaSyCabQZ5O5mPkcAd2_W8dF6qiwA-s7QntRo",
+  authDomain: "edu-hud.firebaseapp.com",
+  projectId: "edu-hud",
+  storageBucket: "edu-hud.firebasestorage.app",
+  messagingSenderId: "647416475215",
+  appId: "1:647416475215:web:df8d67a5d6a7d516c5843a",
+  measurementId: "G-R6WBTZ23JE"
+};
 
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
 
 // Connexion
 document.getElementById("loginForm").addEventListener("submit", function(e) {
@@ -80,7 +91,7 @@ document.getElementById("logoutBtn").addEventListener("click", function() {
   });
 });
 
-// État de connexion
+// Surveillance de l’état de connexion
 auth.onAuthStateChanged(function(user) {
   if (user) {
     document.getElementById("authSection").style.display = "none";
