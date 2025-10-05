@@ -11,33 +11,6 @@
   <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore-compat.js"></script>
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCabQZ5O5mPkcAd2_W8dF6qiwA-s7QntRo",
-      authDomain: "edu-hud.firebaseapp.com",
-      projectId: "edu-hud",
-      storageBucket: "edu-hud.appspot.com",
-      messagingSenderId: "647416475215",
-      appId: "1:647416475215:web:df8d67a5d6a7d516c5843a"
-    };
-
-    // Vérification de connexion + affichage utilisateur
-    auth.onAuthStateChanged(function(user) {
-      if (user) {
-        document.getElementById("userBar").style.display = "flex";
-        const nom = user.displayName || user.email;
-        document.getElementById("userInfo").textContent = `Connecté : ${nom}`;
-
-        document.getElementById("logoutBtn").addEventListener("click", function() {
-          auth.signOut().then(() => {
-            window.location.href = "/index.html";
-          });
-        });
-      } else {
-        window.location.href = "/index.html";
-      }
-    });
-  </script>
 </head>
 
 <body>
