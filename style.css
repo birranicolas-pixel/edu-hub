@@ -262,6 +262,7 @@ button:active {
   gap: 10px;
   font-size: 0.9rem;
   background-color: #5d97f5;
+  color: white; /* ← Ajouté pour rendre le texte visible */
   padding: 8px 12px;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
@@ -279,4 +280,3 @@ button:active {
 .user-bar button:hover {
   background-color: #2563eb;
 }
-
