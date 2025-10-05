@@ -7,8 +7,9 @@
   <link rel="stylesheet" href="style.css" />
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#3b82f6">
-
 </head>
+
+//Service Worker pour PWA
 <script>
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js')
@@ -16,6 +17,20 @@
       .catch(err => console.error('Erreur SW', err));
   }
 </script>
+
+//Animation écran de chargement
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const splash = document.getElementById("splash");
+
+  setTimeout(() => {
+    splash.style.opacity = "0";
+    splash.style.pointerEvents = "none";
+    splash.style.transition = "opacity 0.5s ease";
+  }, 2500);
+});
+</script>
+
 <script>
 function parler(message) {
   const voix = new SpeechSynthesisUtterance(message);
@@ -36,17 +51,11 @@ function lancerVoix() {
   parler(message);
 }
 </script>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const splash = document.getElementById("splash");
 
-  setTimeout(() => {
-    splash.style.opacity = "0";
-    splash.style.pointerEvents = "none";
-    splash.style.transition = "opacity 0.5s ease";
-  }, 2500);
-});
-</script>
+//Authentification Firebase
+<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js"></script>
+
 <body>
   <div id="splash" class="splash-screen">
   <img src="assets/mascotte.png" alt="Boubou" class="splash-mascotte">
@@ -58,6 +67,15 @@ document.addEventListener("DOMContentLoaded", () => {
   </div>
   <h1>Bienvenue sur ton portail éducatif</h1>
   <div id="app-links"></div>
+
+//Formulaire de connexion
+  <form id="loginForm">
+  <input type="email" id="email" placeholder="Email" required />
+  <input type="password" id="password" placeholder="Mot de passe" required />
+  <button type="submit">Connexion</button>
+</form>
+
+
   <script src="script.js"></script>
 </body>
 </html>

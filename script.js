@@ -39,3 +39,29 @@ const messages = [
 document.getElementById("mascotteMessage").textContent =
   messages[Math.floor(Math.random() * messages.length)];
 
+//script pour firebase
+const firebaseConfig = {
+  apiKey: "TA_CLE_API",
+  authDomain: "TON_PROJET.firebaseapp.com",
+  projectId: "TON_PROJET",
+  appId: "TON_APP_ID"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+document.getElementById("loginForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  auth.signInWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      const user = userCredential.user;
+      console.log("Connecté avec l’ID :", user.uid);
+    })
+    .catch((error) => {
+      console.error("Erreur :", error.message);
+    });
+});
+
