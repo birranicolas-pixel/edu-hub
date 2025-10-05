@@ -111,3 +111,28 @@ auth.onAuthStateChanged(function(user) {
     document.getElementById("userBar").style.display = "none";
   }
 });
+
+// Récupération du classement pour multiplication
+import { getFirestore, collection, query, where, orderBy, getDocs } from "firebase/firestore";
+
+const db = getFirestore();
+
+async function fetchLeaderboard(appName = "multiplication") {
+  const resultsRef = collection(db, "result");
+  const q = query(
+    resultsRef,
+    where("application", "==", appName),
+    orderBy("totalBonnes", "desc")
+  );
+
+  const snapshot = await getDocs(q);
+
+  const leaderboard = snapshot.docs.map((doc, index) => ({
+    rank: index + 1,
+    username: doc.data().username || doc.data().email,
+    score: doc.data().totalBonnes,
+    avatarUrl: doc.data().avatarUrl || null,
+  }));
+
+  return leaderboard;
+}

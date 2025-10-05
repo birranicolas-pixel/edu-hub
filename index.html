@@ -99,6 +99,34 @@
     <!-- <button id="logoutBtn">Se déconnecter</button> -->
   </div>
 
+  <!-- Tableau des classement multiplication -->
+<table>
+  <thead>
+    <tr>
+      <th>Rang</th>
+      <th>Nom</th>
+      <th>Score</th>
+    </tr>
+  </thead>
+  <tbody id="leaderboard-body"></tbody>
+</table>
+
+<script>
+  fetchLeaderboard("multiplication").then(data => {
+    const tbody = document.getElementById("leaderboard-body");
+    data.forEach(user => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${user.rank}</td>
+        <td>${user.username}</td>
+        <td>${user.score}</td>
+      `;
+      tbody.appendChild(row);
+    });
+  });
+</script>
+
+
   <!-- Script principal -->
   <script src="script.js"></script>
 </body>
