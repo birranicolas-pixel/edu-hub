@@ -40,20 +40,8 @@ const messages = [
 document.getElementById("mascotteMessage").textContent =
   messages[Math.floor(Math.random() * messages.length)];
 
-// Firebase config
-const firebaseConfig = {
-  apiKey: "AIzaSyCabQZ5O5mPkcAd2_W8dF6qiwA-s7QntRo",
-  authDomain: "edu-hud.firebaseapp.com",
-  projectId: "edu-hud",
-  storageBucket: "edu-hud.firebasestorage.app",
-  messagingSenderId: "647416475215",
-  appId: "1:647416475215:web:df8d67a5d6a7d516c5843a",
-  measurementId: "G-R6WBTZ23JE"
-};
+// Firebase config basculée dans body pour éviter les erreurs de chargement
 
-// Initialisation avec compat
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
 
 // Connexion
 document.getElementById("loginForm").addEventListener("submit", function(e) {

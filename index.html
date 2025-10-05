@@ -8,9 +8,7 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#3b82f6">
 
-  <!-- Firebase -->
- <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
- <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
+
 
   <!-- Service Worker -->
   <script>
@@ -57,6 +55,32 @@
 </head>
 
 <body>
+  <!-- Firebase -->
+ 
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyCabQZ5O5mPkcAd2_W8dF6qiwA-s7QntRo",
+    authDomain: "edu-hud.firebaseapp.com",
+    projectId: "edu-hud",
+    storageBucket: "edu-hud.firebasestorage.app",
+    messagingSenderId: "647416475215",
+    appId: "1:647416475215:web:df8d67a5d6a7d516c5843a",
+    measurementId: "G-R6WBTZ23JE"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
+
   <!-- Splash -->
   <div id="splash" class="splash-screen">
     <img src="assets/mascotte.png" alt="Boubou" class="splash-mascotte">
