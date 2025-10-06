@@ -66,6 +66,23 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
   });
 });
 
+// 👤 Rétractation de la barre utilisateur
+const collapseBtn = document.getElementById("collapseBtn");
+const expandBtn = document.getElementById("expandBtn");
+
+if (collapseBtn && expandBtn) {
+  collapseBtn.addEventListener("click", () => {
+    userBar.classList.add("collapsed");
+    expandBtn.style.display = "block";
+  });
+
+  expandBtn.addEventListener("click", () => {
+    userBar.classList.remove("collapsed");
+    expandBtn.style.display = "none";
+  });
+}
+
+
 // 👤 Surveillance de l’état de connexion
 auth.onAuthStateChanged(user => {
   const authSection = document.getElementById("authSection");
