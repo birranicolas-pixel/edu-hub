@@ -4,12 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EduHub - Portail éducatif</title>
-  <link rel="stylesheet" href="./style.css?v=2" />
+  <link rel="stylesheet" href="./style.css" />
   <link rel="manifest" href="./manifest.json" />
   <meta name="theme-color" content="#3b82f6" />
+  <link rel="icon" href="./favicon.png" type="image/png" />
 
-<link rel="icon" href="./favicon.png" type="image/png" />
-
+  <!-- Firebase compat scripts -->
+  <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-analytics-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore-compat.js"></script>
 
   <!-- Service Worker -->
   <script>
@@ -18,20 +22,6 @@
         .then(() => console.log('Service Worker enregistré'))
         .catch(err => console.error('Erreur SW', err));
     }
-  </script>
-
-  <!-- Splash Screen -->
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const splash = document.getElementById("splash");
-      if (splash) {
-        setTimeout(() => {
-          splash.style.opacity = "0";
-          splash.style.pointerEvents = "none";
-          splash.style.transition = "opacity 0.5s ease";
-        }, 2500);
-      }
-    });
   </script>
 
   <!-- Voix mascotte -->
@@ -56,12 +46,6 @@
       parler(message);
     }
   </script>
-
-  <!-- Firebase compat scripts -->
-  <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-analytics-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore-compat.js"></script>
 </head>
 
 <body>
@@ -129,9 +113,9 @@
 
   <!-- Script principal -->
   <script type="module">
-  import { initScript } from './script.js?v=3';
-  initScript();
-</script>
+    import { initScript } from './script.js';
+    initScript();
+  </script>
 
 </body>
 </html>
