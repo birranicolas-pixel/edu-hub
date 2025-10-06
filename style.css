@@ -261,6 +261,7 @@ button:active {
   padding: 8px 12px;
   text-align: center;
   border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
 }
 
 .styled-leaderboard thead {
@@ -402,6 +403,28 @@ button:active {
   background-color: var(--color-primary-active);
 }
 
+/* Bouton de rétractation */
+.user-bar #collapseBtn {
+  display: inline-block;
+  margin-left: auto;
+  background-color: var(--color-accent);
+  color: #1c1c1c;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.user-bar #collapseBtn:hover {
+  background-color: #f59e0b;
+  color: white;
+}
+
+.user-bar #collapseBtn:active {
+  background-color: #d97706;
+}
+
 /* === Bouton de réouverture === */
 .expand-btn {
   position: fixed;
@@ -430,7 +453,6 @@ button:active {
   transform: scale(0.95);
 }
 
-
 /* === Responsive barre utilisateur === */
 @media (max-width: 600px) {
   .user-bar {
@@ -450,16 +472,22 @@ button:active {
   .user-bar button {
     width: 100%;
   }
+
+  #collapseBtn {
+    width: auto;
+    margin-top: 6px;
+  }
+
+  .expand-btn {
+    top: auto;
+    bottom: 10px;
+    right: 10px;
+    padding: 5px 8px;
+    font-size: 0.9rem;
+  }
 }
 
 /* === Tableau de classement - ajustements supplémentaires === */
-.styled-leaderboard th,
-.styled-leaderboard td {
-  display: table-cell;
-  white-space: nowrap;
-}
-
-/* ajustement petit écran */
 @media screen and (max-width: 600px) {
   .styled-leaderboard {
     display: block;
