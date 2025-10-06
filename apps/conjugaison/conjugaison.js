@@ -1,5 +1,6 @@
 import { safeGet, generateVariations } from '../../utils.js';
-import { auth, db } from '../../script.js';
+const auth = firebase.auth();
+const db = firebase.firestore();
 
 // 🔤 Variables de session
 let temps = null;

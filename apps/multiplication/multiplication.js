@@ -1,5 +1,6 @@
 import { safeGet, shuffleArray } from '../../utils.js';
-import { auth, db } from '../../script.js';
+const auth = firebase.auth();
+const db = firebase.firestore();
 
 // 🔢 Variables du quiz
 let bonneReponse = 0;
