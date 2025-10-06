@@ -113,11 +113,12 @@
   </div>
 
   <!-- Script principal -->
-   <script type="module" src="./script.js"></script>
   <script type="module">
-    import { initScript } from './script.js';
-    initScript();
-  </script>
+  import { initScript, monitorAuthState } from './script.js';
+  initScript();
+  monitorAuthState();
+</script>
+
 
 </body>
 </html>

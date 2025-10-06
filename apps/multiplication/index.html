@@ -56,9 +56,11 @@
 
   <!-- Script principal -->
   <script type="module">
-  import '../../script.js';         // script général (Firebase, barre utilisateur)
-  import './multiplication.js'; // logique spécifique à l’app
-  </script>
+  import { monitorAuthState } from '../../script.js';
+  import { initMultiplication } from './multiplication.js';
 
+  monitorAuthState();      // met à jour l’interface selon l’état de connexion
+  initMultiplication();    // lance le quiz
+</script>
 </body>
 </html>
