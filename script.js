@@ -9,7 +9,9 @@ const firebaseConfig = {
   measurementId: "G-R6WBTZ23JE"
 };
 
-firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
 
 // ✅ Exports Firebase
 export const auth = firebase.auth();
@@ -107,4 +109,106 @@ export function displayLeaderboard(data) {
     `;
     tbody.appendChild(row);
   });
+}
+
+// 👤 Surveillance de l’état de connexion
+export function monitorAuthState() {
+  auth.onAuthStateChanged(user => {
+    const authSection = safeGet("authSection");
+    const appSection = safeGet("appSection");
+    const userBar = safeGet("userBar");
+    const userInfo = safeGet("userInfo");
+    const leaderboardWrapper = document.querySelector(".leaderboard-wrapper");
+
+    if (user) {
+      authSection?.style.setProperty("display", "none");
+      appSection?.style.setProperty("display", "block");
+      userBar?.style.setProperty("display", "flex");
+      leaderboardWrapper?.style.setProperty("display", "block");
+      if (userInfo) userInfo.textContent = `Connecté : ${user.displayName || user.email}`;
+
+      generateMenu();
+      fetchLeaderboard().then(displayLeaderboard);
+    } else {
+      authSection?.style.setProperty("display", "block");
+      appSection?.style.setProperty("display", "none");
+      userBar?.style.setProperty("display", "none");
+      leaderboardWrapper?.style.setProperty("display", "none");
+    }
+  });
+}
+
+// 🔐 Connexion utilisateur
+function setupLogin() {
+  const form = safeGet("loginForm");
+  const emailInput = safeGet("email");
+  const passwordInput = safeGet("password");
+  if (!form || !emailInput || !passwordInput) return;
+
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    auth.signInWithEmailAndPassword(emailInput.value, passwordInput.value)
+      .then(userCredential => {
+        console.log("Connecté :", userCredential.user.uid);
+      })
+      .catch(error => {
+        alert("Erreur : " + error.message);
+      });
+  });
+}
+
+// 🔓 Déconnexion utilisateur
+function setupLogout() {
+  const btn = safeGet("logoutBtn");
+  if (!btn) return;
+
+  btn.addEventListener("click", () => {
+    auth.signOut().then(() => {
+      console.log("Déconnecté");
+    });
+  });
+}
+
+// 👤 Barre utilisateur
+function setupUserBarToggle() {
+  const collapseBtn = safeGet("collapseBtn");
+  const expandBtn = safeGet("expandBtn");
+  const userBar = safeGet("userBar");
+  if (!collapseBtn || !expandBtn || !userBar) return;
+
+  collapseBtn.addEventListener("click", () => {
+    userBar.classList.add("collapsed");
+    expandBtn.style.display = "block";
+    localStorage.setItem("userBarCollapsed", "true");
+  });
+
+  expandBtn.addEventListener("click", () => {
+    userBar.classList.remove("collapsed");
+    expandBtn.style.display = "none";
+    localStorage.setItem("userBarCollapsed", "false");
+  });
+
+  const isCollapsed = localStorage.getItem("userBarCollapsed") === "true";
+  userBar.classList.toggle("collapsed", isCollapsed);
+  expandBtn.style.display = isCollapsed ? "block" : "none";
+}
+
+// 🔁 Rafraîchissement du leaderboard
+function setupRefreshButton() {
+  const btn = safeGet("refreshLeaderboardBtn");
+  if (!btn) return;
+
+  btn.addEventListener("click", () => {
+    fetchLeaderboard().then(displayLeaderboard);
+  });
+}
+
+// 🚀 Initialisation globale
+export function initScript() {
+  setMascotteMessage();
+  setupLogin();
+  setupLogout();
+  setupUserBarToggle();
+  setupRefreshButton();
+  monitorAuthState();
 }
