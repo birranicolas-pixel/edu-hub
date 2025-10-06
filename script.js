@@ -18,6 +18,9 @@ export const auth = firebase.auth();
 export const db = firebase.firestore();
 
 console.log("✅ auth exporté :", firebase.auth());
+console.log("✅ script.js chargé");
+console.log("auth exporté ?", typeof firebase.auth);
+
 
 // 🔐 Utilitaire DOM sécurisé
 export function safeGet(id) {
