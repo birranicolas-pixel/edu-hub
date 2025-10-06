@@ -15,6 +15,13 @@ firebase.analytics();
 export const auth = firebase.auth();
 export const db = firebase.firestore();
 
+// 🔐 Utilitaire DOM sécurisé
+export function safeGet(id) {
+  const el = document.getElementById(id);
+  if (!el) console.warn(`⚠️ Élément introuvable : #${id}`);
+  return el;
+}
+
 // 📚 Liste des applications éducatives
 const apps = [
   { name: "Tables de multiplication", path: "apps/multiplication/index.html", icon: "📚" },
@@ -24,21 +31,21 @@ const apps = [
 
 // 🧠 Message mascotte
 function setMascotteMessage() {
-  const mascotteEl = document.getElementById("mascotteMessage");
-  if (!mascotteEl) return;
-
-  const messages = [
-    "Prêt à apprendre en t’amusant ?",
-    "On révise les conjugaisons aujourd’hui !",
-    "Tu vas devenir un champion des tables !",
-    "Bienvenue sur EduHub, petit génie !"
-  ];
-  mascotteEl.textContent = messages[Math.floor(Math.random() * messages.length)];
+  const mascotteEl = safeGet("mascotteMessage");
+  if (mascotteEl) {
+    const messages = [
+      "Prêt à apprendre en t’amusant ?",
+      "On révise les conjugaisons aujourd’hui !",
+      "Tu vas devenir un champion des tables !",
+      "Bienvenue sur EduHub, petit génie !"
+    ];
+    mascotteEl.textContent = messages[Math.floor(Math.random() * messages.length)];
+  }
 }
 
 // 🧩 Génère le menu des applications
 export function generateMenu() {
-  const container = document.getElementById("app-links");
+  const container = safeGet("app-links");
   if (!container) return;
 
   container.innerHTML = "";
@@ -84,7 +91,7 @@ export function fetchLeaderboard() {
 
 // 🖼️ Affichage du tableau
 export function displayLeaderboard(data) {
-  const tbody = document.getElementById("leaderboard-body");
+  const tbody = safeGet("leaderboard-body");
   if (!tbody) return;
 
   tbody.innerHTML = "";
@@ -107,17 +114,14 @@ export function displayLeaderboard(data) {
 
 // 🔐 Connexion utilisateur
 function setupLogin() {
-  const form = document.getElementById("loginForm");
-  const emailInput = document.getElementById("email");
-  const passwordInput = document.getElementById("password");
+  const form = safeGet("loginForm");
+  const emailInput = safeGet("email");
+  const passwordInput = safeGet("password");
   if (!form || !emailInput || !passwordInput) return;
 
   form.addEventListener("submit", e => {
     e.preventDefault();
-    const email = emailInput.value;
-    const password = passwordInput.value;
-
-    auth.signInWithEmailAndPassword(email, password)
+    auth.signInWithEmailAndPassword(emailInput.value, passwordInput.value)
       .then(userCredential => {
         console.log("Connecté :", userCredential.user.uid);
       })
@@ -129,7 +133,7 @@ function setupLogin() {
 
 // 🔓 Déconnexion utilisateur
 function setupLogout() {
-  const btn = document.getElementById("logoutBtn");
+  const btn = safeGet("logoutBtn");
   if (!btn) return;
 
   btn.addEventListener("click", () => {
@@ -141,10 +145,9 @@ function setupLogout() {
 
 // 👤 Barre utilisateur
 function setupUserBarToggle() {
-  const collapseBtn = document.getElementById("collapseBtn");
-  const expandBtn = document.getElementById("expandBtn");
-  const userBar = document.getElementById("userBar");
-
+  const collapseBtn = safeGet("collapseBtn");
+  const expandBtn = safeGet("expandBtn");
+  const userBar = safeGet("userBar");
   if (!collapseBtn || !expandBtn || !userBar) return;
 
   collapseBtn.addEventListener("click", () => {
@@ -160,18 +163,13 @@ function setupUserBarToggle() {
   });
 
   const isCollapsed = localStorage.getItem("userBarCollapsed") === "true";
-  if (isCollapsed) {
-    userBar.classList.add("collapsed");
-    expandBtn.style.display = "block";
-  } else {
-    userBar.classList.remove("collapsed");
-    expandBtn.style.display = "none";
-  }
+  userBar.classList.toggle("collapsed", isCollapsed);
+  expandBtn.style.display = isCollapsed ? "block" : "none";
 }
 
 // 🔁 Rafraîchissement du leaderboard
 function setupRefreshButton() {
-  const btn = document.getElementById("refreshLeaderboardBtn");
+  const btn = safeGet("refreshLeaderboardBtn");
   if (!btn) return;
 
   btn.addEventListener("click", () => {
@@ -182,26 +180,26 @@ function setupRefreshButton() {
 // 👤 Surveillance de l’état de connexion
 function monitorAuthState() {
   auth.onAuthStateChanged(user => {
-    const authSection = document.getElementById("authSection");
-    const appSection = document.getElementById("appSection");
-    const userBar = document.getElementById("userBar");
+    const authSection = safeGet("authSection");
+    const appSection = safeGet("appSection");
+    const userBar = safeGet("userBar");
+    const userInfo = safeGet("userInfo");
     const leaderboardWrapper = document.querySelector(".leaderboard-wrapper");
-    const userInfo = document.getElementById("userInfo");
 
     if (user) {
-      if (authSection) authSection.style.display = "none";
-      if (appSection) appSection.style.display = "block";
-      if (userBar) userBar.style.display = "flex";
-      if (leaderboardWrapper) leaderboardWrapper.style.display = "block";
+      authSection?.style.setProperty("display", "none");
+      appSection?.style.setProperty("display", "block");
+      userBar?.style.setProperty("display", "flex");
+      leaderboardWrapper?.style.setProperty("display", "block");
       if (userInfo) userInfo.textContent = `Connecté : ${user.displayName || user.email}`;
 
       generateMenu();
       fetchLeaderboard();
     } else {
-      if (authSection) authSection.style.display = "block";
-      if (appSection) appSection.style.display = "none";
-      if (userBar) userBar.style.display = "none";
-      if (leaderboardWrapper) leaderboardWrapper.style.display = "none";
+      authSection?.style.setProperty("display", "block");
+      appSection?.style.setProperty("display", "none");
+      userBar?.style.setProperty("display", "none");
+      leaderboardWrapper?.style.setProperty("display", "none");
     }
   });
 }
