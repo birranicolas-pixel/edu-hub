@@ -1,5 +1,7 @@
 import { safeGet, shuffleArray } from '../../utils.js';
 import { auth, db } from '../../script.js';
+console.log("✅ auth importé :", auth);
+
 
 // 🔢 Variables du quiz
 let bonneReponse = 0;

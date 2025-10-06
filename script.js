@@ -17,6 +17,8 @@ if (!firebase.apps.length) {
 export const auth = firebase.auth();
 export const db = firebase.firestore();
 
+console.log("✅ auth exporté :", firebase.auth());
+
 // 🔐 Utilitaire DOM sécurisé
 export function safeGet(id) {
   const el = document.getElementById(id);
