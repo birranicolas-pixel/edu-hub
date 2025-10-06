@@ -1,5 +1,5 @@
-import { safeGet, generateVariations } from '/utils.js';
-import { auth, db } from '/script.js';
+import { safeGet, generateVariations } from '../../utils.js';
+import { auth, db } from '../../script.js';
 
 // 🔤 Variables de session
 let temps = null;

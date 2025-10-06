@@ -1,5 +1,5 @@
-import { safeGet, shuffleArray } from '/utils.js';
-import { auth, db } from '/script.js';
+import { safeGet, shuffleArray } from '../../utils.js';
+import { auth, db } from '../../script.js';
 
 // 🔢 Variables du quiz
 let bonneReponse = 0;
