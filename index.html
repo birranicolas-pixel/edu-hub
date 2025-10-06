@@ -125,8 +125,10 @@
   </table>
 </div>
   <!-- Script principal -->
-<script src="script.js?v=3"></script>
-
+<script type="module">
+  import { initScript } from '/script.js';
+  initScript();
 </script>
+
 </body>
 </html>

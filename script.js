@@ -11,8 +11,9 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
-const auth = firebase.auth();
-const db = firebase.firestore();
+
+export const auth = firebase.auth();
+export const db = firebase.firestore();
 
 // 📚 Liste des applications éducatives
 const apps = [
@@ -22,18 +23,24 @@ const apps = [
 ];
 
 // 🧠 Message mascotte
-const mascotteMessages = [
-  "Prêt à apprendre en t’amusant ?",
-  "On révise les conjugaisons aujourd’hui !",
-  "Tu vas devenir un champion des tables !",
-  "Bienvenue sur EduHub, petit génie !"
-];
-document.getElementById("mascotteMessage").textContent =
-  mascotteMessages[Math.floor(Math.random() * mascotteMessages.length)];
+function setMascotteMessage() {
+  const mascotteEl = document.getElementById("mascotteMessage");
+  if (!mascotteEl) return;
+
+  const messages = [
+    "Prêt à apprendre en t’amusant ?",
+    "On révise les conjugaisons aujourd’hui !",
+    "Tu vas devenir un champion des tables !",
+    "Bienvenue sur EduHub, petit génie !"
+  ];
+  mascotteEl.textContent = messages[Math.floor(Math.random() * messages.length)];
+}
 
 // 🧩 Génère le menu des applications
-function generateMenu() {
+export function generateMenu() {
   const container = document.getElementById("app-links");
+  if (!container) return;
+
   container.innerHTML = "";
   apps.forEach(app => {
     const link = document.createElement("a");
@@ -44,88 +51,8 @@ function generateMenu() {
   });
 }
 
-// 🔐 Connexion utilisateur
-document.getElementById("loginForm").addEventListener("submit", e => {
-  e.preventDefault();
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  auth.signInWithEmailAndPassword(email, password)
-    .then(userCredential => {
-      console.log("Connecté :", userCredential.user.uid);
-    })
-    .catch(error => {
-      alert("Erreur : " + error.message);
-    });
-});
-
-// 🔓 Déconnexion utilisateur
-document.getElementById("logoutBtn").addEventListener("click", () => {
-  auth.signOut().then(() => {
-    console.log("Déconnecté");
-  });
-});
-
-// 👤 Rétractation de la barre utilisateur
-const collapseBtn = document.getElementById("collapseBtn");
-const expandBtn = document.getElementById("expandBtn");
-
-if (collapseBtn && expandBtn) {
-  collapseBtn.addEventListener("click", () => {
-    userBar.classList.add("collapsed");
-    expandBtn.style.display = "block";
-  });
-
-  expandBtn.addEventListener("click", () => {
-    userBar.classList.remove("collapsed");
-    expandBtn.style.display = "none";
-  });
-}
-
-// Stockage de l’état de la barre utilisateur
-
-collapseBtn.addEventListener("click", () => {
-  userBar.classList.add("collapsed");
-  expandBtn.style.display = "block";
-  localStorage.setItem("userBarCollapsed", "true");
-});
-
-expandBtn.addEventListener("click", () => {
-  userBar.classList.remove("collapsed");
-  expandBtn.style.display = "none";
-  localStorage.setItem("userBarCollapsed", "false");
-});
-
-
-
-// 👤 Surveillance de l’état de connexion
-auth.onAuthStateChanged(user => {
-  const authSection = document.getElementById("authSection");
-  const appSection = document.getElementById("appSection");
-  const userBar = document.getElementById("userBar");
-  const leaderboardWrapper = document.querySelector(".leaderboard-wrapper");
-
-  if (user) {
-    authSection.style.display = "none";
-    appSection.style.display = "block";
-    userBar.style.display = "flex";
-    leaderboardWrapper.style.display = "block";
-
-    const nom = user.displayName || user.email;
-    document.getElementById("userInfo").textContent = `Connecté : ${nom}`;
-
-    generateMenu();
-    fetchLeaderboard();
-  } else {
-    authSection.style.display = "block";
-    appSection.style.display = "none";
-    userBar.style.display = "none";
-    leaderboardWrapper.style.display = "none";
-  }
-});
-
 // 📊 Récupération des scores
-function fetchLeaderboard() {
+export function fetchLeaderboard() {
   db.collection("result").get().then(snapshot => {
     const rawData = snapshot.docs.map(doc => doc.data());
     const aggregated = {};
@@ -155,14 +82,12 @@ function fetchLeaderboard() {
   });
 }
 
-
 // 🖼️ Affichage du tableau
-function displayLeaderboard(data) {
+export function displayLeaderboard(data) {
   const tbody = document.getElementById("leaderboard-body");
   if (!tbody) return;
 
   tbody.innerHTML = "";
-
   data.forEach((entry, index) => {
     const total = entry.totalBonnes + entry.totalMauvaises;
     const pourcentage = total > 0 ? Math.round((entry.totalBonnes / total) * 100) : 0;
@@ -180,7 +105,113 @@ function displayLeaderboard(data) {
   });
 }
 
-// 🔁 Bouton de rafraîchissement
-document.getElementById("refreshLeaderboardBtn").addEventListener("click", () => {
-  fetchLeaderboard("multiplication");
-});
+// 🔐 Connexion utilisateur
+function setupLogin() {
+  const form = document.getElementById("loginForm");
+  if (!form) return;
+
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    const email = document.getElementById("email")?.value;
+    const password = document.getElementById("password")?.value;
+
+    auth.signInWithEmailAndPassword(email, password)
+      .then(userCredential => {
+        console.log("Connecté :", userCredential.user.uid);
+      })
+      .catch(error => {
+        alert("Erreur : " + error.message);
+      });
+  });
+}
+
+// 🔓 Déconnexion utilisateur
+function setupLogout() {
+  const btn = document.getElementById("logoutBtn");
+  if (!btn) return;
+
+  btn.addEventListener("click", () => {
+    auth.signOut().then(() => {
+      console.log("Déconnecté");
+    });
+  });
+}
+
+// 👤 Barre utilisateur
+function setupUserBarToggle() {
+  const collapseBtn = document.getElementById("collapseBtn");
+  const expandBtn = document.getElementById("expandBtn");
+  const userBar = document.getElementById("userBar");
+
+  if (!collapseBtn || !expandBtn || !userBar) return;
+
+  collapseBtn.addEventListener("click", () => {
+    userBar.classList.add("collapsed");
+    expandBtn.style.display = "block";
+    localStorage.setItem("userBarCollapsed", "true");
+  });
+
+  expandBtn.addEventListener("click", () => {
+    userBar.classList.remove("collapsed");
+    expandBtn.style.display = "none";
+    localStorage.setItem("userBarCollapsed", "false");
+  });
+
+  const isCollapsed = localStorage.getItem("userBarCollapsed") === "true";
+  if (isCollapsed) {
+    userBar.classList.add("collapsed");
+    expandBtn.style.display = "block";
+  } else {
+    userBar.classList.remove("collapsed");
+    expandBtn.style.display = "none";
+  }
+}
+
+// 🔁 Rafraîchissement du leaderboard
+function setupRefreshButton() {
+  const btn = document.getElementById("refreshLeaderboardBtn");
+  if (btn) {
+    btn.addEventListener("click", () => {
+      fetchLeaderboard();
+    });
+  }
+}
+
+// 👤 Surveillance de l’état de connexion
+function monitorAuthState() {
+  auth.onAuthStateChanged(user => {
+    const authSection = document.getElementById("authSection");
+    const appSection = document.getElementById("appSection");
+    const userBar = document.getElementById("userBar");
+    const leaderboardWrapper = document.querySelector(".leaderboard-wrapper");
+
+    if (user) {
+      if (authSection) authSection.style.display = "none";
+      if (appSection) appSection.style.display = "block";
+      if (userBar) userBar.style.display = "flex";
+      if (leaderboardWrapper) leaderboardWrapper.style.display = "block";
+
+      const nom = user.displayName || user.email;
+      const userInfo = document.getElementById("userInfo");
+      if (userInfo) userInfo.textContent = `Connecté : ${nom}`;
+
+      generateMenu();
+      fetchLeaderboard();
+    } else {
+      if (authSection) authSection.style.display = "block";
+      if (appSection) appSection.style.display = "none";
+      if (userBar) userBar.style.display = "none";
+      if (leaderboardWrapper) leaderboardWrapper.style.display = "none";
+    }
+  });
+}
+
+// 🚀 Initialisation globale
+export function initScript() {
+  setMascotteMessage();
+  setupLogin();
+  setupLogout();
+  setupUserBarToggle();
+  setupRefreshButton();
+  monitorAuthState();
+}
