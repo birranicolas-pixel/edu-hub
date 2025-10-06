@@ -1,2 +1,36 @@
+# 🔧 Dépendances
 node_modules/
+admin-tools/node_modules/
+
+# 🔐 Clés et secrets
 admin-tools/serviceAccountKey.json
+
+# 🧪 Fichiers de logs et erreurs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 📦 Fichiers de build ou cache
+dist/
+build/
+.cache/
+.tmp/
+
+# 📁 Systèmes d’exploitation
+.DS_Store
+Thumbs.db
+
+# 🧠 IDEs et éditeurs
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# 📄 Fichiers temporaires
+*.log
+*.bak
+*.tmp
+
+# 📜 Manifestes et fichiers générés
+package-lock.json
+admin-tools/package-lock.json
