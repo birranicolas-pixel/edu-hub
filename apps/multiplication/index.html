@@ -15,11 +15,15 @@
 
 <body>
   <!-- Barre utilisateur -->
-  <div class="user-bar" id="userBar" style="display:none; justify-content:space-between; align-items:center; margin-bottom:1em;">
-    <img src="../../assets/user-icon.png" alt="Profil" class="user-icon" style="width:32px; height:32px; border-radius:50%; margin-right:0.5em;">
-    <span id="userInfo" style="font-weight:bold;"></span>
-    <button id="logoutBtn" style="background-color:#ef4444; color:white; border:none; padding:0.4em 0.8em; border-radius:4px; cursor:pointer;">Se déconnecter</button>
-  </div>
+<div class="user-bar" id="userBar" style="display:none;">
+  <img src="../../assets/user-icon.png" alt="Profil" class="user-icon">
+  <span id="userInfo"></span>
+  <button id="logoutBtn">Se déconnecter</button>
+  <button id="collapseBtn">⨯</button> <!-- ← bouton de rétractation -->
+</div>
+
+<!-- Bouton pour rouvrir -->
+<button id="expandBtn" class="expand-btn" style="display:none;">👤</button>
 
   <p><a href="../../index.html" class="back-link">← Retour à l’accueil</a></p>
 

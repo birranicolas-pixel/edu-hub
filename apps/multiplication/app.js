@@ -12,6 +12,22 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
+//Gestion de la barre utilisateur
+window.addEventListener("DOMContentLoaded", () => {
+  const userBar = document.getElementById("userBar");
+  const expandBtn = document.getElementById("expandBtn");
+
+  const isCollapsed = localStorage.getItem("userBarCollapsed") === "true";
+  if (isCollapsed) {
+    userBar.classList.add("collapsed");
+    expandBtn.style.display = "block";
+  } else {
+    userBar.classList.remove("collapsed");
+    expandBtn.style.display = "none";
+  }
+});
+
+
 // 👤 Gestion de l'utilisateur connecté
 auth.onAuthStateChanged(function(user) {
   if (user) {

@@ -10,15 +10,15 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-firebase.analytics();
+firebase.analytics?.();
 const auth = firebase.auth();
 const db = firebase.firestore();
 
 // 📚 Liste des applications éducatives
 const apps = [
-  { name: "Tables de multiplication", path: "apps/multiplication/index.html", icon: "📚" },
-  { name: "Conjugaison", path: "apps/conjugaison/index.html", icon: "📖" },
-  { name: "Quiz général", path: "apps/quiz/index.html", icon: "🧠" }
+  { name: "Tables de multiplication", path: "/apps/multiplication/index.html", icon: "📚" },
+  { name: "Conjugaison", path: "/apps/conjugaison/index.html", icon: "📖" },
+  { name: "Quiz général", path: "/apps/quiz/index.html", icon: "🧠" }
 ];
 
 // 🧠 Message mascotte
@@ -28,12 +28,15 @@ const mascotteMessages = [
   "Tu vas devenir un champion des tables !",
   "Bienvenue sur EduHub, petit génie !"
 ];
-document.getElementById("mascotteMessage").textContent =
-  mascotteMessages[Math.floor(Math.random() * mascotteMessages.length)];
+const mascotteEl = document.getElementById("mascotteMessage");
+if (mascotteEl) {
+  mascotteEl.textContent = mascotteMessages[Math.floor(Math.random() * mascotteMessages.length)];
+}
 
 // 🧩 Génère le menu des applications
 function generateMenu() {
   const container = document.getElementById("app-links");
+  if (!container) return;
   container.innerHTML = "";
   apps.forEach(app => {
     const link = document.createElement("a");
@@ -44,59 +47,63 @@ function generateMenu() {
   });
 }
 
-// 🔐 Connexion utilisateur
-document.getElementById("loginForm").addEventListener("submit", e => {
-  e.preventDefault();
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+// 👤 Gestion de la barre utilisateur
+function initUserBar() {
+  const userBar = document.getElementById("userBar");
+  const collapseBtn = document.getElementById("collapseBtn");
+  const expandBtn = document.getElementById("expandBtn");
 
-  auth.signInWithEmailAndPassword(email, password)
-    .then(userCredential => {
-      console.log("Connecté :", userCredential.user.uid);
-    })
-    .catch(error => {
-      alert("Erreur : " + error.message);
-    });
-});
+  if (!userBar || !collapseBtn || !expandBtn) return;
 
-// 🔓 Déconnexion utilisateur
-document.getElementById("logoutBtn").addEventListener("click", () => {
-  auth.signOut().then(() => {
-    console.log("Déconnecté");
-  });
-});
+  const isCollapsed = localStorage.getItem("userBarCollapsed") === "true";
+  if (isCollapsed) {
+    userBar.classList.add("collapsed");
+    expandBtn.style.display = "block";
+  } else {
+    userBar.classList.remove("collapsed");
+    expandBtn.style.display = "none";
+  }
 
-// 👤 Rétractation de la barre utilisateur
-const collapseBtn = document.getElementById("collapseBtn");
-const expandBtn = document.getElementById("expandBtn");
-
-if (collapseBtn && expandBtn) {
   collapseBtn.addEventListener("click", () => {
     userBar.classList.add("collapsed");
     expandBtn.style.display = "block";
+    localStorage.setItem("userBarCollapsed", "true");
   });
 
   expandBtn.addEventListener("click", () => {
     userBar.classList.remove("collapsed");
     expandBtn.style.display = "none";
+    localStorage.setItem("userBarCollapsed", "false");
   });
 }
 
-// Stockage de l’état de la barre utilisateur
+// 🔐 Connexion utilisateur
+const loginForm = document.getElementById("loginForm");
+if (loginForm) {
+  loginForm.addEventListener("submit", e => {
+    e.preventDefault();
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
 
-collapseBtn.addEventListener("click", () => {
-  userBar.classList.add("collapsed");
-  expandBtn.style.display = "block";
-  localStorage.setItem("userBarCollapsed", "true");
-});
+    auth.signInWithEmailAndPassword(email, password)
+      .then(userCredential => {
+        console.log("Connecté :", userCredential.user.uid);
+      })
+      .catch(error => {
+        alert("Erreur : " + error.message);
+      });
+  });
+}
 
-expandBtn.addEventListener("click", () => {
-  userBar.classList.remove("collapsed");
-  expandBtn.style.display = "none";
-  localStorage.setItem("userBarCollapsed", "false");
-});
-
-
+// 🔓 Déconnexion utilisateur
+const logoutBtn = document.getElementById("logoutBtn");
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", () => {
+    auth.signOut().then(() => {
+      window.location.href = "/index.html";
+    });
+  });
+}
 
 // 👤 Surveillance de l’état de connexion
 auth.onAuthStateChanged(user => {
@@ -106,21 +113,23 @@ auth.onAuthStateChanged(user => {
   const leaderboardWrapper = document.querySelector(".leaderboard-wrapper");
 
   if (user) {
-    authSection.style.display = "none";
-    appSection.style.display = "block";
-    userBar.style.display = "flex";
-    leaderboardWrapper.style.display = "block";
+    if (authSection) authSection.style.display = "none";
+    if (appSection) appSection.style.display = "block";
+    if (userBar) userBar.style.display = "flex";
+    if (leaderboardWrapper) leaderboardWrapper.style.display = "block";
 
     const nom = user.displayName || user.email;
-    document.getElementById("userInfo").textContent = `Connecté : ${nom}`;
+    const userInfo = document.getElementById("userInfo");
+    if (userInfo) userInfo.textContent = `Connecté : ${nom}`;
 
     generateMenu();
     fetchLeaderboard();
+    initUserBar();
   } else {
-    authSection.style.display = "block";
-    appSection.style.display = "none";
-    userBar.style.display = "none";
-    leaderboardWrapper.style.display = "none";
+    if (authSection) authSection.style.display = "block";
+    if (appSection) appSection.style.display = "none";
+    if (userBar) userBar.style.display = "none";
+    if (leaderboardWrapper) leaderboardWrapper.style.display = "none";
   }
 });
 
@@ -155,7 +164,6 @@ function fetchLeaderboard() {
   });
 }
 
-
 // 🖼️ Affichage du tableau
 function displayLeaderboard(data) {
   const tbody = document.getElementById("leaderboard-body");
@@ -181,6 +189,9 @@ function displayLeaderboard(data) {
 }
 
 // 🔁 Bouton de rafraîchissement
-document.getElementById("refreshLeaderboardBtn").addEventListener("click", () => {
-  fetchLeaderboard("multiplication");
-});
+const refreshBtn = document.getElementById("refreshLeaderboardBtn");
+if (refreshBtn) {
+  refreshBtn.addEventListener("click", () => {
+    fetchLeaderboard();
+  });
+}
