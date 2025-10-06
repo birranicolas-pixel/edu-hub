@@ -1,5 +1,5 @@
 import { safeGet, shuffleArray } from '../../utils.js';
-import { auth, db } from '../../script.js'; // ✅ Import complet
+import { auth, db } from '../../core.js'; // ✅ Import complet
 console.log("✅ auth importé :", auth);
 console.log("✅ db importé :", db);
 
