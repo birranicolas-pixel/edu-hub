@@ -2,10 +2,10 @@
   "name": "edu-hub",
   "version": "1.0.0",
   "private": true,
-  "workspaces": [
-    "admin-tools"
-    "apps/*"
-  ],
+ "workspaces": [
+  "apps/*",
+  "admin-tools"
+],
   "dependencies": {
     "firebase": "^12.3.0"
   }
