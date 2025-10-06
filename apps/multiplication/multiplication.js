@@ -1,7 +1,7 @@
 import { safeGet, shuffleArray } from '../../utils.js';
-import { auth } from '../../script.js';
+import { auth, db } from '../../script.js'; // ✅ Import complet
 console.log("✅ auth importé :", auth);
-
+console.log("✅ db importé :", db);
 
 // 🔢 Variables du quiz
 let bonneReponse = 0;
@@ -84,7 +84,7 @@ function terminerQuiz() {
     table: tableChoisie,
     totalBonnes: bonneReponse,
     totalMauvaises: mauvaiseReponse,
-    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    timestamp: db.FieldValue?.serverTimestamp?.() || new Date(), // ✅ fallback sécurisé
     application: "multiplication"
   }).then(() => {
     console.log("Résultat final enregistré !");
@@ -94,7 +94,7 @@ function terminerQuiz() {
 }
 
 // 🧩 Initialisation du module
-function initMultiplication() {
+export function initMultiplication() {
   tableButtons.forEach(button => {
     button.addEventListener("click", () => {
       tableChoisie = parseInt(button.dataset.table);
@@ -107,6 +107,3 @@ function initMultiplication() {
     });
   });
 }
-
-// ⏱️ Démarrage automatique
-document.addEventListener("DOMContentLoaded", initMultiplication);
