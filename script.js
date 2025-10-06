@@ -1,3 +1,5 @@
+console.log("✅ script.js chargé");
+
 // 🔥 Initialisation Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyCabQZ5O5mPkcAd2_W8dF6qiwA-s7QntRo",
