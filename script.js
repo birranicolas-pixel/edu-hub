@@ -11,6 +11,7 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
+// ✅ Exports Firebase
 export const auth = firebase.auth();
 export const db = firebase.firestore();
 
@@ -22,14 +23,14 @@ export function safeGet(id) {
 }
 
 // 📚 Liste des applications éducatives
-const apps = [
+export const apps = [
   { name: "Tables de multiplication", path: "apps/multiplication/index.html", icon: "📚" },
   { name: "Conjugaison", path: "apps/conjugaison/index.html", icon: "📖" },
   { name: "Quiz général", path: "apps/quiz/index.html", icon: "🧠" }
 ];
 
 // 🧠 Message mascotte
-function setMascotteMessage() {
+export function setMascotteMessage() {
   const mascotteEl = safeGet("mascotteMessage");
   if (mascotteEl) {
     const messages = [
@@ -59,7 +60,7 @@ export function generateMenu() {
 
 // 📊 Récupération des scores
 export function fetchLeaderboard() {
-  db.collection("result").get().then(snapshot => {
+  return db.collection("result").get().then(snapshot => {
     const rawData = snapshot.docs.map(doc => doc.data());
     const aggregated = {};
 
@@ -81,10 +82,7 @@ export function fetchLeaderboard() {
       aggregated[key].totalMauvaises += entry.totalMauvaises || 0;
     });
 
-    const leaderboard = Object.values(aggregated).sort((a, b) => b.totalBonnes - a.totalBonnes);
-    displayLeaderboard(leaderboard);
-  }).catch(error => {
-    console.error("Erreur lors du chargement du leaderboard :", error);
+    return Object.values(aggregated).sort((a, b) => b.totalBonnes - a.totalBonnes);
   });
 }
 
@@ -109,106 +107,4 @@ export function displayLeaderboard(data) {
     `;
     tbody.appendChild(row);
   });
-}
-
-// 🔐 Connexion utilisateur
-function setupLogin() {
-  const form = safeGet("loginForm");
-  const emailInput = safeGet("email");
-  const passwordInput = safeGet("password");
-  if (!form || !emailInput || !passwordInput) return;
-
-  form.addEventListener("submit", e => {
-    e.preventDefault();
-    auth.signInWithEmailAndPassword(emailInput.value, passwordInput.value)
-      .then(userCredential => {
-        console.log("Connecté :", userCredential.user.uid);
-      })
-      .catch(error => {
-        alert("Erreur : " + error.message);
-      });
-  });
-}
-
-// 🔓 Déconnexion utilisateur
-function setupLogout() {
-  const btn = safeGet("logoutBtn");
-  if (!btn) return;
-
-  btn.addEventListener("click", () => {
-    auth.signOut().then(() => {
-      console.log("Déconnecté");
-    });
-  });
-}
-
-// 👤 Barre utilisateur
-function setupUserBarToggle() {
-  const collapseBtn = safeGet("collapseBtn");
-  const expandBtn = safeGet("expandBtn");
-  const userBar = safeGet("userBar");
-  if (!collapseBtn || !expandBtn || !userBar) return;
-
-  collapseBtn.addEventListener("click", () => {
-    userBar.classList.add("collapsed");
-    expandBtn.style.display = "block";
-    localStorage.setItem("userBarCollapsed", "true");
-  });
-
-  expandBtn.addEventListener("click", () => {
-    userBar.classList.remove("collapsed");
-    expandBtn.style.display = "none";
-    localStorage.setItem("userBarCollapsed", "false");
-  });
-
-  const isCollapsed = localStorage.getItem("userBarCollapsed") === "true";
-  userBar.classList.toggle("collapsed", isCollapsed);
-  expandBtn.style.display = isCollapsed ? "block" : "none";
-}
-
-// 🔁 Rafraîchissement du leaderboard
-function setupRefreshButton() {
-  const btn = safeGet("refreshLeaderboardBtn");
-  if (!btn) return;
-
-  btn.addEventListener("click", () => {
-    fetchLeaderboard();
-  });
-}
-
-// 👤 Surveillance de l’état de connexion
-function monitorAuthState() {
-  auth.onAuthStateChanged(user => {
-    const authSection = safeGet("authSection");
-    const appSection = safeGet("appSection");
-    const userBar = safeGet("userBar");
-    const userInfo = safeGet("userInfo");
-    const leaderboardWrapper = document.querySelector(".leaderboard-wrapper");
-
-    if (user) {
-      authSection?.style.setProperty("display", "none");
-      appSection?.style.setProperty("display", "block");
-      userBar?.style.setProperty("display", "flex");
-      leaderboardWrapper?.style.setProperty("display", "block");
-      if (userInfo) userInfo.textContent = `Connecté : ${user.displayName || user.email}`;
-
-      generateMenu();
-      fetchLeaderboard();
-    } else {
-      authSection?.style.setProperty("display", "block");
-      appSection?.style.setProperty("display", "none");
-      userBar?.style.setProperty("display", "none");
-      leaderboardWrapper?.style.setProperty("display", "none");
-    }
-  });
-}
-
-// 🚀 Initialisation globale
-export function initScript() {
-  setMascotteMessage();
-  setupLogin();
-  setupLogout();
-  setupUserBarToggle();
-  setupRefreshButton();
-  monitorAuthState();
 }
