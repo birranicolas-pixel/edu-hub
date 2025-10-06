@@ -4,14 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EduHub - Portail éducatif</title>
-  <link rel="stylesheet" href="style.css?v=2" />
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#3b82f6">
+  <link rel="stylesheet" href="./style.css?v=2" />
+  <link rel="manifest" href="./manifest.json" />
+  <meta name="theme-color" content="#3b82f6" />
 
   <!-- Service Worker -->
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js')
+      navigator.serviceWorker.register('./sw.js')
         .then(() => console.log('Service Worker enregistré'))
         .catch(err => console.error('Erreur SW', err));
     }
@@ -21,11 +21,13 @@
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const splash = document.getElementById("splash");
-      setTimeout(() => {
-        splash.style.opacity = "0";
-        splash.style.pointerEvents = "none";
-        splash.style.transition = "opacity 0.5s ease";
-      }, 2500);
+      if (splash) {
+        setTimeout(() => {
+          splash.style.opacity = "0";
+          splash.style.pointerEvents = "none";
+          splash.style.transition = "opacity 0.5s ease";
+        }, 2500);
+      }
     });
   </script>
 
@@ -46,7 +48,8 @@
         "Bienvenue sur EduHub, petit génie !"
       ];
       const message = messages[Math.floor(Math.random() * messages.length)];
-      document.getElementById("mascotteMessage").textContent = message;
+      const mascotteEl = document.getElementById("mascotteMessage");
+      if (mascotteEl) mascotteEl.textContent = message;
       parler(message);
     }
   </script>
@@ -56,31 +59,30 @@
   <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-analytics-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore-compat.js"></script>
-
 </head>
 
 <body>
 
   <!-- Barre utilisateur -->
-<div class="user-bar" id="userBar" style="display:none;">
-  <img src="assets/user-icon.png" alt="Profil" class="user-icon">
-  <span id="userInfo"></span>
-  <button id="logoutBtn">Se déconnecter</button>
-  <button id="collapseBtn">⨯</button> <!-- ← bouton de rétractation -->
-</div>
+  <div class="user-bar" id="userBar" style="display:none;">
+    <img src="./assets/user-icon.png" alt="Profil" class="user-icon" />
+    <span id="userInfo"></span>
+    <button id="logoutBtn">Se déconnecter</button>
+    <button id="collapseBtn">⨯</button>
+  </div>
 
-<!-- Bouton pour rouvrir -->
-<button id="expandBtn" class="expand-btn" style="display:none;">👤</button>
+  <!-- Bouton pour rouvrir -->
+  <button id="expandBtn" class="expand-btn" style="display:none;">👤</button>
 
   <!-- Splash -->
   <div id="splash" class="splash-screen">
-    <img src="assets/mascotte.png" alt="Boubou" class="splash-mascotte">
+    <img src="./assets/mascotte.png" alt="Boubou" class="splash-mascotte" />
     <h2>Bienvenue sur EduHub</h2>
   </div>
 
   <!-- Mascotte -->
   <div class="mascotte-zone">
-    <img src="assets/mascotte.png" alt="Boubou" class="mascotte" onclick="lancerVoix()">
+    <img src="./assets/mascotte.png" alt="Boubou" class="mascotte" onclick="lancerVoix()" />
     <p class="mascotte-message" id="mascotteMessage"></p>
   </div>
 
@@ -91,8 +93,6 @@
       <input type="email" id="email" placeholder="Email" required />
       <input type="password" id="password" placeholder="Mot de passe" required />
       <button type="submit">Se connecter</button>
-      <!-- <button type="button" id="signupBtn">Créer un compte</button> -->
-
     </form>
   </div>
 
@@ -100,35 +100,35 @@
   <div id="appSection" style="display:none;">
     <h1>Bienvenue sur ton portail éducatif</h1>
     <div id="app-links"></div>
-    <!-- <button id="logoutBtn">Se déconnecter</button> -->
   </div>
 
-  <!-- Tableau des classement multiplication -->
-<div class="leaderboard-wrapper" style="display:none;">
-  <div class="leaderboard-header">
-    <h2>🏆 Tableau des scores</h2>
-    <button id="refreshLeaderboardBtn" class="refresh-btn">🔄 Rafraîchir le tableau</button>
+  <!-- Tableau des scores -->
+  <div class="leaderboard-wrapper" style="display:none;">
+    <div class="leaderboard-header">
+      <h2>🏆 Tableau des scores</h2>
+      <button id="refreshLeaderboardBtn" class="refresh-btn">🔄 Rafraîchir le tableau</button>
+    </div>
+
+    <table class="leaderboard-table styled-leaderboard" id="leaderboardTable">
+      <thead>
+        <tr>
+          <th>Rang</th>
+          <th>Nom</th>
+          <th>Application</th>
+          <th>Bonnes réponses</th>
+          <th>Mauvaises réponses</th>
+          <th>Pourcentage de réussite</th>
+        </tr>
+      </thead>
+      <tbody id="leaderboard-body"></tbody>
+    </table>
   </div>
 
-  <table class="leaderboard-table styled-leaderboard" id="leaderboardTable">
-    <thead>
-      <tr>
-        <th>Rang</th>
-        <th>Nom</th>
-        <th>Application</th>
-        <th>Bonnes réponses</th>
-        <th>Mauvaises réponses</th>
-        <th>Pourcentage de réussite</th>
-      </tr>
-    </thead>
-    <tbody id="leaderboard-body"></tbody>
-  </table>
-</div>
   <!-- Script principal -->
-<script type="module">
-  import { initScript } from '/script.js';
-  initScript();
-</script>
+  <script type="module">
+    import { initScript } from './script.js';
+    initScript();
+  </script>
 
 </body>
 </html>
