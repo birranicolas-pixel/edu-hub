@@ -1,8 +1,7 @@
-// Initialisation Firebase
-const auth = firebase.auth();
-const db = firebase.firestore();
+import { safeGet, generateVariations } from '/utils.js';
+import { auth, db } from '/script.js';
 
-// Variables de session
+// 🔤 Variables de session
 let temps = null;
 let groupe = null;
 let bonnesReponses = 0;
@@ -10,7 +9,7 @@ let mauvaisesReponses = 0;
 let validationEnCours = false;
 const sessionId = Date.now().toString();
 
-// Terminaisons régulières
+// 📚 Terminaisons régulières
 const terminaisons = {
   présent: {
     1: ["e", "es", "e", "ons", "ez", "ent"],
@@ -29,10 +28,10 @@ const terminaisons = {
   }
 };
 
-// Pronoms
+// 👤 Pronoms
 const pronoms = ["Je", "Tu", "Il/Elle", "Nous", "Vous", "Ils/Elles"];
 
-// Irréguliers
+// 🔀 Irréguliers
 const radicauxIrreguliersFutur = {
   venir: "viendr",
   voir: "verr",
@@ -45,7 +44,7 @@ const conjugaisonsIrregulieresPresent = {
   prendre: ["prends", "prends", "prend", "prenons", "prenez", "prennent"]
 };
 
-// Fonctions principales
+// 🧠 Sélection du temps et du groupe
 function setTemps(t) {
   temps = t;
   if (groupe) generateQuestion();
@@ -56,12 +55,17 @@ function setGroupe(g) {
   if (temps) generateQuestion();
 }
 
+// 📝 Génération de la question
 function generateQuestion() {
   if (!temps || !groupe) return;
 
+  const questionEl = safeGet("question");
+  const reponsesEl = safeGet("reponses");
+  const feedbackEl = safeGet("feedback");
+
   const verbe = getVerbe(groupe);
   if (!verbe || typeof verbe !== "string") {
-    document.getElementById("question").textContent = "⚠️ Verbe non défini.";
+    questionEl.textContent = "⚠️ Verbe non défini.";
     return;
   }
 
@@ -77,26 +81,28 @@ function generateQuestion() {
     bonneReponse = fusionRadicalTerminaison(radical, terminaison);
   }
 
-  document.getElementById("question").textContent = `${pronom} (${verbe}) au ${temps}`;
-  document.getElementById("reponses").innerHTML = "";
-  document.getElementById("feedback").textContent = "";
+  questionEl.textContent = `${pronom} (${verbe}) au ${temps}`;
+  reponsesEl.innerHTML = "";
+  feedbackEl.textContent = "";
 
-  const propositions = generatePropositions(bonneReponse);
+  const propositions = generateVariations(bonneReponse);
   propositions.forEach(rep => {
     const btn = document.createElement("button");
     btn.textContent = rep;
     btn.className = "answer-btn";
     btn.onclick = () => validate(rep, bonneReponse);
-    document.getElementById("reponses").appendChild(btn);
+    reponsesEl.appendChild(btn);
   });
 }
 
+// 🔧 Fusion du radical et de la terminaison
 function fusionRadicalTerminaison(radical, terminaison) {
   return radical.slice(-1) === terminaison.charAt(0)
     ? radical + terminaison.slice(1)
     : radical + terminaison;
 }
 
+// 📖 Sélection d’un verbe
 function getVerbe(groupe) {
   const verbes = {
     1: ["chanter", "jouer", "marcher"],
@@ -107,6 +113,7 @@ function getVerbe(groupe) {
   return liste?.[Math.floor(Math.random() * liste.length)] || "verbe inconnu";
 }
 
+// 🔍 Extraction du radical
 function getRadical(verbe, groupe) {
   if (temps === "futur" && groupe === 3 && radicauxIrreguliersFutur[verbe]) {
     return radicauxIrreguliersFutur[verbe];
@@ -114,32 +121,14 @@ function getRadical(verbe, groupe) {
   return verbe.slice(0, -2);
 }
 
-function generatePropositions(correct) {
-  const variations = new Set();
-  const lowerCorrect = correct.toLowerCase();
-  variations.add(lowerCorrect);
-
-  if (correct.length > 2) {
-    variations.add((correct + "x").toLowerCase());
-    variations.add(correct.slice(0, -1).toLowerCase());
-    variations.add(correct.replace(/.$/, "z").toLowerCase());
-  }
-
-  if (variations.size < 4) {
-    variations.add(correct.toUpperCase().toLowerCase());
-    variations.add([...correct].reverse().join("").toLowerCase());
-  }
-
-  const shuffled = Array.from(variations).sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, 4).map(rep => (rep === lowerCorrect ? correct : rep));
-}
-
+// ✅ Validation de la réponse
 function validate(rep, correct) {
   if (validationEnCours) return;
   validationEnCours = true;
 
-  const feedback = document.getElementById("feedback");
-  if (!feedback) return;
+  const feedback = safeGet("feedback");
+  const scoreEl = safeGet("score");
+  const badCountEl = safeGet("bad-count");
 
   const isCorrect = rep === correct;
   if (isCorrect) {
@@ -152,8 +141,6 @@ function validate(rep, correct) {
     feedback.style.color = "red";
   }
 
-  const scoreEl = document.getElementById("score");
-  const badCountEl = document.getElementById("bad-count");
   if (scoreEl) scoreEl.textContent = bonnesReponses;
   if (badCountEl) badCountEl.textContent = mauvaisesReponses;
 
@@ -163,7 +150,31 @@ function validate(rep, correct) {
   }, 1000);
 }
 
-// Initialisation des événements
+// 💾 Enregistrement des scores
+function enregistrerSession() {
+  const user = auth.currentUser;
+  if (!user || (bonnesReponses + mauvaisesReponses === 0)) {
+    alert("⚠️ Aucun score à enregistrer.");
+    return;
+  }
+
+  db.collection("result").add({
+    uid: user.uid,
+    email: user.email,
+    username: user.displayName || user.email,
+    application: "conjugaison",
+    totalBonnes: bonnesReponses,
+    totalMauvaises: mauvaisesReponses,
+    sessionId: sessionId,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(() => {
+    alert("✅ Scores enregistrés !");
+  }).catch(error => {
+    console.error("Erreur Firestore :", error);
+  });
+}
+
+// 🚀 Initialisation
 function initConjugaison() {
   document.querySelectorAll("[data-temps]").forEach(btn => {
     btn.addEventListener("click", () => {
@@ -179,31 +190,11 @@ function initConjugaison() {
     });
   });
 
-  const saveBtn = document.getElementById("saveSessionBtn");
+  const saveBtn = safeGet("saveSessionBtn");
   if (saveBtn) {
-    saveBtn.addEventListener("click", () => {
-      const user = auth.currentUser;
-      if (user && (bonnesReponses + mauvaisesReponses > 0)) {
-        db.collection("result").add({
-          uid: user.uid,
-          email: user.email,
-          username: user.displayName || user.email,
-          application: "conjugaison",
-          totalBonnes: bonnesReponses,
-          totalMauvaises: mauvaisesReponses,
-          sessionId: sessionId,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        }).then(() => {
-          alert("✅ Scores enregistrés !");
-        }).catch(error => {
-          console.error("Erreur Firestore :", error);
-        });
-      } else {
-        alert("⚠️ Aucun score à enregistrer.");
-      }
-    });
+    saveBtn.addEventListener("click", enregistrerSession);
   }
 }
 
-// Lancement automatique
+// ⏱️ Démarrage automatique
 document.addEventListener("DOMContentLoaded", initConjugaison);
