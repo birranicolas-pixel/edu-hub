@@ -108,12 +108,14 @@ export function displayLeaderboard(data) {
 // 🔐 Connexion utilisateur
 function setupLogin() {
   const form = document.getElementById("loginForm");
-  if (!form) return;
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+  if (!form || !emailInput || !passwordInput) return;
 
   form.addEventListener("submit", e => {
     e.preventDefault();
-    const email = document.getElementById("email")?.value;
-    const password = document.getElementById("password")?.value;
+    const email = emailInput.value;
+    const password = passwordInput.value;
 
     auth.signInWithEmailAndPassword(email, password)
       .then(userCredential => {
@@ -170,11 +172,11 @@ function setupUserBarToggle() {
 // 🔁 Rafraîchissement du leaderboard
 function setupRefreshButton() {
   const btn = document.getElementById("refreshLeaderboardBtn");
-  if (btn) {
-    btn.addEventListener("click", () => {
-      fetchLeaderboard();
-    });
-  }
+  if (!btn) return;
+
+  btn.addEventListener("click", () => {
+    fetchLeaderboard();
+  });
 }
 
 // 👤 Surveillance de l’état de connexion
@@ -184,16 +186,14 @@ function monitorAuthState() {
     const appSection = document.getElementById("appSection");
     const userBar = document.getElementById("userBar");
     const leaderboardWrapper = document.querySelector(".leaderboard-wrapper");
+    const userInfo = document.getElementById("userInfo");
 
     if (user) {
       if (authSection) authSection.style.display = "none";
       if (appSection) appSection.style.display = "block";
       if (userBar) userBar.style.display = "flex";
       if (leaderboardWrapper) leaderboardWrapper.style.display = "block";
-
-      const nom = user.displayName || user.email;
-      const userInfo = document.getElementById("userInfo");
-      if (userInfo) userInfo.textContent = `Connecté : ${nom}`;
+      if (userInfo) userInfo.textContent = `Connecté : ${user.displayName || user.email}`;
 
       generateMenu();
       fetchLeaderboard();
