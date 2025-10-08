@@ -137,11 +137,11 @@
             container.dataset.loaded = 'true';
 
             if (appName === 'multiplication') {
-              import(`./app/multiplication/multiplication.js`).then(module => {
+              import(`./apps/multiplication/multiplication.js`).then(module => {
                 module.initMultiplication();
               });
             } else if (appName === 'conjugaison') {
-              import(`./app/conjugaison/conjugaison.js`).then(module => {
+              import(`./apps/conjugaison/conjugaison.js`).then(module => {
                 module.initConjugaison();
               });
             }
