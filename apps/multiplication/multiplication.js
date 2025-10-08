@@ -61,10 +61,26 @@ function verifierReponse(reponse, bonne, questionEl, answersEl, feedbackEl) {
 
 function terminerQuiz(questionEl, answersEl, feedbackEl) {
   const user = auth.currentUser;
-  questionEl.textContent = "🎉 Quiz terminé !";
-  answersEl.innerHTML = "";
-  feedbackEl.textContent = `Score final : ${bonneReponse} bonnes réponses, ${mauvaiseReponse} mauvaises.`;
 
+  // Masquer le quiz
+  safeGet("quiz")?.classList.add("hidden");
+
+  // Afficher l'écran de fin
+  const endScreen = safeGet("quiz-end");
+  const finalScore = safeGet("final-score");
+  const replayBtn = safeGet("replay-btn");
+
+  if (endScreen && finalScore && replayBtn) {
+    finalScore.textContent = `🎉 Quiz terminé ! Score : ${bonneReponse} bonnes réponses, ${mauvaiseReponse} mauvaises.`;
+    endScreen.classList.remove("hidden");
+
+    replayBtn.onclick = () => {
+      endScreen.classList.add("hidden");
+      initMultiplication(); // relance proprement
+    };
+  }
+
+  // Enregistrement du score
   if (!user) return;
 
   db.collection("result").add({
@@ -88,11 +104,14 @@ export function initMultiplication() {
   const questionEl = safeGet("question");
   const answersEl = safeGet("answers");
   const feedbackEl = safeGet("feedback");
+  const endScreen = safeGet("quiz-end");
 
   bonneReponse = 0;
   mauvaiseReponse = 0;
   questionCount = 0;
   quizTerminé = false;
+
+  if (endScreen) endScreen.classList.add("hidden"); // cacher l'écran de fin
 
   tableButtons.forEach(button => {
     button.addEventListener("click", () => {
