@@ -54,7 +54,7 @@ export function generateMenu() {
     button.textContent = `${app.icon} ${app.name}`;
     button.className = "app-link";
     button.addEventListener("click", () => {
-      window.showApp(app.key);
+      showApp(app.key);
     });
     container.appendChild(button);
   });
@@ -115,25 +115,25 @@ export function displayLeaderboard(data) {
 export function monitorAuthState() {
   auth.onAuthStateChanged(user => {
     const authSection = safeGet("authSection");
-    const appSection = safeGet("appSection");
     const userBar = safeGet("userBar");
     const userInfo = safeGet("userInfo");
     const leaderboardWrapper = document.querySelector(".leaderboard-wrapper");
+    const homeScreen = safeGet("home-screen");
 
     if (user) {
       authSection?.style.setProperty("display", "none");
-      appSection?.style.setProperty("display", "block");
       userBar?.style.setProperty("display", "flex");
       leaderboardWrapper?.style.setProperty("display", "block");
+      homeScreen?.style.setProperty("display", "block");
       if (userInfo) userInfo.textContent = `Connecté : ${user.displayName || user.email}`;
 
       generateMenu();
       fetchLeaderboard().then(displayLeaderboard);
     } else {
       authSection?.style.setProperty("display", "block");
-      appSection?.style.setProperty("display", "none");
       userBar?.style.setProperty("display", "none");
       leaderboardWrapper?.style.setProperty("display", "none");
+      homeScreen?.style.setProperty("display", "none");
     }
   });
 }
@@ -211,4 +211,45 @@ export function initScript() {
   setupUserBarToggle();
   setupRefreshButton();
   monitorAuthState();
+  setupNavigation();
+}
+
+// 🧭 Navigation entre accueil et applications
+function setupNavigation() {
+  const homeScreen = safeGet("home-screen");
+  const appSections = {
+    multiplication: safeGet("multiplication"),
+    conjugaison: safeGet("conjugaison")
+  };
+
+  document.querySelectorAll(".app-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const appKey = btn.dataset.app;
+      homeScreen.style.display = "none";
+      Object.values(appSections).forEach(section => section.style.display = "none");
+
+      const container = appSections[appKey];
+      container.style.display = "block";
+
+      if (!container.dataset.loaded) {
+        fetch(`apps/${appKey}/${appKey}.html`)
+          .then(res => res.text())
+          .then(html => {
+            container.innerHTML = html;
+            container.dataset.loaded = "true";
+
+            if (appKey === "multiplication") {
+              import(`./apps/multiplication/multiplication.js`).then(mod => mod.initMultiplication());
+            } else if (appKey === "conjugaison") {
+              import(`./apps/conjugaison/conjugaison.js`).then(mod => mod.initConjugaison());
+            }
+          });
+      }
+    });
+  });
+
+  window.backToHome = () => {
+    homeScreen.style.display = "block";
+    Object.values(appSections).forEach(section => section.style.display = "none");
+  };
 }
