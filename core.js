@@ -13,14 +13,11 @@ if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
 
-// ✅ Exports Firebase
 export const auth = firebase.auth();
 export const db = firebase.firestore();
 
 console.log("✅ auth exporté :", firebase.auth());
 console.log("✅ script.js chargé");
-console.log("auth exporté ?", typeof firebase.auth);
-
 
 // 🔐 Utilitaire DOM sécurisé
 export function safeGet(id) {
@@ -31,9 +28,8 @@ export function safeGet(id) {
 
 // 📚 Liste des applications éducatives
 export const apps = [
-  { name: "Tables de multiplication", path: "apps/multiplication/index.html", icon: "📚" },
-  { name: "Conjugaison", path: "apps/conjugaison/index.html", icon: "📖" },
-  { name: "Quiz général", path: "apps/quiz/index.html", icon: "🧠" }
+  { name: "Tables de multiplication", key: "multiplication", icon: "🧮" },
+  { name: "Conjugaison", key: "conjugaison", icon: "📚" }
 ];
 
 // 🧠 Message mascotte
@@ -57,11 +53,13 @@ export function generateMenu() {
 
   container.innerHTML = "";
   apps.forEach(app => {
-    const link = document.createElement("a");
-    link.href = app.path;
-    link.textContent = `${app.icon} ${app.name}`;
-    link.className = "app-link";
-    container.appendChild(link);
+    const button = document.createElement("button");
+    button.textContent = `${app.icon} ${app.name}`;
+    button.className = "app-link";
+    button.addEventListener("click", () => {
+      window.showApp(app.key);
+    });
+    container.appendChild(button);
   });
 }
 
