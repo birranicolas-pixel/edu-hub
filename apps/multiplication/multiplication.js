@@ -37,23 +37,33 @@ function lancerQuestion(questionEl, answersEl, feedbackEl) {
 function verifierReponse(reponse, bonne, questionEl, answersEl, feedbackEl) {
   if (quizTerminé) return;
 
+  const goodMessageEl = safeGet("good-message");
+  const badMessageEl = safeGet("bad-message");
+
   if (reponse === bonne) {
     bonneReponse++;
     feedbackEl.textContent = "✅ Bravo !";
+    safeGet("good-count").textContent = bonneReponse;
+    if (goodMessageEl) goodMessageEl.textContent = "Bonne réponse !";
+    if (badMessageEl) badMessageEl.textContent = "";
   } else {
     mauvaiseReponse++;
     feedbackEl.textContent = `❌ Mauvaise réponse. La bonne était ${bonne}.`;
+    safeGet("bad-count").textContent = `Mauvaises réponses : ${mauvaiseReponse}`;
+    if (badMessageEl) badMessageEl.textContent = `Mauvaise réponse. La bonne était ${bonne}.`;
+    if (goodMessageEl) goodMessageEl.textContent = "";
   }
 
-  safeGet("good-count").textContent = bonneReponse;
-  safeGet("bad-count").textContent = `Mauvaises réponses : ${mauvaiseReponse}`;
   questionCount++;
 
   setTimeout(() => {
     lancerQuestion(safeGet("question"), safeGet("answers"), safeGet("feedback"));
     feedbackEl.textContent = "";
+    if (goodMessageEl) goodMessageEl.textContent = "";
+    if (badMessageEl) badMessageEl.textContent = "";
   }, 1500);
 }
+
 
 // 📝 Enregistre les résultats manuellement
 function enregistrerMultiplication() {
