@@ -28,7 +28,11 @@ h1 {
   margin-bottom: 2rem;
 }
 
-/* === Transitions douces === */
+/* === Visibilité et transitions === */
+.hidden {
+  display: none !important;
+}
+
 .fade-out {
   opacity: 0;
   transition: opacity 0.5s ease;
@@ -44,12 +48,10 @@ h1 {
   to { opacity: 1; }
 }
 
-
-.hidden {
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.5s ease;
-  display: none
+@keyframes fadeOut {
+  0% { opacity: 1; visibility: visible; }
+  80% { opacity: 1; }
+  100% { opacity: 0; visibility: hidden; }
 }
 
 #quiz,
@@ -59,7 +61,7 @@ h1 {
   transition: opacity 0.5s ease;
 }
 
-/* === Boutons cohérents === */
+/* === Boutons génériques === */
 button,
 .table-btn,
 .answer-btn,
@@ -106,7 +108,6 @@ button:active,
   box-shadow: 0 0 8px var(--color-primary);
   transition: all 0.2s ease;
 }
-
 
 /* === Boutons d'application === */
 .app-link {
@@ -341,17 +342,6 @@ select, input {
 @keyframes bounce {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes fadeOut {
-  0% { opacity: 1; visibility: visible; }
-  80% { opacity: 1; }
-  100% { opacity: 0; visibility: hidden; }
 }
 
 /* === Barre utilisateur === */
