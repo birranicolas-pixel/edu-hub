@@ -50,60 +50,55 @@ function verifierReponse(reponse, bonne, questionEl, answersEl, feedbackEl) {
 
   if (questionCount >= maxQuestions) {
     quizTerminé = true;
-    terminerQuiz(questionEl, answersEl, feedbackEl);
+    terminerQuiz();
   } else {
     setTimeout(() => {
-      lancerQuestion(questionEl, answersEl, feedbackEl);
+      lancerQuestion(safeGet("question"), safeGet("answers"), safeGet("feedback"));
       feedbackEl.textContent = "";
     }, 1500);
   }
 }
 
-function terminerQuiz(questionEl, answersEl, feedbackEl) {
+function terminerQuiz() {
   const user = auth.currentUser;
 
-  safeGet("quiz")?.classList.add("hidden");
-  safeGet("table-selection")?.classList.add("hidden");
+  safeGet("quiz").classList.add("hidden");
+  safeGet("quiz-end").classList.remove("hidden");
 
-  const endScreen = safeGet("quiz-end");
   const finalScore = safeGet("final-score");
+  finalScore.textContent = `🎉 Quiz terminé ! Score : ${bonneReponse} bonnes réponses, ${mauvaiseReponse} mauvaises.`;
+
   const replayBtn = safeGet("replay-btn");
+  replayBtn.onclick = () => {
+    bonneReponse = 0;
+    mauvaiseReponse = 0;
+    questionCount = 0;
+    quizTerminé = false;
 
-  if (endScreen && finalScore && replayBtn) {
-    finalScore.textContent = `🎉 Quiz terminé ! Score : ${bonneReponse} bonnes réponses, ${mauvaiseReponse} mauvaises.`;
-    endScreen.classList.remove("hidden");
+    safeGet("quiz-end").classList.add("hidden");
+    safeGet("quiz").classList.add("hidden");
+    safeGet("feedback").textContent = "";
+    safeGet("good-count").textContent = "0";
+    safeGet("bad-count").textContent = "Mauvaises réponses : 0";
 
-    replayBtn.onclick = () => {
-      bonneReponse = 0;
-      mauvaiseReponse = 0;
-      questionCount = 0;
-      quizTerminé = false;
+    safeGet("table-selection").classList.remove("hidden");
+  };
 
-      safeGet("quiz-end")?.classList.add("hidden");
-      safeGet("quiz")?.classList.add("hidden");
-      safeGet("feedback").textContent = "";
-      safeGet("good-count").textContent = "0";
-      safeGet("bad-count").textContent = "Mauvaises réponses : 0";
-
-      safeGet("table-selection")?.classList.remove("hidden");
-    };
+  if (user) {
+    db.collection("result").add({
+      uid: user.uid,
+      email: user.email,
+      table: tableChoisie,
+      totalBonnes: bonneReponse,
+      totalMauvaises: mauvaiseReponse,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      application: "multiplication"
+    }).then(() => {
+      console.log("Résultat final enregistré !");
+    }).catch(error => {
+      console.error("Erreur lors de l'enregistrement du score :", error);
+    });
   }
-
-  if (!user) return;
-
-  db.collection("result").add({
-    uid: user.uid,
-    email: user.email,
-    table: tableChoisie,
-    totalBonnes: bonneReponse,
-    totalMauvaises: mauvaiseReponse,
-    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-    application: "multiplication"
-  }).then(() => {
-    console.log("Résultat final enregistré !");
-  }).catch(error => {
-    console.error("Erreur lors de l'enregistrement du score :", error);
-  });
 }
 
 export function initMultiplication() {
@@ -112,25 +107,26 @@ export function initMultiplication() {
   const questionEl = safeGet("question");
   const answersEl = safeGet("answers");
   const feedbackEl = safeGet("feedback");
-  const endScreen = safeGet("quiz-end");
 
   bonneReponse = 0;
   mauvaiseReponse = 0;
   questionCount = 0;
   quizTerminé = false;
 
-  if (endScreen) endScreen.classList.add("hidden");
-  safeGet("table-selection")?.classList.remove("hidden");
-  quizContainer?.classList.add("hidden");
+  safeGet("quiz-end").classList.add("hidden");
+  safeGet("quiz").classList.add("hidden");
+  safeGet("table-selection").classList.remove("hidden");
+  feedbackEl.textContent = "";
+  safeGet("good-count").textContent = "0";
+  safeGet("bad-count").textContent = "Mauvaises réponses : 0";
 
   tableButtons.forEach(button => {
     if (!button.dataset.listenerAttached) {
       button.addEventListener("click", () => {
         tableChoisie = parseInt(button.dataset.table);
-        safeGet("table-selection")?.classList.add("hidden");
+        safeGet("table-selection").classList.add("hidden");
+        quizContainer.classList.remove("hidden");
         lancerQuestion(questionEl, answersEl, feedbackEl);
-        quizContainer?.classList.remove("hidden");
-        feedbackEl.textContent = "";
       });
       button.dataset.listenerAttached = "true";
     }
