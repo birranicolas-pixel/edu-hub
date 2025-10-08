@@ -42,20 +42,24 @@ const conjugaisonsIrregulieresPresent = {
 
 function setTemps(t) {
   temps = t;
-  if (groupe) generateQuestion();
+  tryGenerateQuestion();
 }
 
 function setGroupe(g) {
   groupe = g;
-  if (temps) generateQuestion();
+  tryGenerateQuestion();
+}
+
+function tryGenerateQuestion() {
+  if (temps && groupe) generateQuestion();
 }
 
 function generateQuestion() {
-  if (!temps || !groupe) return;
-
   const questionEl = safeGet("question");
   const reponsesEl = safeGet("reponses");
   const feedbackEl = safeGet("feedback");
+
+  if (!questionEl || !reponsesEl || !feedbackEl) return;
 
   const verbe = getVerbe(groupe);
   const index = Math.floor(Math.random() * pronoms.length);
@@ -176,5 +180,11 @@ export function initConjugaison() {
   const saveBtn = safeGet("saveSessionBtn");
   if (saveBtn) {
     saveBtn.addEventListener("click", enregistrerSession);
+  }
+
+  // Optionnel : message initial
+  const questionEl = safeGet("question");
+  if (questionEl) {
+    questionEl.textContent = "Clique sur un temps et un groupe pour commencer.";
   }
 }
