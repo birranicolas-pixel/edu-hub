@@ -103,6 +103,18 @@ function enregistrerConjugaison() {
   }
 }
 
+function essayerDeLancerQuiz(selectors, quizContainer, questionEl, answersEl, feedbackEl) {
+  if (tempsChoisi && groupeChoisi) {
+    selectors.classList.add("fade-out");
+    setTimeout(() => {
+      selectors.classList.add("hidden");
+      quizContainer?.classList.remove("hidden");
+      quizContainer?.classList.add("fade-in");
+      lancerQuestion(questionEl, answersEl, feedbackEl);
+    }, 500);
+  }
+}
+
 export function initConjugaison() {
   const tempsButtons = document.querySelectorAll(".temps-btn");
   const groupeButtons = document.querySelectorAll(".groupe-btn");
@@ -133,6 +145,7 @@ export function initConjugaison() {
         tempsChoisi = btn.dataset.temps;
         tempsButtons.forEach(b => b.classList.remove("selected"));
         btn.classList.add("selected");
+        essayerDeLancerQuiz(selectors, quizContainer, questionEl, answersEl, feedbackEl);
       });
       btn.dataset.listenerAttached = "true";
     }
@@ -144,16 +157,7 @@ export function initConjugaison() {
         groupeChoisi = parseInt(btn.dataset.groupe);
         groupeButtons.forEach(b => b.classList.remove("selected"));
         btn.classList.add("selected");
-
-        if (tempsChoisi && groupeChoisi) {
-          selectors.classList.add("fade-out");
-          setTimeout(() => {
-            selectors.classList.add("hidden");
-            quizContainer?.classList.remove("hidden");
-            quizContainer?.classList.add("fade-in");
-            lancerQuestion(questionEl, answersEl, feedbackEl);
-          }, 500);
-        }
+        essayerDeLancerQuiz(selectors, quizContainer, questionEl, answersEl, feedbackEl);
       });
       btn.dataset.listenerAttached = "true";
     }

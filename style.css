@@ -210,6 +210,10 @@ select, input {
   color: var(--color-error);
 }
 
+#good-count {
+  color: var(--color-success);
+}
+
 #feedback,
 .feedback-message {
   margin-top: 1em;
