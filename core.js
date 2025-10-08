@@ -235,3 +235,8 @@ function setupNavigation() {
     Object.values(appSections).forEach(section => section.style.display = "none");
   };
 }
+
+element.classList.add("fade-out");
+setTimeout(() => {
+  element.classList.add("hidden");
+}, 500);

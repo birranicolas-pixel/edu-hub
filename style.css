@@ -29,10 +29,16 @@ h1 {
 }
 
 /* === Transitions douces === */
+.fade-out {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
 .hidden {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.5s ease;
+  display: none
 }
 
 #quiz,
