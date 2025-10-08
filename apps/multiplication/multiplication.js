@@ -5,6 +5,7 @@ let bonneReponse = 0;
 let mauvaiseReponse = 0;
 let tableChoisie = null;
 let questionCount = 0;
+let quizTerminé = false;
 const maxQuestions = 10;
 
 function lancerQuestion(questionEl, answersEl, feedbackEl) {
@@ -33,6 +34,8 @@ function lancerQuestion(questionEl, answersEl, feedbackEl) {
 }
 
 function verifierReponse(reponse, bonne, questionEl, answersEl, feedbackEl) {
+  if (quizTerminé) return;
+
   if (reponse === bonne) {
     bonneReponse++;
     feedbackEl.textContent = "✅ Bravo !";
@@ -46,6 +49,7 @@ function verifierReponse(reponse, bonne, questionEl, answersEl, feedbackEl) {
   questionCount++;
 
   if (questionCount >= maxQuestions) {
+    quizTerminé = true;
     terminerQuiz(questionEl, answersEl, feedbackEl);
   } else {
     setTimeout(() => {
@@ -88,6 +92,7 @@ export function initMultiplication() {
   bonneReponse = 0;
   mauvaiseReponse = 0;
   questionCount = 0;
+  quizTerminé = false;
 
   tableButtons.forEach(button => {
     button.addEventListener("click", () => {
