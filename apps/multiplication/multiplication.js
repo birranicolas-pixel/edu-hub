@@ -139,7 +139,11 @@ export function initMultiplication() {
           tableSelection.classList.add("fade-out");
           setTimeout(() => {
             tableSelection.classList.add("hidden");
+
+            // Animation d’apparition du quiz
             quizContainer?.classList.remove("hidden");
+            quizContainer?.classList.add("fade-in");
+
             lancerQuestion(questionEl, answersEl, feedbackEl);
           }, 500);
         }
