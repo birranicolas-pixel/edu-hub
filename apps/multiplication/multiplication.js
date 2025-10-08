@@ -62,10 +62,9 @@ function verifierReponse(reponse, bonne, questionEl, answersEl, feedbackEl) {
 function terminerQuiz(questionEl, answersEl, feedbackEl) {
   const user = auth.currentUser;
 
-  // Masquer le quiz
   safeGet("quiz")?.classList.add("hidden");
+  safeGet("table-selection")?.classList.add("hidden");
 
-  // Afficher l'écran de fin
   const endScreen = safeGet("quiz-end");
   const finalScore = safeGet("final-score");
   const replayBtn = safeGet("replay-btn");
@@ -76,11 +75,10 @@ function terminerQuiz(questionEl, answersEl, feedbackEl) {
 
     replayBtn.onclick = () => {
       endScreen.classList.add("hidden");
-      initMultiplication(); // relance proprement
+      safeGet("table-selection")?.classList.remove("hidden");
     };
   }
 
-  // Enregistrement du score
   if (!user) return;
 
   db.collection("result").add({
@@ -111,11 +109,13 @@ export function initMultiplication() {
   questionCount = 0;
   quizTerminé = false;
 
-  if (endScreen) endScreen.classList.add("hidden"); // cacher l'écran de fin
+  if (endScreen) endScreen.classList.add("hidden");
+  safeGet("table-selection")?.classList.remove("hidden");
 
   tableButtons.forEach(button => {
     button.addEventListener("click", () => {
       tableChoisie = parseInt(button.dataset.table);
+      safeGet("table-selection")?.classList.add("hidden");
       lancerQuestion(questionEl, answersEl, feedbackEl);
       quizContainer?.classList.remove("hidden");
       feedbackEl.textContent = "";
