@@ -59,4 +59,42 @@ function terminerQuiz(questionEl, answersEl, feedbackEl) {
   const user = auth.currentUser;
   questionEl.textContent = "🎉 Quiz terminé !";
   answersEl.innerHTML = "";
-  feedbackEl.textContent = `Score final : ${bonneReponse} bonnes réponses, ${mauvaiseReponse
+  feedbackEl.textContent = `Score final : ${bonneReponse} bonnes réponses, ${mauvaiseReponse} mauvaises.`;
+
+  if (!user) return;
+
+  db.collection("result").add({
+    uid: user.uid,
+    email: user.email,
+    table: tableChoisie,
+    totalBonnes: bonneReponse,
+    totalMauvaises: mauvaiseReponse,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    application: "multiplication"
+  }).then(() => {
+    console.log("Résultat final enregistré !");
+  }).catch(error => {
+    console.error("Erreur lors de l'enregistrement du score :", error);
+  });
+}
+
+export function initMultiplication() {
+  const tableButtons = document.querySelectorAll(".table-btn");
+  const quizContainer = safeGet("quiz");
+  const questionEl = safeGet("question");
+  const answersEl = safeGet("answers");
+  const feedbackEl = safeGet("feedback");
+
+  bonneReponse = 0;
+  mauvaiseReponse = 0;
+  questionCount = 0;
+
+  tableButtons.forEach(button => {
+    button.addEventListener("click", () => {
+      tableChoisie = parseInt(button.dataset.table);
+      lancerQuestion(questionEl, answersEl, feedbackEl);
+      quizContainer?.classList.remove("hidden");
+      feedbackEl.textContent = "";
+    });
+  });
+}
