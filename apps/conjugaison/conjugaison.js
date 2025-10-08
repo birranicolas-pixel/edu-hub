@@ -8,8 +8,6 @@ let quizTerminé = false;
 let tempsChoisi = null;
 let groupeChoisi = null;
 
-const maxQuestions = Infinity; // Pas de limite automatique
-
 const verbes = {
   1: ["aimer", "chanter", "marcher", "jouer"],
   2: ["finir", "choisir", "réussir", "grandir"],
@@ -23,6 +21,11 @@ function conjugue(verbe, pronom, temps) {
 }
 
 function lancerQuestion(questionEl, answersEl, feedbackEl) {
+  if (!questionEl || !answersEl || !feedbackEl || !tempsChoisi || !groupeChoisi) {
+    console.error("❌ Impossible de lancer la question : éléments manquants");
+    return;
+  }
+
   const verbe = shuffleArray(verbes[groupeChoisi])[0];
   const pronom = shuffleArray(pronoms)[0];
   const bonne = conjugue(verbe, pronom, tempsChoisi);
