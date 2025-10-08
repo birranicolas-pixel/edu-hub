@@ -74,20 +74,17 @@ function terminerQuiz(questionEl, answersEl, feedbackEl) {
     endScreen.classList.remove("hidden");
 
     replayBtn.onclick = () => {
-      // Réinitialiser les compteurs
       bonneReponse = 0;
       mauvaiseReponse = 0;
       questionCount = 0;
       quizTerminé = false;
 
-      // Réinitialiser l'affichage
       safeGet("quiz-end")?.classList.add("hidden");
       safeGet("quiz")?.classList.add("hidden");
       safeGet("feedback").textContent = "";
       safeGet("good-count").textContent = "0";
       safeGet("bad-count").textContent = "Mauvaises réponses : 0";
 
-      // Réafficher le choix de la table
       safeGet("table-selection")?.classList.remove("hidden");
     };
   }
@@ -124,6 +121,7 @@ export function initMultiplication() {
 
   if (endScreen) endScreen.classList.add("hidden");
   safeGet("table-selection")?.classList.remove("hidden");
+  quizContainer?.classList.add("hidden");
 
   tableButtons.forEach(button => {
     if (!button.dataset.listenerAttached) {
