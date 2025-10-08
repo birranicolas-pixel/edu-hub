@@ -124,6 +124,11 @@ export function initMultiplication() {
     if (!button.dataset.listenerAttached) {
       button.addEventListener("click", () => {
         tableChoisie = parseInt(button.dataset.table);
+
+        // Effet visuel sur le bouton cliqué
+        tableButtons.forEach(btn => btn.classList.remove("selected"));
+        button.classList.add("selected");
+
         safeGet("table-selection").classList.add("hidden");
         quizContainer.classList.remove("hidden");
         lancerQuestion(questionEl, answersEl, feedbackEl);

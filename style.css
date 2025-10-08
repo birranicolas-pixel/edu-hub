@@ -84,7 +84,12 @@ button:active,
   background-color: var(--color-accent);
   color: #1c1c1c;
   border: 2px solid var(--color-primary);
+  font-weight: bold;
+  transform: scale(1.05);
+  box-shadow: 0 0 8px var(--color-primary);
+  transition: all 0.2s ease;
 }
+
 
 /* === Boutons d'application === */
 .app-link {
