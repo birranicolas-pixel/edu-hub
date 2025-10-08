@@ -236,7 +236,10 @@ function setupNavigation() {
   };
 }
 
-element.classList.add("fade-out");
-setTimeout(() => {
-  element.classList.add("hidden");
-}, 500);
+const tableSelection = safeGet("table-selection");
+if (tableSelection) {
+  tableSelection.classList.add("fade-out");
+  setTimeout(() => {
+    tableSelection.classList.add("hidden");
+  }, 500);
+}
