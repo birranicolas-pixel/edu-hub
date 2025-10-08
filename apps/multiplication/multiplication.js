@@ -62,8 +62,8 @@ function verifierReponse(reponse, bonne, questionEl, answersEl, feedbackEl) {
 function terminerQuiz() {
   const user = auth.currentUser;
 
-  safeGet("quiz").classList.add("hidden");
-  safeGet("quiz-end").classList.remove("hidden");
+  safeGet("quiz")?.classList.add("hidden");
+  safeGet("quiz-end")?.classList.remove("hidden");
 
   const finalScore = safeGet("final-score");
   finalScore.textContent = `🎉 Quiz terminé ! Score : ${bonneReponse} bonnes réponses, ${mauvaiseReponse} mauvaises.`;
@@ -75,13 +75,15 @@ function terminerQuiz() {
     questionCount = 0;
     quizTerminé = false;
 
-    safeGet("quiz-end").classList.add("hidden");
-    safeGet("quiz").classList.add("hidden");
+    safeGet("quiz-end")?.classList.add("hidden");
+    safeGet("quiz")?.classList.add("hidden");
     safeGet("feedback").textContent = "";
     safeGet("good-count").textContent = "0";
     safeGet("bad-count").textContent = "Mauvaises réponses : 0";
 
-    safeGet("table-selection").classList.remove("hidden");
+    const tableSelection = safeGet("table-selection");
+    tableSelection?.classList.remove("hidden");
+    tableSelection?.classList.remove("fade-out");
   };
 
   if (user) {
@@ -113,25 +115,34 @@ export function initMultiplication() {
   questionCount = 0;
   quizTerminé = false;
 
-  safeGet("quiz-end").classList.add("hidden");
-  safeGet("quiz").classList.add("hidden");
-  safeGet("table-selection").classList.remove("hidden");
-  feedbackEl.textContent = "";
+  safeGet("quiz-end")?.classList.add("hidden");
+  quizContainer?.classList.add("hidden");
+  safeGet("feedback").textContent = "";
   safeGet("good-count").textContent = "0";
   safeGet("bad-count").textContent = "Mauvaises réponses : 0";
+
+  const tableSelection = safeGet("table-selection");
+  tableSelection?.classList.remove("hidden");
+  tableSelection?.classList.remove("fade-out");
 
   tableButtons.forEach(button => {
     if (!button.dataset.listenerAttached) {
       button.addEventListener("click", () => {
         tableChoisie = parseInt(button.dataset.table);
 
-        // Effet visuel sur le bouton cliqué
+        // Effet visuel sur le bouton sélectionné
         tableButtons.forEach(btn => btn.classList.remove("selected"));
         button.classList.add("selected");
 
-        safeGet("table-selection").classList.add("hidden");
-        quizContainer.classList.remove("hidden");
-        lancerQuestion(questionEl, answersEl, feedbackEl);
+        // Animation de disparition
+        if (tableSelection) {
+          tableSelection.classList.add("fade-out");
+          setTimeout(() => {
+            tableSelection.classList.add("hidden");
+            quizContainer?.classList.remove("hidden");
+            lancerQuestion(questionEl, answersEl, feedbackEl);
+          }, 500);
+        }
       });
       button.dataset.listenerAttached = "true";
     }
