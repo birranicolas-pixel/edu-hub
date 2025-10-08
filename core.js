@@ -16,20 +16,17 @@ if (!firebase.apps.length) {
 export const auth = firebase.auth();
 export const db = firebase.firestore();
 
-// 🔐 Utilitaire DOM sécurisé
 export function safeGet(id) {
   const el = document.getElementById(id);
   if (!el) console.warn(`⚠️ Élément introuvable : #${id}`);
   return el;
 }
 
-// 📚 Liste des applications disponibles
 export const apps = [
   { name: "Tables de multiplication", key: "multiplication", icon: "🧮" },
   { name: "Conjugaison", key: "conjugaison", icon: "📚" }
 ];
 
-// 🧠 Message mascotte aléatoire
 export function setMascotteMessage() {
   const mascotteEl = safeGet("mascotteMessage");
   if (mascotteEl) {
@@ -43,7 +40,6 @@ export function setMascotteMessage() {
   }
 }
 
-// 📊 Récupération et affichage du leaderboard
 export function fetchLeaderboard() {
   return db.collection("result").get().then(snapshot => {
     const rawData = snapshot.docs.map(doc => doc.data());
@@ -93,7 +89,6 @@ export function displayLeaderboard(data) {
   });
 }
 
-// 🔐 Authentification utilisateur
 function setupLogin() {
   const form = safeGet("loginForm");
   const emailInput = safeGet("email");
@@ -123,7 +118,6 @@ function setupLogout() {
   });
 }
 
-// 👤 Barre utilisateur : affichage et repli
 function setupUserBarToggle() {
   const collapseBtn = safeGet("collapseBtn");
   const expandBtn = safeGet("expandBtn");
@@ -147,7 +141,6 @@ function setupUserBarToggle() {
   expandBtn.style.display = isCollapsed ? "block" : "none";
 }
 
-// 🔁 Rafraîchissement manuel du leaderboard
 function setupRefreshButton() {
   const btn = safeGet("refreshLeaderboardBtn");
   if (!btn) return;
@@ -157,7 +150,6 @@ function setupRefreshButton() {
   });
 }
 
-// 👀 Surveillance de l’état de connexion
 export function monitorAuthState() {
   auth.onAuthStateChanged(user => {
     const authSection = safeGet("authSection");
@@ -183,7 +175,6 @@ export function monitorAuthState() {
   });
 }
 
-// 🚀 Initialisation globale
 export function initScript() {
   setMascotteMessage();
   setupLogin();
@@ -194,7 +185,6 @@ export function initScript() {
   setupNavigation();
 }
 
-// 🧭 Navigation entre les applications
 function setupNavigation() {
   const homeScreen = safeGet("home-screen");
   const appSections = {

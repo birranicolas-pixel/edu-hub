@@ -3,36 +3,20 @@ import { auth, db } from '../../core.js';
 
 let bonneReponse = 0;
 let mauvaiseReponse = 0;
+let tableChoisie = null;
 let questionCount = 0;
 let quizTerminé = false;
-const maxQuestions = 10;
-let tempsChoisi = null;
-let groupeChoisi = null;
 
-const verbes = {
-  1: ["aimer", "chanter", "marcher", "jouer"],
-  2: ["finir", "choisir", "réussir", "grandir"],
-  3: ["prendre", "voir", "venir", "faire"]
-};
-
-const pronoms = ["je", "tu", "il/elle", "nous", "vous", "ils/elles"];
-
-function conjugue(verbe, pronom, temps) {
-  // Simplification : retourne une forme fictive pour l'exemple
-  return `${pronom} ${verbe}-${temps}`;
-}
-
+// 🎯 Génère une question
 function lancerQuestion(questionEl, answersEl, feedbackEl) {
-  const verbe = shuffleArray(verbes[groupeChoisi])[0];
-  const pronom = shuffleArray(pronoms)[0];
-  const bonne = conjugue(verbe, pronom, tempsChoisi);
-
-  questionEl.textContent = `Conjugue le verbe "${verbe}" au pronom "${pronom}" au temps "${tempsChoisi}"`;
+  const facteur = Math.floor(Math.random() * 10) + 1;
+  const bonne = tableChoisie * facteur;
+  questionEl.textContent = `Combien font ${tableChoisie} × ${facteur} ?`;
 
   const propositions = [bonne];
   while (propositions.length < 4) {
-    const faux = `${pronom} ${verbe}-${shuffleArray(["passé", "présent", "futur"])[0]}`;
-    if (!propositions.includes(faux)) {
+    const faux = bonne + Math.floor(Math.random() * 10) - 5;
+    if (!propositions.includes(faux) && faux >= 0) {
       propositions.push(faux);
     }
   }
@@ -49,6 +33,7 @@ function lancerQuestion(questionEl, answersEl, feedbackEl) {
   });
 }
 
+// ✅ Vérifie la réponse
 function verifierReponse(reponse, bonne, questionEl, answersEl, feedbackEl) {
   if (quizTerminé) return;
 
@@ -57,71 +42,51 @@ function verifierReponse(reponse, bonne, questionEl, answersEl, feedbackEl) {
     feedbackEl.textContent = "✅ Bravo !";
   } else {
     mauvaiseReponse++;
-    feedbackEl.textContent = `❌ Mauvaise réponse. La bonne était : ${bonne}`;
+    feedbackEl.textContent = `❌ Mauvaise réponse. La bonne était ${bonne}.`;
   }
 
   safeGet("good-count").textContent = bonneReponse;
   safeGet("bad-count").textContent = `Mauvaises réponses : ${mauvaiseReponse}`;
   questionCount++;
 
-  if (questionCount >= maxQuestions) {
-    quizTerminé = true;
-    terminerQuiz();
-  } else {
-    setTimeout(() => {
-      lancerQuestion(safeGet("question"), safeGet("answers"), safeGet("feedback"));
-      feedbackEl.textContent = "";
-    }, 1500);
-  }
+  setTimeout(() => {
+    lancerQuestion(safeGet("question"), safeGet("answers"), safeGet("feedback"));
+    feedbackEl.textContent = "";
+  }, 1500);
 }
 
-function terminerQuiz() {
+// 📝 Enregistre les résultats manuellement
+function enregistrerMultiplication() {
   const user = auth.currentUser;
-
-  safeGet("quiz")?.classList.add("hidden");
-  safeGet("quiz-end")?.classList.remove("hidden");
-
-  const finalScore = safeGet("final-score");
-  finalScore.textContent = `🎉 Quiz terminé ! Score : ${bonneReponse} bonnes réponses, ${mauvaiseReponse} mauvaises.`;
-
-  const replayBtn = safeGet("replay-btn");
-  replayBtn.onclick = () => {
-    bonneReponse = 0;
-    mauvaiseReponse = 0;
-    questionCount = 0;
-    quizTerminé = false;
-
-    safeGet("quiz-end")?.classList.add("hidden");
-    safeGet("quiz")?.classList.add("hidden");
-    safeGet("feedback").textContent = "";
-    safeGet("good-count").textContent = "0";
-    safeGet("bad-count").textContent = "Mauvaises réponses : 0";
-
-    safeGet("selectors")?.classList.remove("hidden");
-  };
+  const saveMessage = safeGet("save-message");
 
   if (user) {
     db.collection("result").add({
       uid: user.uid,
       email: user.email,
-      temps: tempsChoisi,
-      groupe: groupeChoisi,
+      table: tableChoisie,
       totalBonnes: bonneReponse,
       totalMauvaises: mauvaiseReponse,
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      application: "conjugaison"
+      application: "multiplication"
     }).then(() => {
-      console.log("Résultat de conjugaison enregistré !");
+      saveMessage.textContent = "✅ Résultats enregistrés avec succès.";
+      saveMessage.style.display = "block";
+      bonneReponse = 0;
+      mauvaiseReponse = 0;
+      questionCount = 0;
+      safeGet("good-count").textContent = "0";
+      safeGet("bad-count").textContent = "Mauvaises réponses : 0";
     }).catch(error => {
-      console.error("Erreur lors de l'enregistrement :", error);
+      saveMessage.textContent = "❌ Erreur lors de l'enregistrement.";
+      saveMessage.style.display = "block";
     });
   }
 }
 
-export function initConjugaison() {
-  const tempsButtons = document.querySelectorAll(".temps-btn");
-  const groupeButtons = document.querySelectorAll(".groupe-btn");
-  const selectors = safeGet("selectors");
+// 🚀 Initialisation du module
+export function initMultiplication() {
+  const tableButtons = document.querySelectorAll(".table-btn");
   const quizContainer = safeGet("quiz");
   const questionEl = safeGet("question");
   const answersEl = safeGet("answers");
@@ -134,40 +99,36 @@ export function initConjugaison() {
 
   safeGet("quiz-end")?.classList.add("hidden");
   quizContainer?.classList.add("hidden");
-  selectors?.classList.remove("hidden");
-  feedbackEl.textContent = "";
+  safeGet("feedback").textContent = "";
   safeGet("good-count").textContent = "0";
   safeGet("bad-count").textContent = "Mauvaises réponses : 0";
+  safeGet("save-message").style.display = "none";
 
-  tempsButtons.forEach(btn => {
-    if (!btn.dataset.listenerAttached) {
-      btn.addEventListener("click", () => {
-        tempsChoisi = btn.dataset.temps;
-        tempsButtons.forEach(b => b.classList.remove("selected"));
-        btn.classList.add("selected");
-      });
-      btn.dataset.listenerAttached = "true";
-    }
-  });
+  const tableSelection = safeGet("table-selection");
+  tableSelection?.classList.remove("hidden");
+  tableSelection?.classList.remove("fade-out");
 
-  groupeButtons.forEach(btn => {
-    if (!btn.dataset.listenerAttached) {
-      btn.addEventListener("click", () => {
-        groupeChoisi = parseInt(btn.dataset.groupe);
-        groupeButtons.forEach(b => b.classList.remove("selected"));
-        btn.classList.add("selected");
+  safeGet("save-results-btn")?.addEventListener("click", enregistrerMultiplication);
 
-        if (tempsChoisi && groupeChoisi) {
-          selectors.classList.add("fade-out");
+  tableButtons.forEach(button => {
+    if (!button.dataset.listenerAttached) {
+      button.addEventListener("click", () => {
+        tableChoisie = parseInt(button.dataset.table);
+
+        tableButtons.forEach(btn => btn.classList.remove("selected"));
+        button.classList.add("selected");
+
+        if (tableSelection) {
+          tableSelection.classList.add("fade-out");
           setTimeout(() => {
-            selectors.classList.add("hidden");
+            tableSelection.classList.add("hidden");
             quizContainer?.classList.remove("hidden");
             quizContainer?.classList.add("fade-in");
             lancerQuestion(questionEl, answersEl, feedbackEl);
           }, 500);
         }
       });
-      btn.dataset.listenerAttached = "true";
+      button.dataset.listenerAttached = "true";
     }
   });
 }
