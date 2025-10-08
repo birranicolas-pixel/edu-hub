@@ -1,87 +1,42 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <title>Tables de Multiplication</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="../../style.css">
-  <link rel="icon" href="../../favicon.ico" type="image/x-icon" />
+<h1>Tables de multiplication</h1>
+<label>Choisis ta table :</label>
+<div id="table-buttons">
+  <button class="table-btn" data-table="2">2</button>
+  <button class="table-btn" data-table="3">3</button>
+  <button class="table-btn" data-table="4">4</button>
+  <button class="table-btn" data-table="5">5</button>
+  <button class="table-btn" data-table="6">6</button>
+  <button class="table-btn" data-table="7">7</button>
+  <button class="table-btn" data-table="8">8</button>
+  <button class="table-btn" data-table="9">9</button>
+  <button class="table-btn" data-table="10">10</button>
+</div>
 
-  <!-- Firebase compat scripts -->
-  <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore-compat.js"></script>
-</head>
+<div id="score">
+  Bonnes réponses : <span id="good-count">0</span> |
+  <span id="bad-count">Mauvaises réponses : 0</span>
+</div>
 
-<body>
-  <!-- Barre utilisateur -->
-  <div class="user-bar" id="userBar" style="display:none;">
-    <img src="../../assets/user-icon.png" alt="Profil" class="user-icon">
-    <span id="userInfo"></span>
-    <button id="logoutBtn">Se déconnecter</button>
-    <button id="collapseBtn">⨯</button>
-  </div>
+<div id="quiz" class="hidden">
+  <p id="question"></p>
+  <div id="answers"></div>
+  <p id="feedback"></p>
+</div>
 
-  <!-- Bouton pour rouvrir -->
-  <button id="expandBtn" class="expand-btn" style="display:none;">👤</button>
-
-  <!-- Lien retour -->
-  <p><a href="../../index.html" class="back-link">← Retour à l’accueil</a></p>
-
-  <!-- Section principale -->
-  <div class="container">
-    <h1>Tables de multiplication</h1>
-    <label>Choisis ta table :</label>
-    <div id="table-buttons">
-      <button class="table-btn" data-table="2">2</button>
-      <button class="table-btn" data-table="3">3</button>
-      <button class="table-btn" data-table="4">4</button>
-      <button class="table-btn" data-table="5">5</button>
-      <button class="table-btn" data-table="6">6</button>
-      <button class="table-btn" data-table="7">7</button>
-      <button class="table-btn" data-table="8">8</button>
-      <button class="table-btn" data-table="9">9</button>
-      <button class="table-btn" data-table="10">10</button>
-    </div>
-
-    <div id="score">
-      Bonnes réponses : <span id="good-count">0</span> |
-      <span id="bad-count">Mauvaises réponses : 0</span>
-    </div>
-
-    <div id="quiz" class="hidden">
-      <p id="question"></p>
-      <div id="answers"></div>
-      <p id="feedback"></p>
-    </div>
-  </div>
-
-  <!-- Leaderboard (optionnel) -->
-  <div class="leaderboard-wrapper" style="display:none;">
-    <h2>Classement</h2>
-    <button id="refreshLeaderboardBtn">🔄 Actualiser</button>
-    <table>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Utilisateur</th>
-          <th>Application</th>
-          <th>Bonnes</th>
-          <th>Mauvaises</th>
-          <th>Score</th>
-        </tr>
-      </thead>
-      <tbody id="leaderboard-body"></tbody>
-    </table>
-  </div>
-
-  <!-- Script principal -->
-  <script type="module">
-    import { monitorAuthState } from '../../core.js';
-    import { initMultiplication } from './multiplication.js';
-
-    monitorAuthState();
-    initMultiplication();
-  </script>
-</body>
-</html>
+<div class="leaderboard-wrapper" style="display:none;">
+  <h2>Classement</h2>
+  <button id="refreshLeaderboardBtn">🔄 Actualiser</button>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Utilisateur</th>
+        <th>Application</th>
+        <th>Bonnes</th>
+        <th>Mauvaises</th>
+        <th>Score</th>
+      </tr>
+    </thead>
+    <tbody id="leaderboard-body"></tbody>
+  </table>
+</div>

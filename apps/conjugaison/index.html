@@ -1,77 +1,34 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Conjugaison CE2</title>
-  <link rel="stylesheet" href="../../style.css" />
+<h1>📝 Conjugaison CE2</h1>
 
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore-compat.js"></script>
-</head>
-
-<body>
-
-  <!-- Barre utilisateur -->
-  <div class="user-bar" id="userBar" style="display:none;">
-    <img src="../../assets/user-icon.png" alt="Profil" class="user-icon">
-    <span id="userInfo"></span>
-    <button id="logoutBtn">Se déconnecter</button>
-    <button id="collapseBtn">⨯</button>
-  </div>
-
-  <!-- Bouton pour rouvrir -->
-  <button id="expandBtn" class="expand-btn" style="display:none;">👤</button>
-
-  <!-- Lien retour -->
-  <p><a href="../../index.html" class="back-link">← Retour à l’accueil</a></p>
-
-  <!-- Titre principal -->
-  <h1>📝 Conjugaison CE2</h1>
-
-  <!-- Sélection du temps et du groupe -->
-  <div class="selectors">
-    <div class="temps">
-      <h2>Choisis un temps :</h2>
-      <div class="button-group">
-        <button data-temps="présent">Présent</button>
-        <button data-temps="futur">Futur</button>
-        <button data-temps="imparfait">Imparfait</button>
-      </div>
-    </div>
-
-    <div class="groupes">
-      <h2>Choisis un groupe :</h2>
-      <div class="button-group">
-        <button data-groupe="1">1er groupe</button>
-        <button data-groupe="2">2e groupe</button>
-        <button data-groupe="3">3e groupe</button>
-      </div>
+<div class="selectors">
+  <div class="temps">
+    <h2>Choisis un temps :</h2>
+    <div class="button-group">
+      <button data-temps="présent">Présent</button>
+      <button data-temps="futur">Futur</button>
+      <button data-temps="imparfait">Imparfait</button>
     </div>
   </div>
 
-  <!-- Zone de question et réponses -->
-  <div id="questionZone">
-    <h2 id="question">Clique sur un temps et un groupe</h2>
-    <div id="reponses" class="button-group"></div>
-    <p id="feedback" class="feedback-message"></p>
+  <div class="groupes">
+    <h2>Choisis un groupe :</h2>
+    <div class="button-group">
+      <button data-groupe="1">1er groupe</button>
+      <button data-groupe="2">2e groupe</button>
+      <button data-groupe="3">3e groupe</button>
+    </div>
   </div>
+</div>
 
-  <!-- Score utilisateur -->
-  <div id="scoreZone">
-    <p>✅ Bonnes réponses : <span id="score">0</span></p>
-    <p>❌ Mauvaises réponses : <span id="bad-count">0</span></p>
-  </div>
+<div id="questionZone">
+  <h2 id="question">Clique sur un temps et un groupe</h2>
+  <div id="reponses" class="button-group"></div>
+  <p id="feedback" class="feedback-message"></p>
+</div>
 
-  <!-- Bouton d'enregistrement -->
-  <button id="saveSessionBtn">📤 Enregistrer mes scores</button>
+<div id="scoreZone">
+  <p>✅ Bonnes réponses : <span id="score">0</span></p>
+  <p>❌ Mauvaises réponses : <span id="bad-count">0</span></p>
+</div>
 
-  <!-- Chargement des scripts en mode module -->
-  <script type="module">
-    import '../../script.js';
-    import './conjugaison.js';
-  </script>
-</body>
-</html>
+<button id="saveSessionBtn">📤 Enregistrer mes scores</button>

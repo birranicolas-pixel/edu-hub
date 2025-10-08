@@ -9,7 +9,6 @@
   <meta name="theme-color" content="#3b82f6" />
   <link rel="icon" href="./favicon.ico" type="image/x-icon" />
 
-
   <!-- Firebase compat scripts -->
   <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-auth-compat.js"></script>
@@ -87,7 +86,15 @@
   <!-- Section Application -->
   <div id="appSection" style="display:none;">
     <h1>Bienvenue sur ton portail éducatif</h1>
-    <div id="app-links"></div>
+    <div id="app-links">
+      <button onclick="showApp('multiplication')">🧮 Multiplication</button>
+      <button onclick="showApp('conjugaison')">📚 Conjugaison</button>
+    </div>
+
+    <div id="app-container">
+      <div id="multiplication" class="app-section" style="display:none;"></div>
+      <div id="conjugaison" class="app-section" style="display:none;"></div>
+    </div>
   </div>
 
   <!-- Tableau des scores -->
@@ -114,11 +121,35 @@
 
   <!-- Script principal -->
   <script type="module">
-  import { initScript, monitorAuthState } from './core.js';
-  initScript();
-  monitorAuthState();
-</script>
+    import { initScript, monitorAuthState } from './core.js';
+    initScript();
+    monitorAuthState();
 
+    window.showApp = function(appName) {
+      const sections = document.querySelectorAll('.app-section');
+      sections.forEach(sec => sec.style.display = 'none');
+
+      const container = document.getElementById(appName);
+      container.style.display = 'block';
+
+      if (!container.dataset.loaded) {
+        fetch(`app/${appName}/${appName}.html`)
+          .then(res => res.text())
+          .then(html => {
+            container.innerHTML = html;
+            container.dataset.loaded = 'true';
+
+            const script1 = document.createElement('script');
+            script1.src = `app/${appName}/${appName === 'multiplication' ? 'mult' : 'conj'}.js`;
+            document.body.appendChild(script1);
+
+            const script2 = document.createElement('script');
+            script2.src = `app/${appName}/${appName === 'multiplication' ? 'mult-ui' : 'conj-ui'}.js`;
+            document.body.appendChild(script2);
+          });
+      }
+    };
+  </script>
 
 </body>
 </html>
