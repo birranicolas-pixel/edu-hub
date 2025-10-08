@@ -8,6 +8,7 @@ let questionCount = 0;
 let quizTerminé = false;
 const maxQuestions = 10;
 
+// 🎯 Génère une question
 function lancerQuestion(questionEl, answersEl, feedbackEl) {
   const facteur = Math.floor(Math.random() * 10) + 1;
   const bonne = tableChoisie * facteur;
@@ -33,6 +34,7 @@ function lancerQuestion(questionEl, answersEl, feedbackEl) {
   });
 }
 
+// ✅ Vérifie la réponse
 function verifierReponse(reponse, bonne, questionEl, answersEl, feedbackEl) {
   if (quizTerminé) return;
 
@@ -59,6 +61,7 @@ function verifierReponse(reponse, bonne, questionEl, answersEl, feedbackEl) {
   }
 }
 
+// 🏁 Fin du quiz
 function terminerQuiz() {
   const user = auth.currentUser;
 
@@ -103,6 +106,7 @@ function terminerQuiz() {
   }
 }
 
+// 🚀 Initialisation du module
 export function initMultiplication() {
   const tableButtons = document.querySelectorAll(".table-btn");
   const quizContainer = safeGet("quiz");

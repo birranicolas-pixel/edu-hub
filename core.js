@@ -23,13 +23,13 @@ export function safeGet(id) {
   return el;
 }
 
-// 📚 Liste des applications éducatives
+// 📚 Liste des applications disponibles
 export const apps = [
   { name: "Tables de multiplication", key: "multiplication", icon: "🧮" },
   { name: "Conjugaison", key: "conjugaison", icon: "📚" }
 ];
 
-// 🧠 Message mascotte
+// 🧠 Message mascotte aléatoire
 export function setMascotteMessage() {
   const mascotteEl = safeGet("mascotteMessage");
   if (mascotteEl) {
@@ -43,7 +43,7 @@ export function setMascotteMessage() {
   }
 }
 
-// 📊 Récupération des scores
+// 📊 Récupération et affichage du leaderboard
 export function fetchLeaderboard() {
   return db.collection("result").get().then(snapshot => {
     const rawData = snapshot.docs.map(doc => doc.data());
@@ -71,7 +71,6 @@ export function fetchLeaderboard() {
   });
 }
 
-// 🖼️ Affichage du tableau
 export function displayLeaderboard(data) {
   const tbody = safeGet("leaderboard-body");
   if (!tbody) return;
@@ -94,7 +93,71 @@ export function displayLeaderboard(data) {
   });
 }
 
-// 👤 Surveillance de l’état de connexion
+// 🔐 Authentification utilisateur
+function setupLogin() {
+  const form = safeGet("loginForm");
+  const emailInput = safeGet("email");
+  const passwordInput = safeGet("password");
+  if (!form || !emailInput || !passwordInput) return;
+
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    auth.signInWithEmailAndPassword(emailInput.value, passwordInput.value)
+      .then(userCredential => {
+        console.log("Connecté :", userCredential.user.uid);
+      })
+      .catch(error => {
+        alert("Erreur : " + error.message);
+      });
+  });
+}
+
+function setupLogout() {
+  const btn = safeGet("logoutBtn");
+  if (!btn) return;
+
+  btn.addEventListener("click", () => {
+    auth.signOut().then(() => {
+      console.log("Déconnecté");
+    });
+  });
+}
+
+// 👤 Barre utilisateur : affichage et repli
+function setupUserBarToggle() {
+  const collapseBtn = safeGet("collapseBtn");
+  const expandBtn = safeGet("expandBtn");
+  const userBar = safeGet("userBar");
+  if (!collapseBtn || !expandBtn || !userBar) return;
+
+  collapseBtn.addEventListener("click", () => {
+    userBar.classList.add("collapsed");
+    expandBtn.style.display = "block";
+    localStorage.setItem("userBarCollapsed", "true");
+  });
+
+  expandBtn.addEventListener("click", () => {
+    userBar.classList.remove("collapsed");
+    expandBtn.style.display = "none";
+    localStorage.setItem("userBarCollapsed", "false");
+  });
+
+  const isCollapsed = localStorage.getItem("userBarCollapsed") === "true";
+  userBar.classList.toggle("collapsed", isCollapsed);
+  expandBtn.style.display = isCollapsed ? "block" : "none";
+}
+
+// 🔁 Rafraîchissement manuel du leaderboard
+function setupRefreshButton() {
+  const btn = safeGet("refreshLeaderboardBtn");
+  if (!btn) return;
+
+  btn.addEventListener("click", () => {
+    fetchLeaderboard().then(displayLeaderboard);
+  });
+}
+
+// 👀 Surveillance de l’état de connexion
 export function monitorAuthState() {
   auth.onAuthStateChanged(user => {
     const authSection = safeGet("authSection");
@@ -120,71 +183,6 @@ export function monitorAuthState() {
   });
 }
 
-// 🔐 Connexion utilisateur
-function setupLogin() {
-  const form = safeGet("loginForm");
-  const emailInput = safeGet("email");
-  const passwordInput = safeGet("password");
-  if (!form || !emailInput || !passwordInput) return;
-
-  form.addEventListener("submit", e => {
-    e.preventDefault();
-    auth.signInWithEmailAndPassword(emailInput.value, passwordInput.value)
-      .then(userCredential => {
-        console.log("Connecté :", userCredential.user.uid);
-      })
-      .catch(error => {
-        alert("Erreur : " + error.message);
-      });
-  });
-}
-
-// 🔓 Déconnexion utilisateur
-function setupLogout() {
-  const btn = safeGet("logoutBtn");
-  if (!btn) return;
-
-  btn.addEventListener("click", () => {
-    auth.signOut().then(() => {
-      console.log("Déconnecté");
-    });
-  });
-}
-
-// 👤 Barre utilisateur
-function setupUserBarToggle() {
-  const collapseBtn = safeGet("collapseBtn");
-  const expandBtn = safeGet("expandBtn");
-  const userBar = safeGet("userBar");
-  if (!collapseBtn || !expandBtn || !userBar) return;
-
-  collapseBtn.addEventListener("click", () => {
-    userBar.classList.add("collapsed");
-    expandBtn.style.display = "block";
-    localStorage.setItem("userBarCollapsed", "true");
-  });
-
-  expandBtn.addEventListener("click", () => {
-    userBar.classList.remove("collapsed");
-    expandBtn.style.display = "none";
-    localStorage.setItem("userBarCollapsed", "false");
-  });
-
-  const isCollapsed = localStorage.getItem("userBarCollapsed") === "true";
-  userBar.classList.toggle("collapsed", isCollapsed);
-  expandBtn.style.display = isCollapsed ? "block" : "none";
-}
-
-// 🔁 Rafraîchissement du leaderboard
-function setupRefreshButton() {
-  const btn = safeGet("refreshLeaderboardBtn");
-  if (!btn) return;
-
-  btn.addEventListener("click", () => {
-    fetchLeaderboard().then(displayLeaderboard);
-  });
-}
-
 // 🚀 Initialisation globale
 export function initScript() {
   setMascotteMessage();
@@ -196,7 +194,7 @@ export function initScript() {
   setupNavigation();
 }
 
-// 🧭 Navigation entre accueil et applications
+// 🧭 Navigation entre les applications
 function setupNavigation() {
   const homeScreen = safeGet("home-screen");
   const appSections = {
@@ -234,12 +232,4 @@ function setupNavigation() {
     homeScreen.style.display = "block";
     Object.values(appSections).forEach(section => section.style.display = "none");
   };
-}
-
-const tableSelection = safeGet("table-selection");
-if (tableSelection) {
-  tableSelection.classList.add("fade-out");
-  setTimeout(() => {
-    tableSelection.classList.add("hidden");
-  }, 500);
 }
