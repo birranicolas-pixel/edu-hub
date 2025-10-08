@@ -43,23 +43,6 @@ export function setMascotteMessage() {
   }
 }
 
-// 🧩 Génère le menu des applications
-export function generateMenu() {
-  const container = safeGet("app-links");
-  if (!container) return;
-
-  container.innerHTML = "";
-  apps.forEach(app => {
-    const button = document.createElement("button");
-    button.textContent = `${app.icon} ${app.name}`;
-    button.className = "app-link";
-    button.addEventListener("click", () => {
-      showApp(app.key);
-    });
-    container.appendChild(button);
-  });
-}
-
 // 📊 Récupération des scores
 export function fetchLeaderboard() {
   return db.collection("result").get().then(snapshot => {
@@ -125,9 +108,8 @@ export function monitorAuthState() {
       userBar?.style.setProperty("display", "flex");
       leaderboardWrapper?.style.setProperty("display", "block");
       homeScreen?.style.setProperty("display", "block");
-      if (userInfo) userInfo.textContent = `Connecté : ${user.displayName || user.email}`;
 
-      generateMenu();
+      if (userInfo) userInfo.textContent = `Connecté : ${user.displayName || user.email}`;
       fetchLeaderboard().then(displayLeaderboard);
     } else {
       authSection?.style.setProperty("display", "block");
