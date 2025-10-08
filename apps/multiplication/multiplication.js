@@ -132,3 +132,27 @@ export function initMultiplication() {
     }
   });
 }
+
+safeGet("change-table-btn")?.addEventListener("click", () => {
+  const quizContainer = safeGet("quiz");
+  const tableSelection = safeGet("table-selection");
+
+  quizContainer?.classList.add("fade-out");
+  setTimeout(() => {
+    quizContainer?.classList.add("hidden");
+    tableSelection?.classList.remove("hidden");
+    tableSelection?.classList.remove("fade-out");
+    tableSelection?.classList.add("fade-in");
+
+    // Réinitialiser les compteurs
+    bonneReponse = 0;
+    mauvaiseReponse = 0;
+    questionCount = 0;
+    quizTerminé = false;
+
+    safeGet("good-count").textContent = "0";
+    safeGet("bad-count").textContent = "Mauvaises réponses : 0";
+    safeGet("feedback").textContent = "";
+    safeGet("save-message").style.display = "none";
+  }, 500);
+});
