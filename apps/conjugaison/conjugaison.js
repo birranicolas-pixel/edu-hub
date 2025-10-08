@@ -30,7 +30,7 @@ function lancerQuestion(questionEl, answersEl, feedbackEl) {
   const pronom = shuffleArray(pronoms)[0];
   const bonne = conjugue(verbe, pronom, tempsChoisi);
 
-  questionEl.textContent = `Conjugue le verbe "${verbe}" au pronom "${pronom}" au temps "${tempsChoisi}"`;
+  questionEl.textContent = `Conjugue le verbe "${verbe}" avec "${pronom}" au temps "${tempsChoisi}"`;
 
   const propositions = [bonne];
   while (propositions.length < 4) {
@@ -105,6 +105,7 @@ function enregistrerConjugaison() {
 
 function essayerDeLancerQuiz(selectors, quizContainer, questionEl, answersEl, feedbackEl) {
   if (tempsChoisi && groupeChoisi) {
+    console.log("✅ Lancement du quiz...");
     selectors.classList.add("fade-out");
     setTimeout(() => {
       selectors.classList.add("hidden");
@@ -116,6 +117,8 @@ function essayerDeLancerQuiz(selectors, quizContainer, questionEl, answersEl, fe
 }
 
 export function initConjugaison() {
+  console.log("✅ initConjugaison appelée");
+
   const tempsButtons = document.querySelectorAll(".temps-btn");
   const groupeButtons = document.querySelectorAll(".groupe-btn");
   const selectors = safeGet("selectors");
