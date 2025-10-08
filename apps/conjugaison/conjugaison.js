@@ -7,6 +7,7 @@ let questionCount = 0;
 let quizTerminé = false;
 let tempsChoisi = null;
 let groupeChoisi = null;
+let reponseEnCours = false;
 
 const verbes = {
   1: ["aimer", "chanter", "marcher", "jouer"],
@@ -43,6 +44,7 @@ function lancerQuestion(questionEl, answersEl, feedbackEl) {
 
   const shuffled = shuffleArray(propositions);
   answersEl.innerHTML = "";
+  reponseEnCours = false;
 
   shuffled.forEach(rep => {
     const btn = document.createElement("button");
@@ -54,7 +56,8 @@ function lancerQuestion(questionEl, answersEl, feedbackEl) {
 }
 
 function verifierReponse(reponse, bonne, questionEl, answersEl, feedbackEl) {
-  if (quizTerminé) return;
+  if (quizTerminé || reponseEnCours) return;
+  reponseEnCours = true;
 
   if (reponse === bonne) {
     bonneReponse++;
