@@ -74,7 +74,20 @@ function terminerQuiz(questionEl, answersEl, feedbackEl) {
     endScreen.classList.remove("hidden");
 
     replayBtn.onclick = () => {
-      endScreen.classList.add("hidden");
+      // Réinitialiser les compteurs
+      bonneReponse = 0;
+      mauvaiseReponse = 0;
+      questionCount = 0;
+      quizTerminé = false;
+
+      // Réinitialiser l'affichage
+      safeGet("quiz-end")?.classList.add("hidden");
+      safeGet("quiz")?.classList.add("hidden");
+      safeGet("feedback").textContent = "";
+      safeGet("good-count").textContent = "0";
+      safeGet("bad-count").textContent = "Mauvaises réponses : 0";
+
+      // Réafficher le choix de la table
       safeGet("table-selection")?.classList.remove("hidden");
     };
   }
@@ -113,12 +126,15 @@ export function initMultiplication() {
   safeGet("table-selection")?.classList.remove("hidden");
 
   tableButtons.forEach(button => {
-    button.addEventListener("click", () => {
-      tableChoisie = parseInt(button.dataset.table);
-      safeGet("table-selection")?.classList.add("hidden");
-      lancerQuestion(questionEl, answersEl, feedbackEl);
-      quizContainer?.classList.remove("hidden");
-      feedbackEl.textContent = "";
-    });
+    if (!button.dataset.listenerAttached) {
+      button.addEventListener("click", () => {
+        tableChoisie = parseInt(button.dataset.table);
+        safeGet("table-selection")?.classList.add("hidden");
+        lancerQuestion(questionEl, answersEl, feedbackEl);
+        quizContainer?.classList.remove("hidden");
+        feedbackEl.textContent = "";
+      });
+      button.dataset.listenerAttached = "true";
+    }
   });
 }
