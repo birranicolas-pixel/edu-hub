@@ -1,12 +1,6 @@
-<h1>Tables de multiplication</h1>
-
-<!-- Bouton retour à l'accueil -->
-<button onclick="backToHome()" class="back-home">🏠 Accueil</button>
-
-<!-- Choix de la table -->
-<div id="table-selection">
-  <p>Choisis une table :</p>
-  <div id="table-buttons">
+<div id="table-selection" class="container">
+  <h2>Choisis une table de multiplication</h2>
+  <div class="button-group">
     <button class="table-btn" data-table="1">1</button>
     <button class="table-btn" data-table="2">2</button>
     <button class="table-btn" data-table="3">3</button>
@@ -20,21 +14,21 @@
   </div>
 </div>
 
-<!-- Score -->
-<div id="score">
-  Bonnes réponses : <span id="good-count">0</span> |
-  <span id="bad-count">Mauvaises réponses : 0</span>
-</div>
-
-<!-- Quiz actif -->
-<div id="quiz" class="hidden">
-  <p id="question"></p>
+<div id="quiz" class="container hidden">
+  <div id="questionZone">
+    <div id="question"></div>
+  </div>
   <div id="answers"></div>
-  <p id="feedback"></p>
+  <div id="feedback"></div>
+  <div id="scoreZone">
+    <div id="good-count">0</div>
+    <div id="bad-count">Mauvaises réponses : 0</div>
+    <button id="save-results-btn">Enregistrer les résultats</button>
+    <div id="save-message"></div>
+  </div>
 </div>
 
-<!-- Écran de fin -->
-<div id="quiz-end" class="hidden">
-  <p id="final-score"></p>
-  <button id="replay-btn">🔁 Rejouer</button>
+<div id="quiz-end" class="container hidden">
+  <div id="final-score"></div>
+  <button id="replay-btn">Rejouer</button>
 </div>
