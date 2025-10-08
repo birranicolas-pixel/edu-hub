@@ -130,7 +130,7 @@
       container.style.display = 'block';
 
       if (!container.dataset.loaded) {
-        fetch(`app/${appName}/${appName}.html`)
+        fetch(`apps/${appName}/${appName}.html`)
           .then(res => res.text())
           .then(html => {
             container.innerHTML = html;
