@@ -49,7 +49,6 @@
 </head>
 
 <body>
-
   <!-- Barre utilisateur -->
   <div class="user-bar" id="userBar" style="display:none;">
     <img src="./assets/user-icon.png" alt="Profil" class="user-icon" />
@@ -83,18 +82,21 @@
     </form>
   </div>
 
-  <!-- Section Application -->
-  <div id="appSection" style="display:none;">
+  <!-- 🏠 Page d'accueil des applications -->
+  <div id="home-screen" style="display:none;">
     <h1>Bienvenue sur ton portail éducatif</h1>
-    <div id="app-links"></div>
-
-    <div id="app-container">
-      <div id="multiplication" class="app-section" style="display:none;"></div>
-      <div id="conjugaison" class="app-section" style="display:none;"></div>
-    </div>
+    <p>Choisis une application :</p>
+    <button class="app-btn" data-app="multiplication">🧮 Multiplication</button>
+    <button class="app-btn" data-app="conjugaison">📚 Conjugaison</button>
   </div>
 
-  <!-- Tableau des scores -->
+  <!-- 📦 Conteneur des applications -->
+  <div id="app-container">
+    <div id="multiplication" class="app-section" style="display:none;"></div>
+    <div id="conjugaison" class="app-section" style="display:none;"></div>
+  </div>
+
+  <!-- 🏆 Tableau des scores -->
   <div class="leaderboard-wrapper" style="display:none;">
     <div class="leaderboard-header">
       <h2>🏆 Tableau des scores</h2>
@@ -123,6 +125,7 @@
     monitorAuthState();
 
     window.showApp = function(appName) {
+      document.getElementById("home-screen").style.display = "none";
       const sections = document.querySelectorAll('.app-section');
       sections.forEach(sec => sec.style.display = 'none');
 
@@ -148,7 +151,12 @@
           });
       }
     };
-  </script>
 
+    window.backToHome = function() {
+      document.getElementById("home-screen").style.display = "block";
+      const sections = document.querySelectorAll('.app-section');
+      sections.forEach(sec => sec.style.display = 'none');
+    };
+  </script>
 </body>
 </html>
