@@ -1,7 +1,6 @@
 import { safeGet, generateVariations } from '../../utils.js';
 import { auth, db } from '../../core.js';
 
-// 🔤 Variables de session
 let temps = null;
 let groupe = null;
 let bonnesReponses = 0;
@@ -9,7 +8,6 @@ let mauvaisesReponses = 0;
 let validationEnCours = false;
 const sessionId = Date.now().toString();
 
-// 📚 Terminaisons régulières
 const terminaisons = {
   présent: {
     1: ["e", "es", "e", "ons", "ez", "ent"],
@@ -28,10 +26,8 @@ const terminaisons = {
   }
 };
 
-// 👤 Pronoms
 const pronoms = ["Je", "Tu", "Il/Elle", "Nous", "Vous", "Ils/Elles"];
 
-// 🔀 Irréguliers
 const radicauxIrreguliersFutur = {
   venir: "viendr",
   voir: "verr",
@@ -44,7 +40,6 @@ const conjugaisonsIrregulieresPresent = {
   prendre: ["prends", "prends", "prend", "prenons", "prenez", "prennent"]
 };
 
-// 🧠 Sélection du temps et du groupe
 function setTemps(t) {
   temps = t;
   if (groupe) generateQuestion();
@@ -55,7 +50,6 @@ function setGroupe(g) {
   if (temps) generateQuestion();
 }
 
-// 📝 Génération de la question
 function generateQuestion() {
   if (!temps || !groupe) return;
 
@@ -64,11 +58,6 @@ function generateQuestion() {
   const feedbackEl = safeGet("feedback");
 
   const verbe = getVerbe(groupe);
-  if (!verbe || typeof verbe !== "string") {
-    questionEl.textContent = "⚠️ Verbe non défini.";
-    return;
-  }
-
   const index = Math.floor(Math.random() * pronoms.length);
   const pronom = pronoms[index];
   let bonneReponse;
@@ -95,14 +84,12 @@ function generateQuestion() {
   });
 }
 
-// 🔧 Fusion du radical et de la terminaison
 function fusionRadicalTerminaison(radical, terminaison) {
   return radical.slice(-1) === terminaison.charAt(0)
     ? radical + terminaison.slice(1)
     : radical + terminaison;
 }
 
-// 📖 Sélection d’un verbe
 function getVerbe(groupe) {
   const verbes = {
     1: ["chanter", "jouer", "marcher"],
@@ -113,7 +100,6 @@ function getVerbe(groupe) {
   return liste?.[Math.floor(Math.random() * liste.length)] || "verbe inconnu";
 }
 
-// 🔍 Extraction du radical
 function getRadical(verbe, groupe) {
   if (temps === "futur" && groupe === 3 && radicauxIrreguliersFutur[verbe]) {
     return radicauxIrreguliersFutur[verbe];
@@ -121,7 +107,6 @@ function getRadical(verbe, groupe) {
   return verbe.slice(0, -2);
 }
 
-// ✅ Validation de la réponse
 function validate(rep, correct) {
   if (validationEnCours) return;
   validationEnCours = true;
@@ -150,7 +135,6 @@ function validate(rep, correct) {
   }, 1000);
 }
 
-// 💾 Enregistrement des scores
 function enregistrerSession() {
   const user = auth.currentUser;
   if (!user || (bonnesReponses + mauvaisesReponses === 0)) {
@@ -174,8 +158,7 @@ function enregistrerSession() {
   });
 }
 
-// 🚀 Initialisation
-function initConjugaison() {
+export function initConjugaison() {
   document.querySelectorAll("[data-temps]").forEach(btn => {
     btn.addEventListener("click", () => {
       const t = btn.getAttribute("data-temps");
@@ -195,6 +178,3 @@ function initConjugaison() {
     saveBtn.addEventListener("click", enregistrerSession);
   }
 }
-
-// ⏱️ Démarrage automatique
-document.addEventListener("DOMContentLoaded", initConjugaison);

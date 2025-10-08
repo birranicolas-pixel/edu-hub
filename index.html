@@ -86,10 +86,7 @@
   <!-- Section Application -->
   <div id="appSection" style="display:none;">
     <h1>Bienvenue sur ton portail éducatif</h1>
-    <div id="app-links">
-      <button onclick="showApp('multiplication')">🧮 Multiplication</button>
-      <button onclick="showApp('conjugaison')">📚 Conjugaison</button>
-    </div>
+    <div id="app-links"></div>
 
     <div id="app-container">
       <div id="multiplication" class="app-section" style="display:none;"></div>
@@ -121,7 +118,7 @@
 
   <!-- Script principal -->
   <script type="module">
-    import { initScript, monitorAuthState } from './core.js';
+    import { initScript, monitorAuthState } from './script.js';
     initScript();
     monitorAuthState();
 
@@ -139,13 +136,15 @@
             container.innerHTML = html;
             container.dataset.loaded = 'true';
 
-            const script1 = document.createElement('script');
-            script1.src = `app/${appName}/${appName === 'multiplication' ? 'mult' : 'conj'}.js`;
-            document.body.appendChild(script1);
-
-            const script2 = document.createElement('script');
-            script2.src = `app/${appName}/${appName === 'multiplication' ? 'mult-ui' : 'conj-ui'}.js`;
-            document.body.appendChild(script2);
+            if (appName === 'multiplication') {
+              import(`./app/multiplication/multiplication.js`).then(module => {
+                module.initMultiplication();
+              });
+            } else if (appName === 'conjugaison') {
+              import(`./app/conjugaison/conjugaison.js`).then(module => {
+                module.initConjugaison();
+              });
+            }
           });
       }
     };

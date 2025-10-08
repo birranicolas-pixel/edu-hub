@@ -1,0 +1,34 @@
+<h1>📝 Conjugaison CE2</h1>
+
+<div class="selectors">
+  <div class="temps">
+    <h2>Choisis un temps :</h2>
+    <div class="button-group">
+      <button data-temps="présent">Présent</button>
+      <button data-temps="futur">Futur</button>
+      <button data-temps="imparfait">Imparfait</button>
+    </div>
+  </div>
+
+  <div class="groupes">
+    <h2>Choisis un groupe :</h2>
+    <div class="button-group">
+      <button data-groupe="1">1er groupe</button>
+      <button data-groupe="2">2e groupe</button>
+      <button data-groupe="3">3e groupe</button>
+    </div>
+  </div>
+</div>
+
+<div id="questionZone">
+  <h2 id="question">Clique sur un temps et un groupe</h2>
+  <div id="reponses" class="button-group"></div>
+  <p id="feedback" class="feedback-message"></p>
+</div>
+
+<div id="scoreZone">
+  <p>✅ Bonnes réponses : <span id="score">0</span></p>
+  <p>❌ Mauvaises réponses : <span id="bad-count">0</span></p>
+</div>
+
+<button id="saveSessionBtn">📤 Enregistrer mes scores</button>
