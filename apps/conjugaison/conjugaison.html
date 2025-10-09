@@ -1,47 +1,30 @@
-<button onclick="lancerQuestion(
-  document.getElementById('question'),
-  document.getElementById('answers'),
-  document.getElementById('feedback')
-)">Test Question</button>
-
-
-<div id="selectors" class="container">
-  <h2>Choisis un temps et un groupe</h2>
+<div class="conjugaison-app">
+  <h2>Révise ta conjugaison</h2>
   <div class="selectors">
-    <div class="temps">
-      <h2>Temps</h2>
-      <div class="button-group">
-        <button class="temps-btn" data-temps="présent">Présent</button>
-        <button class="temps-btn" data-temps="passé">Passé</button>
-        <button class="temps-btn" data-temps="futur">Futur</button>
-      </div>
-    </div>
-    <div class="groupes">
-      <h2>Groupe</h2>
-      <div class="button-group">
-        <button class="groupe-btn" data-groupe="1">1er groupe</button>
-        <button class="groupe-btn" data-groupe="2">2e groupe</button>
-        <button class="groupe-btn" data-groupe="3">3e groupe</button>
-      </div>
-    </div>
-  </div>
-</div>
-<a href="javascript:backToHome()" class="back-link">← Retour à l’accueil</a>
-<div id="quiz" class="container hidden">
-  <div id="questionZone">
-    <div id="question"></div>
-  </div>
-  <div id="answers"></div>
-  <div id="feedback"></div>
-  <div id="scoreZone">
-    <div id="good-count">0</div>
-    <div id="bad-count">Mauvaises réponses : 0</div>
-    <button id="save-results-btn">Enregistrer les résultats</button>
-    <div id="save-message"></div>
-  </div>
-</div>
+    <label for="temps">Temps :</label>
+    <select id="temps">
+      <option value="présent">Présent</option>
+      <option value="passé">Passé</option>
+      <option value="futur">Futur</option>
+    </select>
 
-<div id="quiz-end" class="container hidden">
-  <div id="final-score"></div>
-  <button id="replay-btn">Rejouer</button>
+    <label for="groupe">Groupe :</label>
+    <select id="groupe">
+      <option value="1">1er groupe</option>
+      <option value="2">2e groupe</option>
+      <option value="3">3e groupe</option>
+    </select>
+
+    <button id="start-btn">Commencer</button>
+  </div>
+
+  <div id="quiz-zone" style="display:none;">
+    <p id="question"></p>
+    <div id="answers"></div>
+    <p id="feedback"></p>
+    <p id="score">Score : <span id="score-count">0</span></p>
+    <button id="next-btn" style="display:none;">Question suivante</button>
+    <button id="save-results-btn">💾 Enregistrer</button>
+    <p id="save-message"></p>
+  </div>
 </div>

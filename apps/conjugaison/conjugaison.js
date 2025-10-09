@@ -1,179 +1,126 @@
-import { safeGet, shuffleArray } from '../../utils.js';
-import { auth, db } from '../../core.js';
-
-let bonneReponse = 0;
-let mauvaiseReponse = 0;
-let questionCount = 0;
-let quizTerminé = false;
-let tempsChoisi = null;
-let groupeChoisi = null;
-let reponseEnCours = false;
+import { auth, db, safeGet } from '../../core.js';
 
 const verbes = {
-  1: ["aimer", "chanter", "marcher", "jouer"],
-  2: ["finir", "choisir", "réussir", "grandir"],
-  3: ["prendre", "voir", "venir", "faire"]
+  1: ["aimer", "jouer", "marcher", "parler"],
+  2: ["finir", "choisir", "grandir", "réussir"],
+  3: ["prendre", "voir", "faire", "venir"]
 };
 
 const pronoms = ["je", "tu", "il/elle", "nous", "vous", "ils/elles"];
+let score = 0;
 
 function conjugue(verbe, pronom, temps) {
-  return `${pronom} ${verbe}-${temps}`; // Forme fictive pour l'exemple
-}
-
-function lancerQuestion(questionEl, answersEl, feedbackEl) {
-  try {
-    if (!questionEl || !answersEl || !feedbackEl || !tempsChoisi || !groupeChoisi) {
-      console.warn("⛔ Données manquantes pour lancer la question");
-      return;
+  const terminaisons = {
+    présent: {
+      1: ["e", "es", "e", "ons", "ez", "ent"],
+      2: ["is", "is", "it", "issons", "issez", "issent"],
+      3: ["s", "s", "t", "ons", "ez", "ent"]
+    },
+    futur: {
+      all: ["ai", "as", "a", "ons", "ez", "ont"]
+    },
+    passé: {
+      auxiliaire: {
+        je: "j’ai", tu: "tu as", "il/elle": "il/elle a",
+        nous: "nous avons", vous: "vous avez", "ils/elles": "ils/elles ont"
+      }
     }
+  };
 
-    const groupeVerbes = verbes[groupeChoisi];
-    if (!Array.isArray(groupeVerbes)) {
-      console.error("⛔ Groupe de verbes invalide :", groupeChoisi);
-      return;
-    }
+  const index = pronoms.indexOf(pronom);
+  const groupe = verbe.endsWith("er") ? 1 : verbe.endsWith("ir") ? 2 : 3;
 
-    const verbe = shuffleArray(groupeVerbes)[0];
-    const pronom = shuffleArray(pronoms)[0];
-    const bonne = conjugue(verbe, pronom, tempsChoisi);
-
-    questionEl.textContent = `Conjugue le verbe "${verbe}" avec "${pronom}" au temps "${tempsChoisi}"`;
-
-    const propositions = new Set([bonne]);
-    while (propositions.size < 4) {
-      const fauxTemps = shuffleArray(["passé", "présent", "futur"])[0];
-      propositions.add(`${pronom} ${verbe}-${fauxTemps}`);
-    }
-
-    const shuffled = shuffleArray(Array.from(propositions));
-    answersEl.innerHTML = "";
-    reponseEnCours = false;
-
-    shuffled.forEach(rep => {
-      const btn = document.createElement("button");
-      btn.textContent = rep;
-      btn.classList.add("answer-btn");
-      btn.onclick = () => verifierReponse(rep, bonne, questionEl, answersEl, feedbackEl);
-      answersEl.appendChild(btn);
-    });
-  } catch (err) {
-    console.error("💥 Erreur dans lancerQuestion :", err);
+  if (temps === "présent") {
+    const radical = verbe.slice(0, -2);
+    return `${pronom} ${radical}${terminaisons.présent[groupe][index]}`;
   }
+
+  if (temps === "futur") {
+    return `${pronom} ${verbe}${terminaisons.futur.all[index]}`;
+  }
+
+  if (temps === "passé") {
+    const participe = verbe.slice(0, -2) + (groupe === 1 ? "é" : groupe === 2 ? "i" : "u");
+    return `${terminaisons.passé.auxiliaire[pronom]} ${participe}`;
+  }
+
+  return `${pronom} ${verbe}-${temps}`;
 }
 
+function shuffle(arr) {
+  return arr.slice().sort(() => Math.random() - 0.5);
+}
 
-function verifierReponse(reponse, bonne, questionEl, answersEl, feedbackEl) {
-  if (quizTerminé || reponseEnCours) return;
-  reponseEnCours = true;
+function startQuiz() {
+  const temps = safeGet("temps").value;
+  const groupe = parseInt(safeGet("groupe").value);
+  const verbe = shuffle(verbes[groupe])[0];
+  const pronom = shuffle(pronoms)[0];
+  const bonne = conjugue(verbe, pronom, temps);
 
-  if (reponse === bonne) {
-    bonneReponse++;
-    feedbackEl.textContent = "✅ Bravo !";
+  safeGet("quiz-zone").style.display = "block";
+  safeGet("question").textContent = `Conjugue "${verbe}" avec "${pronom}" au ${temps}`;
+
+  const propositions = new Set([bonne]);
+  while (propositions.size < 4) {
+    const fauxTemps = shuffle(["présent", "passé", "futur"])[0];
+    propositions.add(conjugue(verbe, pronom, fauxTemps));
+  }
+
+  const answers = safeGet("answers");
+  answers.innerHTML = "";
+  shuffle(Array.from(propositions)).forEach(rep => {
+    const btn = document.createElement("button");
+    btn.textContent = rep;
+    btn.onclick = () => checkAnswer(rep, bonne);
+    answers.appendChild(btn);
+  });
+
+  safeGet("feedback").textContent = "";
+  safeGet("next-btn").style.display = "none";
+}
+
+function checkAnswer(rep, bonne) {
+  const feedback = safeGet("feedback");
+  const scoreEl = safeGet("score-count");
+  if (rep === bonne) {
+    feedback.textContent = "✅ Bravo !";
+    score++;
+    scoreEl.textContent = score;
   } else {
-    mauvaiseReponse++;
-    feedbackEl.textContent = `❌ Mauvaise réponse. La bonne était : ${bonne}`;
+    feedback.textContent = `❌ Mauvaise réponse. La bonne était : ${bonne}`;
   }
-
-  safeGet("good-count").textContent = bonneReponse;
-  safeGet("bad-count").textContent = `Mauvaises réponses : ${mauvaiseReponse}`;
-  questionCount++;
-
-  setTimeout(() => {
-    lancerQuestion(safeGet("question"), safeGet("answers"), safeGet("feedback"));
-    feedbackEl.textContent = "";
-  }, 1500);
+  safeGet("next-btn").style.display = "inline-block";
 }
 
-function enregistrerConjugaison() {
+function enregistrerScore() {
   const user = auth.currentUser;
-  const saveMessage = safeGet("save-message");
+  const msg = safeGet("save-message");
 
-  if (user) {
-    db.collection("result").add({
-      uid: user.uid,
-      email: user.email,
-      temps: tempsChoisi,
-      groupe: groupeChoisi,
-      totalBonnes: bonneReponse,
-      totalMauvaises: mauvaiseReponse,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      application: "conjugaison"
-    }).then(() => {
-      saveMessage.textContent = "✅ Résultats enregistrés avec succès.";
-      saveMessage.style.display = "block";
-      bonneReponse = 0;
-      mauvaiseReponse = 0;
-      questionCount = 0;
-      safeGet("good-count").textContent = "0";
-      safeGet("bad-count").textContent = "Mauvaises réponses : 0";
-    }).catch(error => {
-      saveMessage.textContent = "❌ Erreur lors de l'enregistrement.";
-      saveMessage.style.display = "block";
-    });
+  if (!user) {
+    msg.textContent = "❌ Connecte-toi pour enregistrer ton score.";
+    return;
   }
-}
 
-function essayerDeLancerQuiz(selectors, quizContainer, questionEl, answersEl, feedbackEl) {
-  if (tempsChoisi && groupeChoisi) {
-    console.log("✅ Lancement du quiz...");
-    selectors.classList.add("fade-out");
-    setTimeout(() => {
-      selectors.classList.add("hidden");
-      quizContainer?.classList.remove("hidden");
-      quizContainer?.classList.add("fade-in");
-      lancerQuestion(questionEl, answersEl, feedbackEl);
-    }, 500);
-  }
+  db.collection("result").add({
+    uid: user.uid,
+    email: user.email,
+    application: "conjugaison",
+    totalBonnes: score,
+    totalMauvaises: 0,
+    temps: new Date().toISOString(),
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(() => {
+    msg.textContent = "✅ Score enregistré avec succès.";
+  }).catch(() => {
+    msg.textContent = "❌ Erreur lors de l'enregistrement.";
+  });
 }
 
 export function initConjugaison() {
-  console.log("✅ initConjugaison appelée");
-
-  const tempsButtons = document.querySelectorAll(".temps-btn");
-  const groupeButtons = document.querySelectorAll(".groupe-btn");
-  const selectors = safeGet("selectors");
-  const quizContainer = safeGet("quiz");
-  const questionEl = safeGet("question");
-  const answersEl = safeGet("answers");
-  const feedbackEl = safeGet("feedback");
-
-  bonneReponse = 0;
-  mauvaiseReponse = 0;
-  questionCount = 0;
-  quizTerminé = false;
-
-  safeGet("quiz-end")?.classList.add("hidden");
-  quizContainer?.classList.add("hidden");
-  selectors?.classList.remove("hidden");
-  feedbackEl.textContent = "";
-  safeGet("good-count").textContent = "0";
-  safeGet("bad-count").textContent = "Mauvaises réponses : 0";
-  safeGet("save-message").style.display = "none";
-
-  safeGet("save-results-btn")?.addEventListener("click", enregistrerConjugaison);
-
-  tempsButtons.forEach(btn => {
-    if (!btn.dataset.listenerAttached) {
-      btn.addEventListener("click", () => {
-        tempsChoisi = btn.dataset.temps;
-        tempsButtons.forEach(b => b.classList.remove("selected"));
-        btn.classList.add("selected");
-        essayerDeLancerQuiz(selectors, quizContainer, questionEl, answersEl, feedbackEl);
-      });
-      btn.dataset.listenerAttached = "true";
-    }
-  });
-
-  groupeButtons.forEach(btn => {
-    if (!btn.dataset.listenerAttached) {
-      btn.addEventListener("click", () => {
-        groupeChoisi = parseInt(btn.dataset.groupe);
-        groupeButtons.forEach(b => b.classList.remove("selected"));
-        btn.classList.add("selected");
-        essayerDeLancerQuiz(selectors, quizContainer, questionEl, answersEl, feedbackEl);
-      });
-      btn.dataset.listenerAttached = "true";
-    }
-  });
+  score = 0;
+  safeGet("score-count").textContent = "0";
+  safeGet("start-btn").addEventListener("click", startQuiz);
+  safeGet("next-btn").addEventListener("click", startQuiz);
+  safeGet("save-results-btn").addEventListener("click", enregistrerScore);
 }
