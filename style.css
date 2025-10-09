@@ -492,3 +492,14 @@ select, input {
     min-width: 600px;
   }
 }
+
+/* === Animation message de sauvegarde === */
+.save-message {
+  animation: flashSuccess 1s ease-in-out;
+}
+
+@keyframes flashSuccess {
+  0% { background-color: #d1fae5; }
+  50% { background-color: #10b981; color: white; }
+  100% { background-color: transparent; color: inherit; }
+}

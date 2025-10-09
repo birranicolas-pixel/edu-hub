@@ -1,5 +1,6 @@
-import { auth, db } from '../../core.js';
+import { auth, db, safeGet, parler } from '../../core.js';
 
+// 📚 Verbes par groupe
 const verbes = {
   1: ["aimer", "jouer", "marcher", "parler"],
   2: ["finir", "choisir", "grandir", "réussir"],
@@ -9,12 +10,12 @@ const verbes = {
 const pronoms = ["je", "tu", "il/elle", "nous", "vous", "ils/elles"];
 let score = 0;
 
-function get(id) {
-  const el = document.getElementById(id);
-  if (!el) console.warn(`⚠️ Élément introuvable : #${id}`);
-  return el;
+// 🔁 Mélange un tableau
+function shuffle(arr) {
+  return arr.slice().sort(() => Math.random() - 0.5);
 }
 
+// 🔤 Conjugue un verbe selon le pronom et le temps
 function conjugue(verbe, pronom, temps) {
   const terminaisons = {
     présent: {
@@ -53,13 +54,10 @@ function conjugue(verbe, pronom, temps) {
   return `${pronom} ${verbe}-${temps}`;
 }
 
-function shuffle(arr) {
-  return arr.slice().sort(() => Math.random() - 0.5);
-}
-
+// ▶️ Lance une question
 function startQuiz() {
-  const temps = get("temps")?.value;
-  const groupe = parseInt(get("groupe")?.value);
+  const temps = safeGet("temps")?.value;
+  const groupe = parseInt(safeGet("groupe")?.value);
   const groupeVerbes = verbes[groupe];
 
   if (!temps || !groupeVerbes) {
@@ -71,23 +69,19 @@ function startQuiz() {
   const pronom = shuffle(pronoms)[0];
   const bonne = conjugue(verbe, pronom, temps);
 
-  get("quiz-zone").style.display = "block";
-  get("question").textContent = `Conjugue "${verbe}" avec "${pronom}" au ${temps}`;
+  safeGet("quiz-zone").style.display = "block";
+  safeGet("question").textContent = `Conjugue "${verbe}" avec "${pronom}" au ${temps}`;
 
- const propositions = new Set([bonne]);
-const tempsOptions = ["présent", "passé", "futur"];
-let essais = 0;
-
-while (propositions.size < 4 && essais < 10) {
-  const fauxTemps = shuffle(tempsOptions)[0];
-  const faux = conjugue(verbe, pronom, fauxTemps);
-  if (!propositions.has(faux)) {
-    propositions.add(faux);
+  const propositions = new Set([bonne]);
+  let essais = 0;
+  while (propositions.size < 4 && essais < 10) {
+    const fauxTemps = shuffle(["présent", "passé", "futur"])[0];
+    const faux = conjugue(verbe, pronom, fauxTemps);
+    if (!propositions.has(faux)) propositions.add(faux);
+    essais++;
   }
-  essais++;
-}
 
-  const answers = get("answers");
+  const answers = safeGet("answers");
   answers.innerHTML = "";
   shuffle(Array.from(propositions)).forEach(rep => {
     const btn = document.createElement("button");
@@ -96,13 +90,14 @@ while (propositions.size < 4 && essais < 10) {
     answers.appendChild(btn);
   });
 
-  get("feedback").textContent = "";
-  get("next-btn").style.display = "none";
+  safeGet("feedback").textContent = "";
+  safeGet("next-btn").style.display = "none";
 }
 
+// ✅ Vérifie la réponse
 function checkAnswer(rep, bonne) {
-  const feedback = get("feedback");
-  const scoreEl = get("score-count");
+  const feedback = safeGet("feedback");
+  const scoreEl = safeGet("score-count");
   if (rep === bonne) {
     feedback.textContent = "✅ Bravo !";
     score++;
@@ -110,9 +105,10 @@ function checkAnswer(rep, bonne) {
   } else {
     feedback.textContent = `❌ Mauvaise réponse. La bonne était : ${bonne}`;
   }
-  get("next-btn").style.display = "inline-block";
+  safeGet("next-btn").style.display = "inline-block";
 }
 
+// 💾 Enregistre les résultats
 function enregistrerScore() {
   const user = auth.currentUser;
   const msg = safeGet("save-message");
@@ -127,13 +123,15 @@ function enregistrerScore() {
     email: user.email,
     application: "conjugaison",
     totalBonnes: score,
-    totalMauvaises: 0, // Si tu veux suivre les mauvaises réponses, ajoute une variable séparée
+    totalMauvaises: 0,
     temps: new Date().toISOString(),
     timestamp: firebase.firestore.FieldValue.serverTimestamp()
   }).then(() => {
     msg.textContent = "✅ Score enregistré avec succès.";
+    msg.classList.add("save-message");
+    setTimeout(() => msg.classList.remove("save-message"), 1000);
+    parler("Bravo ! Tes résultats ont été enregistrés avec succès.");
 
-    // 🔄 Réinitialisation des compteurs
     score = 0;
     safeGet("score-count").textContent = "0";
     safeGet("feedback").textContent = "";
@@ -145,12 +143,12 @@ function enregistrerScore() {
   });
 }
 
-
+// 🚀 Initialise l'app
 export function initConjugaison() {
   score = 0;
-  get("score-count").textContent = "0";
+  safeGet("score-count").textContent = "0";
 
-  get("start-btn")?.addEventListener("click", startQuiz);
-  get("next-btn")?.addEventListener("click", startQuiz);
-  get("save-results-btn")?.addEventListener("click", enregistrerScore);
+  safeGet("start-btn")?.addEventListener("click", startQuiz);
+  safeGet("next-btn")?.addEventListener("click", startQuiz);
+  safeGet("save-results-btn")?.addEventListener("click", enregistrerScore);
 }

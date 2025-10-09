@@ -1,13 +1,14 @@
 import { safeGet, shuffleArray } from '../../utils.js';
-import { auth, db } from '../../core.js';
+import { auth, db, parler } from '../../core.js';
 
+// 🔢 Variables globales
 let bonneReponse = 0;
 let mauvaiseReponse = 0;
 let tableChoisie = null;
 let questionCount = 0;
 let quizTerminé = false;
 
-// 🎯 Génère une question
+// 🎯 Génère une nouvelle question
 function lancerQuestion(questionEl, answersEl, feedbackEl) {
   const facteur = Math.floor(Math.random() * 10) + 1;
   const bonne = tableChoisie * facteur;
@@ -64,11 +65,10 @@ function verifierReponse(reponse, bonne, questionEl, answersEl, feedbackEl) {
   }, 1500);
 }
 
-
-// 📝 Enregistre les résultats manuellement
+// 💾 Enregistre les résultats dans Firebase
 function enregistrerMultiplication() {
   const user = auth.currentUser;
-  const saveMessage = safeGet("save-message");
+  const msg = safeGet("save-message");
 
   if (user) {
     db.collection("result").add({
@@ -80,8 +80,14 @@ function enregistrerMultiplication() {
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       application: "multiplication"
     }).then(() => {
-      saveMessage.textContent = "✅ Résultats enregistrés avec succès.";
-      saveMessage.style.display = "block";
+      // ✅ Message visuel + vocal
+      msg.textContent = "✅ Résultats enregistrés avec succès.";
+      msg.style.display = "block";
+      msg.classList.add("save-message");
+      setTimeout(() => msg.classList.remove("save-message"), 1000);
+      parler("Bravo ! Tes résultats ont été enregistrés avec succès.");
+
+      // 🔄 Réinitialisation des compteurs
       bonneReponse = 0;
       mauvaiseReponse = 0;
       questionCount = 0;
@@ -89,15 +95,15 @@ function enregistrerMultiplication() {
       safeGet("bad-count").textContent = "Mauvaises réponses : 0";
       safeGet("answers").innerHTML = "";
       safeGet("feedback").textContent = "";
-      safeGet("question").textContent = ""; 
+      safeGet("question").textContent = "";
     }).catch(error => {
-      saveMessage.textContent = "❌ Erreur lors de l'enregistrement.";
-      saveMessage.style.display = "block";
+      msg.textContent = "❌ Erreur lors de l'enregistrement.";
+      msg.style.display = "block";
     });
   }
 }
 
-// 🚀 Initialisation du module
+// 🚀 Initialise l'application
 export function initMultiplication() {
   const tableButtons = document.querySelectorAll(".table-btn");
   const quizContainer = safeGet("quiz");
@@ -105,6 +111,7 @@ export function initMultiplication() {
   const answersEl = safeGet("answers");
   const feedbackEl = safeGet("feedback");
 
+  // 🔄 Réinitialisation au démarrage
   bonneReponse = 0;
   mauvaiseReponse = 0;
   questionCount = 0;
@@ -112,7 +119,7 @@ export function initMultiplication() {
 
   safeGet("quiz-end")?.classList.add("hidden");
   quizContainer?.classList.add("hidden");
-  safeGet("feedback").textContent = "";
+  feedbackEl.textContent = "";
   safeGet("good-count").textContent = "0";
   safeGet("bad-count").textContent = "Mauvaises réponses : 0";
   safeGet("save-message").style.display = "none";
@@ -123,6 +130,7 @@ export function initMultiplication() {
 
   safeGet("save-results-btn")?.addEventListener("click", enregistrerMultiplication);
 
+  // 🎛️ Sélection de la table
   tableButtons.forEach(button => {
     if (!button.dataset.listenerAttached) {
       button.addEventListener("click", () => {
@@ -144,28 +152,25 @@ export function initMultiplication() {
       button.dataset.listenerAttached = "true";
     }
   });
+
+  // 🔁 Changement de table
+  safeGet("change-table-btn")?.addEventListener("click", () => {
+    quizContainer?.classList.add("fade-out");
+    setTimeout(() => {
+      quizContainer?.classList.add("hidden");
+      tableSelection?.classList.remove("hidden");
+      tableSelection?.classList.remove("fade-out");
+      tableSelection?.classList.add("fade-in");
+
+      bonneReponse = 0;
+      mauvaiseReponse = 0;
+      questionCount = 0;
+      quizTerminé = false;
+
+      safeGet("good-count").textContent = "0";
+      safeGet("bad-count").textContent = "Mauvaises réponses : 0";
+      feedbackEl.textContent = "";
+      safeGet("save-message").style.display = "none";
+    }, 500);
+  });
 }
-
-safeGet("change-table-btn")?.addEventListener("click", () => {
-  const quizContainer = safeGet("quiz");
-  const tableSelection = safeGet("table-selection");
-
-  quizContainer?.classList.add("fade-out");
-  setTimeout(() => {
-    quizContainer?.classList.add("hidden");
-    tableSelection?.classList.remove("hidden");
-    tableSelection?.classList.remove("fade-out");
-    tableSelection?.classList.add("fade-in");
-
-    // Réinitialiser les compteurs
-    bonneReponse = 0;
-    mauvaiseReponse = 0;
-    questionCount = 0;
-    quizTerminé = false;
-
-    safeGet("good-count").textContent = "0";
-    safeGet("bad-count").textContent = "Mauvaises réponses : 0";
-    safeGet("feedback").textContent = "";
-    safeGet("save-message").style.display = "none";
-  }, 500);
-});
