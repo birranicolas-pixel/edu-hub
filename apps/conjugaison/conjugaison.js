@@ -74,11 +74,18 @@ function startQuiz() {
   get("quiz-zone").style.display = "block";
   get("question").textContent = `Conjugue "${verbe}" avec "${pronom}" au ${temps}`;
 
-  const propositions = new Set([bonne]);
-  while (propositions.size < 4) {
-    const fauxTemps = shuffle(["présent", "passé", "futur"])[0];
-    propositions.add(conjugue(verbe, pronom, fauxTemps));
+ const propositions = new Set([bonne]);
+const tempsOptions = ["présent", "passé", "futur"];
+let essais = 0;
+
+while (propositions.size < 4 && essais < 10) {
+  const fauxTemps = shuffle(tempsOptions)[0];
+  const faux = conjugue(verbe, pronom, fauxTemps);
+  if (!propositions.has(faux)) {
+    propositions.add(faux);
   }
+  essais++;
+}
 
   const answers = get("answers");
   answers.innerHTML = "";
