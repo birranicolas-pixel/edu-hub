@@ -87,6 +87,9 @@ function enregistrerMultiplication() {
       questionCount = 0;
       safeGet("good-count").textContent = "0";
       safeGet("bad-count").textContent = "Mauvaises réponses : 0";
+      safeGet("answers").innerHTML = "";
+      safeGet("feedback").textContent = "";
+      safeGet("question").textContent = ""; 
     }).catch(error => {
       saveMessage.textContent = "❌ Erreur lors de l'enregistrement.";
       saveMessage.style.display = "block";
