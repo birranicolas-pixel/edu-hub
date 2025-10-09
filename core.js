@@ -208,16 +208,14 @@ function setupNavigation() {
       container.innerHTML = html;
       container.dataset.loaded = "true";
 
-      // ✅ Attendre que le DOM soit prêt avant d'initialiser
-      setTimeout(() => {
-        if (appKey === "multiplication") {
-          import(`./apps/multiplication/multiplication.js`).then(mod => mod.initMultiplication());
-        } else if (appKey === "conjugaison") {
-          import(`./apps/conjugaison/conjugaison.js`).then(mod => mod.initConjugaison());
-        }
-      }, 50); // petit délai pour garantir que le DOM est prêt
+      // ✅ Appel centralisé
+      setTimeout(() => initializeAppModule(appKey), 50);
     });
+} else {
+  // ✅ Si déjà chargé, réinitialiser proprement
+  initializeAppModule(appKey);
 }
+
     });
   });
 
@@ -232,4 +230,16 @@ export function parler(message) {
   voix.lang = 'fr-FR';
   voix.rate = 1;
   speechSynthesis.speak(voix);
+}
+
+
+function initializeAppModule(appKey) {
+  const container = safeGet(appKey);
+  if (!container || container.dataset.loaded !== "true") return;
+
+  if (appKey === "multiplication") {
+    import(`./apps/multiplication/multiplication.js`).then(mod => mod.initMultiplication());
+  } else if (appKey === "conjugaison") {
+    import(`./apps/conjugaison/conjugaison.js`).then(mod => mod.initConjugaison());
+  }
 }
