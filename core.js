@@ -202,19 +202,22 @@ function setupNavigation() {
       container.style.display = "block";
 
       if (!container.dataset.loaded) {
-        fetch(`apps/${appKey}/${appKey}.html`)
-          .then(res => res.text())
-          .then(html => {
-            container.innerHTML = html;
-            container.dataset.loaded = "true";
+  fetch(`apps/${appKey}/${appKey}.html`)
+    .then(res => res.text())
+    .then(html => {
+      container.innerHTML = html;
+      container.dataset.loaded = "true";
 
-            if (appKey === "multiplication") {
-              import(`./apps/multiplication/multiplication.js`).then(mod => mod.initMultiplication());
-            } else if (appKey === "conjugaison") {
-              import(`./apps/conjugaison/conjugaison.js`).then(mod => mod.initConjugaison());
-            }
-          });
-      }
+      // ✅ Attendre que le DOM soit prêt avant d'initialiser
+      setTimeout(() => {
+        if (appKey === "multiplication") {
+          import(`./apps/multiplication/multiplication.js`).then(mod => mod.initMultiplication());
+        } else if (appKey === "conjugaison") {
+          import(`./apps/conjugaison/conjugaison.js`).then(mod => mod.initConjugaison());
+        }
+      }, 50); // petit délai pour garantir que le DOM est prêt
+    });
+}
     });
   });
 

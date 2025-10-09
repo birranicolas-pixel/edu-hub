@@ -146,9 +146,29 @@ function enregistrerScore() {
 // 🚀 Initialise l'app
 export function initConjugaison() {
   score = 0;
-  safeGet("score-count").textContent = "0";
+  const startBtn = safeGet("start-btn");
+  const nextBtn = safeGet("next-btn");
+  const saveBtn = safeGet("save-results-btn");
 
-  safeGet("start-btn")?.addEventListener("click", startQuiz);
-  safeGet("next-btn")?.addEventListener("click", startQuiz);
-  safeGet("save-results-btn")?.addEventListener("click", enregistrerScore);
+  if (!startBtn || !nextBtn || !saveBtn) {
+    console.warn("⛔ Éléments manquants dans le DOM. initConjugaison annulé.");
+    return;
+  }
+
+  safeGet("score-count").textContent = "0";
+  startBtn.addEventListener("click", () => {
+    if (!tempsChoisi || !groupeChoisi) {
+      alert("⛔ Sélectionne un temps et un groupe.");
+      return;
+    }
+    startQuiz(tempsChoisi, groupeChoisi);
+  });
+
+  nextBtn.addEventListener("click", () => {
+    startQuiz(tempsChoisi, groupeChoisi);
+  });
+
+  saveBtn.addEventListener("click", enregistrerScore);
+  setupConjugaisonSelectors(); // si tu utilises des boutons pour temps/groupe
 }
+
