@@ -54,31 +54,18 @@ function shuffle(arr) {
 function startQuiz() {
   const tempsEl = safeGet("temps");
   const groupeEl = safeGet("groupe");
-  if (!tempsEl || !groupeEl) {
-    console.error("⛔ Élément #temps ou #groupe introuvable");
-    return;
-  }
+  if (!tempsEl || !groupeEl) return;
 
   const temps = tempsEl.value;
   const groupe = parseInt(groupeEl.value);
   const groupeVerbes = verbes[groupe];
-
-  if (!groupeVerbes || !Array.isArray(groupeVerbes)) {
-    console.error("⛔ Groupe de verbes invalide :", groupe);
-    return;
-  }
+  if (!Array.isArray(groupeVerbes)) return;
 
   const verbe = shuffle(groupeVerbes)[0];
   const pronom = shuffle(pronoms)[0];
   const bonne = conjugue(verbe, pronom, temps);
 
-  const quizZone = safeGet("quiz-zone");
-  if (!quizZone) {
-    console.error("⛔ Élément #quiz-zone introuvable");
-    return;
-  }
-
-  quizZone.style.display = "block";
+  safeGet("quiz-zone").style.display = "block";
   safeGet("question").textContent = `Conjugue "${verbe}" avec "${pronom}" au ${temps}`;
 
   const propositions = new Set([bonne]);
@@ -99,7 +86,6 @@ function startQuiz() {
   safeGet("feedback").textContent = "";
   safeGet("next-btn").style.display = "none";
 }
-
 
 function checkAnswer(rep, bonne) {
   const feedback = safeGet("feedback");
@@ -141,7 +127,8 @@ function enregistrerScore() {
 export function initConjugaison() {
   score = 0;
   safeGet("score-count").textContent = "0";
-  safeGet("start-btn").addEventListener("click", startQuiz);
-  safeGet("next-btn").addEventListener("click", startQuiz);
-  safeGet("save-results-btn").addEventListener("click", enregistrerScore);
+
+  safeGet("start-btn")?.addEventListener("click", startQuiz);
+  safeGet("next-btn")?.addEventListener("click", startQuiz);
+  safeGet("save-results-btn")?.addEventListener("click", enregistrerScore);
 }
