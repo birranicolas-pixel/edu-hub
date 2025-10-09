@@ -211,3 +211,21 @@ export function initConjugaison() {
     saveBtn.dataset.listenerAttached = "true";
   }
 }
+
+function setupConjugaisonSelectors() {
+  document.querySelectorAll(".temps-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      tempsChoisi = btn.dataset.temps;
+      document.querySelectorAll(".temps-btn").forEach(b => b.classList.remove("selected"));
+      btn.classList.add("selected");
+    });
+  });
+
+  document.querySelectorAll(".groupe-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      groupeChoisi = parseInt(btn.dataset.groupe);
+      document.querySelectorAll(".groupe-btn").forEach(b => b.classList.remove("selected"));
+      btn.classList.add("selected");
+    });
+  });
+}
