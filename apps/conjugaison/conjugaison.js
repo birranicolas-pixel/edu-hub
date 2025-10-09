@@ -52,13 +52,33 @@ function shuffle(arr) {
 }
 
 function startQuiz() {
-  const temps = safeGet("temps").value;
-  const groupe = parseInt(safeGet("groupe").value);
-  const verbe = shuffle(verbes[groupe])[0];
+  const tempsEl = safeGet("temps");
+  const groupeEl = safeGet("groupe");
+  if (!tempsEl || !groupeEl) {
+    console.error("⛔ Élément #temps ou #groupe introuvable");
+    return;
+  }
+
+  const temps = tempsEl.value;
+  const groupe = parseInt(groupeEl.value);
+  const groupeVerbes = verbes[groupe];
+
+  if (!groupeVerbes || !Array.isArray(groupeVerbes)) {
+    console.error("⛔ Groupe de verbes invalide :", groupe);
+    return;
+  }
+
+  const verbe = shuffle(groupeVerbes)[0];
   const pronom = shuffle(pronoms)[0];
   const bonne = conjugue(verbe, pronom, temps);
 
-  safeGet("quiz-zone").style.display = "block";
+  const quizZone = safeGet("quiz-zone");
+  if (!quizZone) {
+    console.error("⛔ Élément #quiz-zone introuvable");
+    return;
+  }
+
+  quizZone.style.display = "block";
   safeGet("question").textContent = `Conjugue "${verbe}" avec "${pronom}" au ${temps}`;
 
   const propositions = new Set([bonne]);
@@ -79,6 +99,7 @@ function startQuiz() {
   safeGet("feedback").textContent = "";
   safeGet("next-btn").style.display = "none";
 }
+
 
 function checkAnswer(rep, bonne) {
   const feedback = safeGet("feedback");
