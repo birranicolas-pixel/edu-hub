@@ -224,14 +224,6 @@ function setupNavigation() {
   };
 }
 
-
-function parler(message) {
-  const voix = new SpeechSynthesisUtterance(message);
-  voix.lang = 'fr-FR';
-  voix.rate = 1;
-  speechSynthesis.speak(voix);
-}
-
 export function parler(message) {
   const voix = new SpeechSynthesisUtterance(message);
   voix.lang = 'fr-FR';
