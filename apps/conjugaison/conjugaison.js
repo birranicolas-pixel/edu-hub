@@ -22,38 +22,46 @@ function conjugue(verbe, pronom, temps) {
 }
 
 function lancerQuestion(questionEl, answersEl, feedbackEl) {
-  if (!questionEl || !answersEl || !feedbackEl || !tempsChoisi || !groupeChoisi) {
-    console.error("❌ Impossible de lancer la question : éléments manquants");
-    return;
-  }
-
-  const verbe = shuffleArray(verbes[groupeChoisi])[0];
-  const pronom = shuffleArray(pronoms)[0];
-  const bonne = conjugue(verbe, pronom, tempsChoisi);
-
-  questionEl.textContent = `Conjugue le verbe "${verbe}" avec "${pronom}" au temps "${tempsChoisi}"`;
-
-  const propositions = [bonne];
-  while (propositions.length < 4) {
-    const fauxTemps = shuffleArray(["passé", "présent", "futur"])[0];
-    const faux = `${pronom} ${verbe}-${fauxTemps}`;
-    if (!propositions.includes(faux)) {
-      propositions.push(faux);
+  try {
+    if (!questionEl || !answersEl || !feedbackEl || !tempsChoisi || !groupeChoisi) {
+      console.warn("⛔ Données manquantes pour lancer la question");
+      return;
     }
+
+    const groupeVerbes = verbes[groupeChoisi];
+    if (!Array.isArray(groupeVerbes)) {
+      console.error("⛔ Groupe de verbes invalide :", groupeChoisi);
+      return;
+    }
+
+    const verbe = shuffleArray(groupeVerbes)[0];
+    const pronom = shuffleArray(pronoms)[0];
+    const bonne = conjugue(verbe, pronom, tempsChoisi);
+
+    questionEl.textContent = `Conjugue le verbe "${verbe}" avec "${pronom}" au temps "${tempsChoisi}"`;
+
+    const propositions = new Set([bonne]);
+    while (propositions.size < 4) {
+      const fauxTemps = shuffleArray(["passé", "présent", "futur"])[0];
+      propositions.add(`${pronom} ${verbe}-${fauxTemps}`);
+    }
+
+    const shuffled = shuffleArray(Array.from(propositions));
+    answersEl.innerHTML = "";
+    reponseEnCours = false;
+
+    shuffled.forEach(rep => {
+      const btn = document.createElement("button");
+      btn.textContent = rep;
+      btn.classList.add("answer-btn");
+      btn.onclick = () => verifierReponse(rep, bonne, questionEl, answersEl, feedbackEl);
+      answersEl.appendChild(btn);
+    });
+  } catch (err) {
+    console.error("💥 Erreur dans lancerQuestion :", err);
   }
-
-  const shuffled = shuffleArray(propositions);
-  answersEl.innerHTML = "";
-  reponseEnCours = false;
-
-  shuffled.forEach(rep => {
-    const btn = document.createElement("button");
-    btn.textContent = rep;
-    btn.classList.add("answer-btn");
-    btn.addEventListener("click", () => verifierReponse(rep, bonne, questionEl, answersEl, feedbackEl));
-    answersEl.appendChild(btn);
-  });
 }
+
 
 function verifierReponse(reponse, bonne, questionEl, answersEl, feedbackEl) {
   if (quizTerminé || reponseEnCours) return;
