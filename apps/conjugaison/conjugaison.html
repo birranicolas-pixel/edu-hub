@@ -1,5 +1,6 @@
 <div class="conjugaison-app">
-  <h2>Révise ta conjugaison</h2>
+  <h2>📚 Révise ta conjugaison</h2>
+
   <div class="selectors">
     <label for="temps">Temps :</label>
     <select id="temps">
@@ -15,17 +16,22 @@
       <option value="3">3e groupe</option>
     </select>
 
-    <button id="start-btn">Commencer</button>
+    <button id="start-btn">🚀 Commencer</button>
   </div>
 
   <div id="quiz-zone" style="display:none;">
-    <p id="question"></p>
-    <div id="answers"></div>
-    <p id="feedback"></p>
+    <p id="question" class="quiz-question"></p>
+
+    <div id="answers" class="quiz-answers"></div>
+
+    <p id="feedback" class="quiz-feedback"></p>
+
     <p id="score">Score : <span id="score-count">0</span></p>
-    <button id="next-btn" style="display:none;">Question suivante</button>
+
+    <button id="next-btn" style="display:none;">➡️ Question suivante</button>
     <button id="save-results-btn">💾 Enregistrer</button>
-    <p id="save-message"></p>
+    <p id="save-message" class="save-message"></p>
   </div>
+
+  <a href="javascript:backToHome()" class="back-link">← Retour à l’accueil</a>
 </div>
-<a href="javascript:backToHome()" class="back-link">← Retour à l’accueil</a>
