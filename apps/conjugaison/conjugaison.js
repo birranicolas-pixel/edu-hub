@@ -169,8 +169,7 @@ function setupConjugaisonSelectors() {
 // 🚀 Initialise l'app
 export function initConjugaison() {
   score = 0;
-  tempsChoisi = null;
-  groupeChoisi = null;
+
 
   const startBtn = safeGet("start-btn");
   const nextBtn = safeGet("next-btn");
