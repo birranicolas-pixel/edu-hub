@@ -9,6 +9,8 @@ const verbes = {
 
 const pronoms = ["je", "tu", "il/elle", "nous", "vous", "ils/elles"];
 let score = 0;
+let tempsChoisi = null;
+let groupeChoisi = null;
 
 // 🔁 Mélange un tableau
 function shuffle(arr) {
@@ -37,13 +39,23 @@ function conjugue(verbe, pronom, temps) {
   const index = pronoms.indexOf(pronom);
   const groupe = verbe.endsWith("er") ? 1 : verbe.endsWith("ir") ? 2 : 3;
 
+  function pronomAvecElision(pronom, mot) {
+    if (pronom === "je" && /^[aeiouh]/i.test(mot)) {
+      return "j’";
+    }
+    return pronom + " ";
+  }
+
   if (temps === "présent") {
     const radical = verbe.slice(0, -2);
-    return `${pronom} ${radical}${terminaisons.présent[groupe][index]}`;
+    const terminaison = terminaisons.présent[groupe][index];
+    const mot = radical + terminaison;
+    return pronomAvecElision(pronom, mot) + mot;
   }
 
   if (temps === "futur") {
-    return `${pronom} ${verbe}${terminaisons.futur.all[index]}`;
+    const mot = verbe + terminaisons.futur.all[index];
+    return pronomAvecElision(pronom, mot) + mot;
   }
 
   if (temps === "passé") {
@@ -55,15 +67,9 @@ function conjugue(verbe, pronom, temps) {
 }
 
 // ▶️ Lance une question
-function startQuiz() {
-  const temps = safeGet("temps")?.value;
-  const groupe = parseInt(safeGet("groupe")?.value);
+function startQuiz(temps, groupe) {
   const groupeVerbes = verbes[groupe];
-
-  if (!temps || !groupeVerbes) {
-    alert("⛔ Sélectionne un temps et un groupe valide.");
-    return;
-  }
+  if (!temps || !groupeVerbes) return;
 
   const verbe = shuffle(groupeVerbes)[0];
   const pronom = shuffle(pronoms)[0];
@@ -71,6 +77,7 @@ function startQuiz() {
 
   safeGet("quiz-zone").style.display = "block";
   safeGet("question").textContent = `Conjugue "${verbe}" avec "${pronom}" au ${temps}`;
+  parler(`Conjugue ${verbe} avec ${pronom} au ${temps}`);
 
   const propositions = new Set([bonne]);
   let essais = 0;
@@ -113,10 +120,7 @@ function enregistrerScore() {
   const user = auth.currentUser;
   const msg = safeGet("save-message");
 
-  if (!user) {
-    msg.textContent = "❌ Connecte-toi pour enregistrer ton score.";
-    return;
-  }
+  if (!user || !msg) return;
 
   db.collection("result").add({
     uid: user.uid,
@@ -143,9 +147,31 @@ function enregistrerScore() {
   });
 }
 
+// 🎛️ Sélection des boutons
+function setupConjugaisonSelectors() {
+  document.querySelectorAll(".temps-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      tempsChoisi = btn.dataset.temps;
+      document.querySelectorAll(".temps-btn").forEach(b => b.classList.remove("selected"));
+      btn.classList.add("selected");
+    });
+  });
+
+  document.querySelectorAll(".groupe-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      groupeChoisi = parseInt(btn.dataset.groupe);
+      document.querySelectorAll(".groupe-btn").forEach(b => b.classList.remove("selected"));
+      btn.classList.add("selected");
+    });
+  });
+}
+
 // 🚀 Initialise l'app
 export function initConjugaison() {
   score = 0;
+  tempsChoisi = null;
+  groupeChoisi = null;
+
   const startBtn = safeGet("start-btn");
   const nextBtn = safeGet("next-btn");
   const saveBtn = safeGet("save-results-btn");
@@ -156,19 +182,33 @@ export function initConjugaison() {
   }
 
   safeGet("score-count").textContent = "0";
-  startBtn.addEventListener("click", () => {
-    if (!tempsChoisi || !groupeChoisi) {
-      alert("⛔ Sélectionne un temps et un groupe.");
-      return;
-    }
-    startQuiz(tempsChoisi, groupeChoisi);
-  });
+  safeGet("feedback").textContent = "";
+  safeGet("answers").innerHTML = "";
+  safeGet("question").textContent = "";
+  safeGet("save-message").textContent = "";
 
-  nextBtn.addEventListener("click", () => {
-    startQuiz(tempsChoisi, groupeChoisi);
-  });
+  setupConjugaisonSelectors();
 
-  saveBtn.addEventListener("click", enregistrerScore);
-  setupConjugaisonSelectors(); // si tu utilises des boutons pour temps/groupe
+  if (!startBtn.dataset.listenerAttached) {
+    startBtn.addEventListener("click", () => {
+      if (!tempsChoisi || !groupeChoisi) {
+        alert("⛔ Sélectionne un temps et un groupe.");
+        return;
+      }
+      startQuiz(tempsChoisi, groupeChoisi);
+    });
+    startBtn.dataset.listenerAttached = "true";
+  }
+
+  if (!nextBtn.dataset.listenerAttached) {
+    nextBtn.addEventListener("click", () => {
+      startQuiz(tempsChoisi, groupeChoisi);
+    });
+    nextBtn.dataset.listenerAttached = "true";
+  }
+
+  if (!saveBtn.dataset.listenerAttached) {
+    saveBtn.addEventListener("click", enregistrerScore);
+    saveBtn.dataset.listenerAttached = "true";
+  }
 }
-
