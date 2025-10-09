@@ -213,11 +213,18 @@ export function initConjugaison() {
 }
 
 function setupConjugaisonSelectors() {
+  const tempsLabel = safeGet("temps-choisi-label");
+  const groupeLabel = safeGet("groupe-choisi-label");
+  const summary = safeGet("selection-summary");
+
   document.querySelectorAll(".temps-btn").forEach(btn => {
     btn.addEventListener("click", () => {
       tempsChoisi = btn.dataset.temps;
       document.querySelectorAll(".temps-btn").forEach(b => b.classList.remove("selected"));
       btn.classList.add("selected");
+
+      if (tempsLabel) tempsLabel.textContent = btn.textContent;
+      if (summary) summary.classList.remove("hidden");
     });
   });
 
@@ -226,6 +233,10 @@ function setupConjugaisonSelectors() {
       groupeChoisi = parseInt(btn.dataset.groupe);
       document.querySelectorAll(".groupe-btn").forEach(b => b.classList.remove("selected"));
       btn.classList.add("selected");
+
+      if (groupeLabel) groupeLabel.textContent = btn.textContent;
+      if (summary) summary.classList.remove("hidden");
     });
   });
 }
+
