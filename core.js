@@ -195,27 +195,26 @@ function setupNavigation() {
   document.querySelectorAll(".app-btn").forEach(btn => {
     btn.addEventListener("click", () => {
       const appKey = btn.dataset.app;
+
+      // 🔄 Réinitialise toutes les sections
       homeScreen.style.display = "none";
-      Object.values(appSections).forEach(section => section.style.display = "none");
+      Object.values(appSections).forEach(section => {
+        section.style.display = "none";
+        section.innerHTML = "";
+        section.dataset.loaded = "";
+      });
 
       const container = appSections[appKey];
       container.style.display = "block";
 
-      if (!container.dataset.loaded) {
-  fetch(`apps/${appKey}/${appKey}.html`)
-    .then(res => res.text())
-    .then(html => {
-      container.innerHTML = html;
-      container.dataset.loaded = "true";
+      fetch(`apps/${appKey}/${appKey}.html`)
+        .then(res => res.text())
+        .then(html => {
+          container.innerHTML = html;
+          container.dataset.loaded = "true";
 
-      // ✅ Appel centralisé
-      setTimeout(() => initializeAppModule(appKey), 50);
-    });
-} else {
-  // ✅ Si déjà chargé, réinitialiser proprement
-  initializeAppModule(appKey);
-}
-
+          setTimeout(() => initializeAppModule(appKey), 50);
+        });
     });
   });
 
@@ -232,8 +231,8 @@ export function parler(message) {
   speechSynthesis.speak(voix);
 }
 
-
 function initializeAppModule(appKey) {
+  console.log(`🔄 Initialisation de l'app : ${appKey}`);
   const container = safeGet(appKey);
   if (!container || container.dataset.loaded !== "true") return;
 
