@@ -115,7 +115,7 @@ function checkAnswer(rep, bonne) {
 
 function enregistrerScore() {
   const user = auth.currentUser;
-  const msg = get("save-message");
+  const msg = safeGet("save-message");
 
   if (!user) {
     msg.textContent = "❌ Connecte-toi pour enregistrer ton score.";
@@ -127,15 +127,24 @@ function enregistrerScore() {
     email: user.email,
     application: "conjugaison",
     totalBonnes: score,
-    totalMauvaises: 0,
+    totalMauvaises: 0, // Si tu veux suivre les mauvaises réponses, ajoute une variable séparée
     temps: new Date().toISOString(),
     timestamp: firebase.firestore.FieldValue.serverTimestamp()
   }).then(() => {
     msg.textContent = "✅ Score enregistré avec succès.";
+
+    // 🔄 Réinitialisation des compteurs
+    score = 0;
+    safeGet("score-count").textContent = "0";
+    safeGet("feedback").textContent = "";
+    safeGet("answers").innerHTML = "";
+    safeGet("question").textContent = "";
+    safeGet("next-btn").style.display = "none";
   }).catch(() => {
     msg.textContent = "❌ Erreur lors de l'enregistrement.";
   });
 }
+
 
 export function initConjugaison() {
   score = 0;
