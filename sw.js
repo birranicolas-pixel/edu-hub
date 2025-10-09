@@ -3,7 +3,7 @@ const urlsToCache = [
   '/edu-hub/',
   '/edu-hub/index.html',
   '/edu-hub/style.css',
-  '/edu-hub/script.js',
+  '/edu-hub/core.js',
   '/edu-hub/assets/mascotte.png'
 ];
 
